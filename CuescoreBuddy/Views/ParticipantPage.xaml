@@ -7,10 +7,13 @@
     xmlns:services="clr-namespace:CuescoreBuddy.Services"
     xmlns:views="clr-namespace:CuescoreBuddy.Views"
     xmlns:vm="clr-namespace:CuescoreBuddy.ViewModels"
-    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:converters="clr-namespace:CuescoreBuddy.Converters"
     Title="Select players">
-    <Grid RowDefinitions="60,*">
-        <Frame
+    <ContentPage.BindingContext>
+        <vm:ParticipantViewModel />
+    </ContentPage.BindingContext>
+    <Grid RowDefinitions="0,*">
+        <!--<Frame
             Margin="10,10,10,10"
             Padding="0"
             CornerRadius="5">
@@ -20,7 +23,7 @@
                 Text="Select player"
                 TextColor="{StaticResource Primary}"
                 VerticalOptions="Center" />
-        </Frame>
+        </Frame>-->
         <RefreshView
             Grid.Row="1"
             Command="{Binding RefreshCommand}"
@@ -29,40 +32,64 @@
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <Grid
-                                BackgroundColor="{StaticResource Blue300Accent}"
-                                ColumnDefinitions="Auto, *"
-                                RowDefinitions="Auto, auto">
-                            <Grid.GestureRecognizers>
+                                ColumnDefinitions="0, 64, *, 100, 100"
+
+                            >
+                            <!--<Grid.GestureRecognizers>
                                 <TapGestureRecognizer
                                         Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ParticipantViewModel}}, Path=ParticipantTapped}"
                                         CommandParameter="{Binding .}"
                                         NumberOfTapsRequired="1" />
-                            </Grid.GestureRecognizers>
+                            </Grid.GestureRecognizers>-->
                             <Image
+                                    Grid.Column="1"
                                     HeightRequest="64"
                                     Source="{Binding image}"
                                     WidthRequest="64" />
-                            <VerticalStackLayout Grid.Column="1">
-                                <Label
-                                        Margin="20,20,20,20"
-                                        FontSize="18"
-                                        HorizontalOptions="FillAndExpand"
-                                        VerticalOptions="Fill"
-                                        Text="{Binding name}"
-                                        TextColor="Black" />
-                            </VerticalStackLayout>
-                            <VerticalStackLayout Grid.Column="2">
-                                <Button Text="{Binding IsMonitored}"
-                                        Margin="20,20,20,20"
-                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ParticipantViewModel}}, Path=ParticipantTapped}" 
-                                        CommandParameter="{Binding .}"
-                                        HorizontalOptions="End"
-                                        />
+                            <Label
+                                VerticalTextAlignment="Center"
+                                    Grid.Column="2"
+                                    FontSize="18"
+                                    Text="{Binding name}"
+                                    TextColor="Black" />
 
-                            </VerticalStackLayout>
-                            
-                                
-                            
+                            <Button 
+                                    Grid.Column="3"
+                                    BackgroundColor="Bisque"
+                                    Margin="10,10,10,10"
+                                    LineBreakMode="WordWrap"
+                                    Text="{Binding IsMonitored}"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ParticipantViewModel}}, Path=ToggleScoreMonitor}" 
+                                    CommandParameter="{Binding .}">
+                                <Button.Triggers>
+                                    <DataTrigger TargetType="Button" Binding="{Binding IsMonitored}" Value="false">
+                                        <Setter Property="Text"  Value="Scores off" />
+                                    </DataTrigger>
+                                    <DataTrigger TargetType="Button" Binding="{Binding IsMonitored}" Value="true">
+                                        <Setter Property="Text"  Value="Scores on" />
+                                    </DataTrigger>
+                                </Button.Triggers>
+                            </Button>
+                            <Button Grid.Column="4" 
+                                    BackgroundColor="Red"
+                                    Margin="10,10,10,10"
+                                    LineBreakMode="WordWrap"
+                                    Text="{Binding IsMonitored}"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ParticipantViewModel}}, Path=ToggleStartMonitor}" 
+                                    CommandParameter="{Binding .}">
+                                <Button.Triggers>
+                                    <DataTrigger TargetType="Button" Binding="{Binding IsMonitored}" Value="false">
+                                        <Setter Property="Text"  Value="Starts off" />
+                                    </DataTrigger>
+                                    <DataTrigger TargetType="Button" Binding="{Binding IsMonitored}" Value="true">
+                                        <Setter Property="Text"  Value="Starts on" />
+                                    </DataTrigger>
+                                </Button.Triggers>
+                            </Button>
+
+
+
+
                             <!--<BoxView
                                     Grid.Row="1"
                                     Grid.ColumnSpan="2"
@@ -80,7 +107,8 @@
                             FontSize="Large"
                             HorizontalTextAlignment="Center"
                             Text="No players available"
-                            TextColor="Black" />
+                            TextColor="Black" 
+                            IsVisible="{Binding IsRefreshing, Converter={converters:InverseBoolConverter}}"/>
                     </VerticalStackLayout>
                 </CollectionView.EmptyView>
             </CollectionView>

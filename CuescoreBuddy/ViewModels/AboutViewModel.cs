@@ -16,7 +16,7 @@ public class AboutViewModel : BaseViewModel
     public AboutViewModel()
     {
         Title = "About";
-        Description = "51183655";  //50522059
+        Description = "51902497";  //50522059
 
         //TODO On activating app paste in clipboard (if tournament) to textbox
 
@@ -68,7 +68,10 @@ public class AboutViewModel : BaseViewModel
 
             IsBusy = false;
 
-            await Shell.Current.GoToAsync(nameof(ParticipantPage));
+
+
+            //await Shell.Current.GoToAsync(nameof(ParticipantPage));
+            await GoToParticipantPage(tournament.tournamentId);
         }
 
         IsBusy = false;
@@ -76,6 +79,16 @@ public class AboutViewModel : BaseViewModel
 
 
 
+    }
+
+    private async Task GoToParticipantPage(int tournamentId)
+    {
+        var navigationParameters = new Dictionary<string, object>
+        {
+            { "TournamentId", tournamentId },
+        };
+
+        await Shell.Current.GoToAsync(nameof(ParticipantPage), false, navigationParameters);
     }
     #endregion
 }

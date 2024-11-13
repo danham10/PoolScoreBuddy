@@ -23,7 +23,7 @@ public partial class Tournament
     public string status { get; set; }
     public string discipline { get; set; }
     public Contact[] contacts { get; set; }
-    public Owner owner { get; set; }
+    public object owner { get; set; }
     public object[] venues { get; set; }
     public object[] standings { get; set; }
     public Match[] matches { get; set; }
@@ -213,7 +213,7 @@ public partial class Player
 
 public partial class Player
 {
-    public bool IsMonitored { get => MonitoredPlayer != null; }
+    public bool IsMonitored { get => MonitoredPlayer != null && ; }
     public MonitoredPlayer? MonitoredPlayer { get; set; }
 }
 
@@ -222,6 +222,7 @@ public class MonitoredPlayer
     public DateTime CreateDate { get; set; }
     public int PlayerId { get; set; }
     public List<int> CalledMatchIds = [];
+    public List<int> ResultsMatchIds = [];
 }
 
 public class Table

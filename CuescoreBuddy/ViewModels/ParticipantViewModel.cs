@@ -1,5 +1,5 @@
 ﻿//using AsyncAwaitBestPractices;
-using CommunityToolkit.Mvvm;
+using AsyncAwaitBestPractices;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 using MauiApp3.Models;
@@ -7,56 +7,49 @@ using System.Collections.ObjectModel;
 using System.Windows.Input;
 
 namespace CuescoreBuddy.ViewModels;
-public partial class ParticipantViewModel : ObservableObject
+public partial class ParticipantViewModel : BaseViewModel, IQueryAttributable
 {
+    readonly DataStore _dataStore;
+    readonly IMessenger _messenger;
+
+    int _tournamentId;
+    TournamentFacade? _tournament;
+    bool _isRefreshing;
+
     public ObservableCollection<Player> Participants { get; private set; } = [];
 
-    readonly DataStore? DataStore;
-    readonly IMessenger _messenger;
-    TournamentFacade _tournament;
+    [ObservableProperty]
+    private bool isRefreshing;
 
-    bool isRefreshing;
-    //public ICommand RefreshCommand => new Command(async () => await RefreshItemsAsync());
+    public ICommand RefreshCommand => new Command(async () => await RefreshItemsAsync());
 
-    //public ICommand ToggledCommand => new Command(async () => await RefreshItemsAsync());
-
-
-    public ParticipantViewModel(DataStore dataStore, IMessenger messenger)
+    public ParticipantViewModel()
     {
-        DataStore = dataStore;
-        _messenger = messenger;
-
-        _tournament = DataStore.Tournaments.GetTournamentById(DataStore.CurrentTournamentId);
-
-        //RefreshItemsAsync().SafeFireAndForget();
+        _dataStore = ServiceResolver.GetService<DataStore>();
+        _messenger = ServiceResolver.GetService<IMessenger>();
     }
 
-
-    public bool IsRefreshing
+    public void ApplyQueryAttributes(IDictionary<string, object> query)
     {
-        get { return isRefreshing; }
-        set { SetProperty(ref isRefreshing, value); }
+        _tournamentId = Convert.ToInt32(query["TournamentId"]);
+        _tournament = _dataStore.Tournaments.GetTournamentById(_tournamentId);
+
+        Participants.Clear();
+        query.Clear();
+
+        RefreshItemsAsync().SafeFireAndForget();
     }
 
     async Task RefreshItemsAsync()
     {
         IsRefreshing = true;
-        Participants.Clear();
-
+       
         var cueScoreService = ServiceResolver.GetService<ICueScoreService>();
 
-        try
-        {
-            await _tournament.Fetch(cueScoreService, DataStore.CurrentTournamentId);
-            DataStore.Tournaments.AddIfMissing(_tournament);
+        await _tournament!.Fetch(cueScoreService, _tournamentId);
+        _dataStore.Tournaments.AddIfMissing(_tournament);
 
-            await _tournament.LoadPlayers(cueScoreService);
-
-        }
-        catch (Exception ex)
-        {
-            throw;
-        }
+        await _tournament.LoadPlayers(cueScoreService);
 
         Participants.Clear();
 
@@ -71,33 +64,32 @@ public partial class ParticipantViewModel : ObservableObject
     }
 
     #region Commands
-    public Command<Player> ParticipantTapped => new(async (participant) =>
+    public Command<Player> ToggleScoreMonitor => new((participant) =>
+    {
+        //if (participant == null)
+        //    return;
+
+        //participant.MonitoredPlayer = _tournament!.TogglePlayerEnabled(participant.playerId);
+
+        //// Remove and add to force UI update
+        //int playerIndex = Participants.IndexOf(Participants.First(p => p.playerId == participant.playerId));
+        //Participants[playerIndex] = participant;
+
+        //_messenger.Send(new CuescoreBackgroundChecker()); //TODO create tournament / player state object
+    });
+
+    public Command<Player> ToggleStartMonitor => new((participant) =>
     {
         if (participant == null)
             return;
 
-        participant.MonitoredPlayer = _tournament.TogglePlayerEnabled(participant.playerId);
+        participant.MonitoredPlayer = _tournament!.TogglePlayerEnabled(participant.playerId);
 
         // Remove and add to force UI update
         int playerIndex = Participants.IndexOf(Participants.First(p => p.playerId == participant.playerId));
         Participants[playerIndex] = participant;
 
         _messenger.Send(new CuescoreBackgroundChecker()); //TODO create tournament / player state object
-
-        string addingRemoving = participant.IsMonitored ? "Adding" : "Removing";
-        await Shell.Current.DisplayAlert($"Monitoring change", $"{addingRemoving} {participant.name} from tournament {_tournament.Tournament.name}.", "OK");
-
-        //RefreshSelectedParticipants();
-        //await Shell.Current.GoToAsync($"{nameof(ConfirmationPage)}?id={participant.playerId}");
-    });
-
-    public Command ParticipantTapped2 => new(async () =>
-    {
-        Console.WriteLine("123");
-        //if (participant == null)
-        //    return;
-
-        //await Shell.Current.GoToAsync($"{nameof(ConfirmationPage)}?id={participant.playerId}");
     });
     #endregion
 }

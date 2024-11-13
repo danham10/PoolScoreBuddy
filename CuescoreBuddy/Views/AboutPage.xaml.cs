@@ -4,6 +4,15 @@ public partial class AboutPage : ContentPage
 {
 	public AboutPage()
 	{
-		InitializeComponent();
+		try
+		{
+            InitializeComponent();
+        }
+		catch (Exception)
+		{
+
+			throw;
+		}
+
 	}
 }
