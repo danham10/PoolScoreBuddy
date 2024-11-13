@@ -12,18 +12,8 @@
     <ContentPage.BindingContext>
         <vm:ParticipantViewModel />
     </ContentPage.BindingContext>
-    <Grid RowDefinitions="0,*">
-        <!--<Frame
-            Margin="10,10,10,10"
-            Padding="0"
-            CornerRadius="5">
-            <Label
-                FontSize="Title"
-                HorizontalOptions="Center"
-                Text="Select player"
-                TextColor="{StaticResource Primary}"
-                VerticalOptions="Center" />
-        </Frame>-->
+    <Grid
+        RowDefinitions="0,*">
         <RefreshView
             Grid.Row="1"
             Command="{Binding RefreshCommand}"
@@ -32,35 +22,27 @@
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <Grid
-                                ColumnDefinitions="0, 64, *, 100, 100"
-
-                            >
-                            <!--<Grid.GestureRecognizers>
-                                <TapGestureRecognizer
-                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ParticipantViewModel}}, Path=ParticipantTapped}"
-                                        CommandParameter="{Binding .}"
-                                        NumberOfTapsRequired="1" />
-                            </Grid.GestureRecognizers>-->
+                            ColumnDefinitions="0, 64, *, 100, 100">
                             <Image
-                                    Grid.Column="1"
-                                    HeightRequest="64"
-                                    Source="{Binding image}"
-                                    WidthRequest="64" />
+                                Grid.Column="1"
+                                HeightRequest="64"
+                                Source="{Binding image}"
+                                WidthRequest="64" />
                             <Label
                                 VerticalTextAlignment="Center"
-                                    Grid.Column="2"
-                                    FontSize="18"
-                                    Text="{Binding name}"
-                                    TextColor="Black" />
+                                Grid.Column="2"
+                                FontSize="18"
+                                Text="{Binding name}"
+                                TextColor="Black" />
 
                             <Button 
-                                    Grid.Column="3"
-                                    BackgroundColor="Bisque"
-                                    Margin="10,10,10,10"
-                                    LineBreakMode="WordWrap"
-                                    Text="{Binding IsMonitored}"
-                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ParticipantViewModel}}, Path=ToggleScoreMonitor}" 
-                                    CommandParameter="{Binding .}">
+                                Grid.Column="3"
+                                BackgroundColor="Bisque"
+                                Margin="10,10,10,10"
+                                LineBreakMode="WordWrap"
+                                Text="{Binding IsMonitored}"
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ParticipantViewModel}}, Path=ToggleScoreMonitor}" 
+                                CommandParameter="{Binding .}">
                                 <Button.Triggers>
                                     <DataTrigger TargetType="Button" Binding="{Binding IsMonitored}" Value="false">
                                         <Setter Property="Text"  Value="Scores off" />
@@ -70,13 +52,14 @@
                                     </DataTrigger>
                                 </Button.Triggers>
                             </Button>
-                            <Button Grid.Column="4" 
-                                    BackgroundColor="Red"
-                                    Margin="10,10,10,10"
-                                    LineBreakMode="WordWrap"
-                                    Text="{Binding IsMonitored}"
-                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ParticipantViewModel}}, Path=ToggleStartMonitor}" 
-                                    CommandParameter="{Binding .}">
+                            <Button 
+                                Grid.Column="4" 
+                                BackgroundColor="Red"
+                                Margin="10,10,10,10"
+                                LineBreakMode="WordWrap"
+                                Text="{Binding IsMonitored}"
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ParticipantViewModel}}, Path=ToggleStartMonitor}" 
+                                CommandParameter="{Binding .}">
                                 <Button.Triggers>
                                     <DataTrigger TargetType="Button" Binding="{Binding IsMonitored}" Value="false">
                                         <Setter Property="Text"  Value="Starts off" />
@@ -86,17 +69,6 @@
                                     </DataTrigger>
                                 </Button.Triggers>
                             </Button>
-
-
-
-
-                            <!--<BoxView
-                                    Grid.Row="1"
-                                    Grid.ColumnSpan="2"
-                                    Margin="40,6,40,6"
-                                    BackgroundColor="{StaticResource Primary}"
-                                    HeightRequest="1"
-                                    VerticalOptions="End" />-->
                         </Grid>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>

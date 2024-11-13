@@ -3,7 +3,9 @@ using AsyncAwaitBestPractices;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 using MauiApp3.Models;
+using Plugin.LocalNotification;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace CuescoreBuddy.ViewModels;
@@ -42,7 +44,10 @@ public partial class ParticipantViewModel : BaseViewModel, IQueryAttributable
 
     async Task RefreshItemsAsync()
     {
-        IsRefreshing = true;
+        var isenabled = await LocalNotificationCenter.Current.AreNotificationsEnabled();
+        if (!isenabled) await LocalNotificationCenter.Current.RequestNotificationPermission();
+
+                IsRefreshing = true;
        
         var cueScoreService = ServiceResolver.GetService<ICueScoreService>();
 

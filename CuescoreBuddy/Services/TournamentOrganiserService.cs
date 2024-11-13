@@ -1,4 +1,4 @@
-﻿namespace MauiApp3.Services
+﻿namespace CuescoreBuddy.Services
 {
 
     public class TournamentOrganiserService(DataStore dataStore, ICueScoreService cueScoreService)

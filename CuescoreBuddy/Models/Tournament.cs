@@ -213,7 +213,7 @@ public partial class Player
 
 public partial class Player
 {
-    public bool IsMonitored { get => MonitoredPlayer != null && ; }
+    public bool IsMonitored { get => MonitoredPlayer != null; }
     public MonitoredPlayer? MonitoredPlayer { get; set; }
 }
 
@@ -222,7 +222,7 @@ public class MonitoredPlayer
     public DateTime CreateDate { get; set; }
     public int PlayerId { get; set; }
     public List<int> CalledMatchIds = [];
-    public List<int> ResultsMatchIds = [];
+    public List<int> ResultsMatchIds = []; //TODO implement
 }
 
 public class Table
