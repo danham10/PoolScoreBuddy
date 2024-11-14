@@ -4,7 +4,6 @@ using Android.Content.PM;
 using Android.OS;
 using CommunityToolkit.Mvvm.Messaging;
 using CuescoreBuddy.Platforms;
-using MauiApp3.Models;
 
 namespace CuescoreBuddy
 {

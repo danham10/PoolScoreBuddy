@@ -2,7 +2,6 @@
 using AsyncAwaitBestPractices;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
-using MauiApp3.Models;
 using Plugin.LocalNotification;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
@@ -24,6 +23,7 @@ public partial class ParticipantViewModel : BaseViewModel, IQueryAttributable
     private bool isRefreshing;
 
     public ICommand RefreshCommand => new Command(async () => await RefreshItemsAsync());
+    
 
     public ParticipantViewModel()
     {
@@ -37,17 +37,38 @@ public partial class ParticipantViewModel : BaseViewModel, IQueryAttributable
         _tournament = _dataStore.Tournaments.GetTournamentById(_tournamentId);
 
         Participants.Clear();
-        query.Clear();
-
         RefreshItemsAsync().SafeFireAndForget();
+
+        query.Clear();
+    }
+
+    async static Task<bool> AllowNotificationsAsync()
+    {
+        var allowed = await LocalNotificationCenter.Current.AreNotificationsEnabled();
+
+        if (!allowed)
+            allowed = await LocalNotificationCenter.Current.RequestNotificationPermission();
+
+        if (!allowed)
+            allowed = await LocalNotificationCenter.Current.RequestNotificationPermission();
+
+        if (!allowed)
+        {
+            var request = new NotificationRequest()
+            {
+                Title = "Notifications permission declined",
+                Subtitle = "You must manually allow notifications for this app to work properly. Go to app settings, then permissions and under the 'not allowed' list, modify the 'Notifications' entry to become allowed."
+            };
+        }
+
+        return allowed;
     }
 
     async Task RefreshItemsAsync()
     {
-        var isenabled = await LocalNotificationCenter.Current.AreNotificationsEnabled();
-        if (!isenabled) await LocalNotificationCenter.Current.RequestNotificationPermission();
 
-                IsRefreshing = true;
+
+        IsRefreshing = true;
        
         var cueScoreService = ServiceResolver.GetService<ICueScoreService>();
 
@@ -83,9 +104,11 @@ public partial class ParticipantViewModel : BaseViewModel, IQueryAttributable
         //_messenger.Send(new CuescoreBackgroundChecker()); //TODO create tournament / player state object
     });
 
-    public Command<Player> ToggleStartMonitor => new((participant) =>
+    public Command<Player> ToggleStartMonitor => new(async (participant) =>
     {
-        if (participant == null)
+        var notificationsAllowed = await AllowNotificationsAsync();
+
+        if (participant == null || !notificationsAllowed)
             return;
 
         participant.MonitoredPlayer = _tournament!.TogglePlayerEnabled(participant.playerId);
@@ -94,7 +117,7 @@ public partial class ParticipantViewModel : BaseViewModel, IQueryAttributable
         int playerIndex = Participants.IndexOf(Participants.First(p => p.playerId == participant.playerId));
         Participants[playerIndex] = participant;
 
-        _messenger.Send(new CuescoreBackgroundChecker()); //TODO create tournament / player state object
+        _messenger.Send(new CuescoreBackgroundChecker(ServiceMessageType.Default));
     });
     #endregion
 }

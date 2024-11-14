@@ -43,7 +43,7 @@
 		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />
 
 		<!-- Splash Screen -->
-		<MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#512BD4" BaseSize="128,128" />
+    <MauiSplashScreen Include="Resources\Splash\cuescorebuddy1.svg" Color="#DCDFE0" BaseSize="128,43" />
 
 		<!-- Images -->
 		<MauiImage Include="Resources\Images\*" />
@@ -81,6 +81,9 @@
   </ItemGroup>
 
 	<ItemGroup>
+	  <Compile Update="Views\TournamentPage.xaml.cs">
+	    <DependentUpon>TournamentPage.xaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="Views\ParticipantPage.xaml.cs">
 	    <DependentUpon>ParticipantPage.xaml</DependentUpon>
 	  </Compile>
@@ -93,7 +96,7 @@
 	  <MauiXaml Update="Views\ParticipantPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Views\AboutPage.xaml">
+	  <MauiXaml Update="Views\TournamentPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	</ItemGroup>
