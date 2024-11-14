@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Extensions.Logging;
+using Plugin.LocalNotification;
 
 namespace CuescoreBuddy
 {
@@ -10,6 +11,7 @@ namespace CuescoreBuddy
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
+                .UseLocalNotification()
             // Initialize the .NET MAUI Community Toolkit by adding the below line of code
                 .ConfigureFonts(fonts =>
                 {
@@ -27,8 +29,8 @@ namespace CuescoreBuddy
             builder.Services.AddSingleton<ParticipantPage>();
             builder.Services.AddSingleton<ParticipantViewModel>();
 
-            builder.Services.AddSingleton<AboutPage>();
-            builder.Services.AddSingleton<AboutViewModel>();
+            builder.Services.AddSingleton<TournamentPage>();
+            builder.Services.AddSingleton<TournamentViewModel>();
 
             builder.Services.AddSingleton<IMessenger, WeakReferenceMessenger>();
 

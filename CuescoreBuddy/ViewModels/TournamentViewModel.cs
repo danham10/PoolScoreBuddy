@@ -15,7 +15,7 @@ public class TournamentViewModel : BaseViewModel
 
     public TournamentViewModel()
     {
-        Title = "Tournament";
+        Title = "About";
         Description = "51818677";  //50522059
 
         //TODO On activating app paste in clipboard (if tournament) to textbox

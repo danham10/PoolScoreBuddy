@@ -84,6 +84,9 @@
 	  <Compile Update="Views\TournamentPage.xaml.cs">
 	    <DependentUpon>TournamentPage.xaml</DependentUpon>
 	  </Compile>
+	  <Compile Update="Views\TournamentPage.xaml.cs">
+	    <DependentUpon>TournamentPage.xaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="Views\ParticipantPage.xaml.cs">
 	    <DependentUpon>ParticipantPage.xaml</DependentUpon>
 	  </Compile>

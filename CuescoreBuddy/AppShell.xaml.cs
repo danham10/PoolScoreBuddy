@@ -7,7 +7,7 @@
         public AppShell()
         {
             InitializeComponent();
-            Routes.Add(nameof(AboutPage), typeof(AboutPage));
+            Routes.Add(nameof(TournamentPage), typeof(TournamentPage));
             Routes.Add(nameof(ParticipantPage), typeof(ParticipantPage));
 
             foreach (var route in Routes)

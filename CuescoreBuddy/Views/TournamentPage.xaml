@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
-    x:Class="CuescoreBuddy.Views.AboutPage"
+    x:Class="CuescoreBuddy.Views.TournamentPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:vm="clr-namespace:CuescoreBuddy.ViewModels"
-    Title="AboutPage"
+    Title="TournamentPage"
     Shell.NavBarIsVisible="False">
 
     <ContentPage.BindingContext>
-        <vm:AboutViewModel />
+        <vm:TournamentViewModel />
     </ContentPage.BindingContext>
 
     <VerticalStackLayout Margin="10,0,10,0">

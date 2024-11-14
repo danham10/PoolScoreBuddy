@@ -95,8 +95,8 @@ public class CuescoreCheckerService : Service
         var pendingIntent = PendingIntent.GetActivity(this, 0, notificationIntent, PendingIntentFlags.Immutable);
 
         var notification = new NotificationCompat.Builder(this, MainApplication.ChannelId)
-           .SetContentTitle("Am I on yet")
-           .SetContentText($"Listening for {playerName}") //TODO create names
+           .SetContentTitle("Cuescore buddy")
+           .SetContentText($"Listening started") //TODO create names
            .SetSmallIcon(Resource.Drawable.ic_stat_name)
            .SetContentIntent(pendingIntent)
            .Build();

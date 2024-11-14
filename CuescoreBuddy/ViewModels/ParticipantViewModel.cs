@@ -50,17 +50,19 @@ public partial class ParticipantViewModel : BaseViewModel, IQueryAttributable
             allowed = await LocalNotificationCenter.Current.RequestNotificationPermission();
 
         if (!allowed)
-            allowed = await LocalNotificationCenter.Current.RequestNotificationPermission();
-
-        if (!allowed)
         {
-            var request = new NotificationRequest()
-            {
-                Title = "Notifications permission declined",
-                Subtitle = "You must manually allow notifications for this app to work properly. Go to app settings, then permissions and under the 'not allowed' list, modify the 'Notifications' entry to become allowed."
-            };
-        }
+            //TODO https://stackoverflow.com/questions/72429055/how-to-displayalert-in-a-net-maui-viewmodel
+            await Application.Current.MainPage.DisplayAlert("Alert", "You must manually allow notifications for this app to work properly. Go to app settings, then permissions and under the 'not allowed' list, modify the 'Notifications' entry to become allowed.", "OK");
 
+            //var request = new NotificationRequest()
+            //{
+            //    NotificationId = 100,
+            //    Title = "Notifications permission declined",
+            //    Description = "You must manually allow notifications for this app to work properly. Go to app settings, then permissions and under the 'not allowed' list, modify the 'Notifications' entry to become allowed."
+            //};
+            //await LocalNotificationCenter.Current.Show(request);
+        }
+            
         return allowed;
     }
 

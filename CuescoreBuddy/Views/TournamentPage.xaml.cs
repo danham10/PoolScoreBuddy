@@ -1,8 +1,8 @@
 namespace CuescoreBuddy.Views;
 
-public partial class AboutPage : ContentPage
+public partial class TournamentPage : ContentPage
 {
-	public AboutPage()
+	public TournamentPage()
 	{
 		try
 		{
