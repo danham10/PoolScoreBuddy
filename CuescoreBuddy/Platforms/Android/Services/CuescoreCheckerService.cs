@@ -62,7 +62,6 @@ public class CuescoreCheckerService : Service
             var monitoredPlayerNames = string.Join(",", dataStore.Tournaments.MonitoredPlayers());
             monitoredPlayerNames.Remove(monitoredPlayerNames.Length - 1);
             RegisterForegroundService(monitoredPlayerNames);
-
         }
 
         return StartCommandResult.Sticky;
