@@ -19,6 +19,30 @@ public class Tournaments : List<TournamentFacade>
         return tournament;
     }
 
+    public void AddIfMissing(TournamentFacade tournament)
+    {
+        var exists = (from t in this
+                      where t.Tournament.tournamentId == tournament.Tournament.tournamentId
+                      select t).Any();
+
+        if (!exists)
+        {
+            Add(tournament);
+        }
+    }
+
+    //public void AddIfMissing(int tournamentId)
+    //{
+    //    var exists = (from t in this
+    //                  where t.Tournament.tournamentId == tournamentId
+    //                  select t).Any();
+
+    //    if (!exists)
+    //    {
+    //        Add(new TournamentFacade(tournamentId));
+    //    }
+    //}
+
     public bool ShouldMonitor() => ActiveTournaments() && AnyMonitoredPlayers();
 
     public bool ActiveTournaments() {

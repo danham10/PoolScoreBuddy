@@ -128,6 +128,8 @@ public partial class PlayerViewModel : BaseViewModel, IQueryAttributable
         int playerIndex = Players.IndexOf(Players.First(p => p.playerId == player.playerId));
         Players[playerIndex] = player;
 
+        _dataStore.Tournaments.AddIfMissing(_tournament);
+
         _messenger.Send(new CuescoreBackgroundChecker(ServiceMessageType.Default));
     });
     #endregion
