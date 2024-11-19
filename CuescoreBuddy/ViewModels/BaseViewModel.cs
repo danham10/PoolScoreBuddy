@@ -2,15 +2,11 @@ using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace CuescoreBuddy.ViewModels;
 
-public class BaseViewModel : ObservableObject
+public partial class BaseViewModel : ObservableObject
 {
 
-    bool isBusy = false;
-    public bool IsBusy
-    {
-        get { return isBusy; }
-        set { SetProperty(ref isBusy, value); }
-    }
+    [ObservableProperty]
+    public bool isBusy;
 
     string title = string.Empty;
     public string Title
@@ -23,4 +19,5 @@ public class BaseViewModel : ObservableObject
     {
         //DataStore = ServiceHelper.GetService<IDataStore<Item>>();
     }
+
 }

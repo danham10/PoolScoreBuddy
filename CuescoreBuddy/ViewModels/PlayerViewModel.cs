@@ -1,6 +1,6 @@
 ﻿//using AsyncAwaitBestPractices;
-using AsyncAwaitBestPractices;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Plugin.LocalNotification;
 using System.Collections.ObjectModel;
@@ -8,37 +8,34 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace CuescoreBuddy.ViewModels;
-public partial class ParticipantViewModel : BaseViewModel, IQueryAttributable
+public partial class PlayerViewModel : BaseViewModel, IQueryAttributable
 {
     readonly DataStore _dataStore;
     readonly IMessenger _messenger;
+    readonly ICueScoreService _cueScoreService;
 
-    int _tournamentId;
     TournamentFacade? _tournament;
     bool _isRefreshing;
 
-    public ObservableCollection<Player> Participants { get; private set; } = [];
+
+    public ObservableCollection<Player> Players { get; private set; } = [];
 
     [ObservableProperty]
     private bool isRefreshing;
 
-    public ICommand RefreshCommand => new Command(async () => await RefreshItemsAsync());
+    public ICommand RefreshCommand => new Command(async () => await RefreshPlayersAsync());
     
 
-    public ParticipantViewModel()
+    public PlayerViewModel()
     {
         _dataStore = ServiceResolver.GetService<DataStore>();
         _messenger = ServiceResolver.GetService<IMessenger>();
+        _cueScoreService = ServiceResolver.GetService<ICueScoreService>();
     }
 
     public void ApplyQueryAttributes(IDictionary<string, object> query)
     {
-        _tournamentId = Convert.ToInt32(query["TournamentId"]);
-        _tournament = _dataStore.Tournaments.GetTournamentById(_tournamentId);
-
-        Participants.Clear();
-        RefreshItemsAsync().SafeFireAndForget();
-
+        _tournament = (query["Tournament"] as TournamentFacade);
         query.Clear();
     }
 
@@ -66,58 +63,70 @@ public partial class ParticipantViewModel : BaseViewModel, IQueryAttributable
         return allowed;
     }
 
-    async Task RefreshItemsAsync()
+    async Task RefreshPlayersAsync()
     {
+        IsBusy = true;
 
+        await _tournament.LoadPlayers(_cueScoreService);
 
-        IsRefreshing = true;
-       
-        var cueScoreService = ServiceResolver.GetService<ICueScoreService>();
-
-        await _tournament!.Fetch(cueScoreService, _tournamentId);
-        _dataStore.Tournaments.AddIfMissing(_tournament);
-
-        await _tournament.LoadPlayers(cueScoreService);
-
-        Participants.Clear();
+        Players.Clear();
 
         var players = _tournament.GetLoadedPlayers().ToList();
 
         foreach (var player in players)
         {
-            Participants.Add(player);
+            Players.Add(player);
         }
 
-        IsRefreshing = false;
+        IsBusy = false;
     }
 
     #region Commands
-    public Command<Player> ToggleScoreMonitor => new((participant) =>
+
+    [RelayCommand]
+    async Task Appearing()
     {
-        //if (participant == null)
-        //    return;
+        try
+        {
+            if (!Players.Any())
+                await RefreshPlayersAsync();
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine(ex.ToString());
+        }
+    }
 
-        //participant.MonitoredPlayer = _tournament!.TogglePlayerEnabled(participant.playerId);
+    [RelayCommand]
+    void Disappearing()
+    {
+        try
+        {
+            // DoSomething
 
-        //// Remove and add to force UI update
-        //int playerIndex = Participants.IndexOf(Participants.First(p => p.playerId == participant.playerId));
-        //Participants[playerIndex] = participant;
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine(ex.ToString());
+        }
+    }
 
-        //_messenger.Send(new CuescoreBackgroundChecker()); //TODO create tournament / player state object
+    public Command<Player> ToggleScoreMonitor => new(async (player) =>
+    {
     });
 
-    public Command<Player> ToggleStartMonitor => new(async (participant) =>
+    public Command<Player> ToggleStartMonitor => new(async (player) =>
     {
         var notificationsAllowed = await AllowNotificationsAsync();
 
-        if (participant == null || !notificationsAllowed)
+        if (player == null || !notificationsAllowed)
             return;
 
-        participant.MonitoredPlayer = _tournament!.TogglePlayerEnabled(participant.playerId);
+        player.MonitoredPlayer = _tournament!.TogglePlayerEnabled(player.playerId);
 
         // Remove and add to force UI update
-        int playerIndex = Participants.IndexOf(Participants.First(p => p.playerId == participant.playerId));
-        Participants[playerIndex] = participant;
+        int playerIndex = Players.IndexOf(Players.First(p => p.playerId == player.playerId));
+        Players[playerIndex] = player;
 
         _messenger.Send(new CuescoreBackgroundChecker(ServiceMessageType.Default));
     });

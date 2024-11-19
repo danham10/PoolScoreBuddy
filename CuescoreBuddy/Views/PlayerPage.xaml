@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
-    x:Class="CuescoreBuddy.Views.ParticipantPage"
+    x:Class="CuescoreBuddy.Views.PlayerPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:icons="clr-namespace:CuescoreBuddy.Services"
@@ -8,17 +8,22 @@
     xmlns:views="clr-namespace:CuescoreBuddy.Views"
     xmlns:vm="clr-namespace:CuescoreBuddy.ViewModels"
     xmlns:converters="clr-namespace:CuescoreBuddy.Converters"
+    xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     Title="Select players">
     <ContentPage.BindingContext>
-        <vm:ParticipantViewModel />
+        <vm:PlayerViewModel />
     </ContentPage.BindingContext>
+    <ContentPage.Behaviors>
+        <mct:EventToCommandBehavior Command="{Binding AppearingCommand}" EventName="Appearing" />
+        <mct:EventToCommandBehavior Command="{Binding DisappearingCommand}" EventName="Disappearing" />
+    </ContentPage.Behaviors>
     <Grid
         RowDefinitions="0,*">
         <RefreshView
             Grid.Row="1"
             Command="{Binding RefreshCommand}"
-            IsRefreshing="{Binding IsRefreshing}">
-            <CollectionView x:Name="collectionView" ItemsSource="{Binding Participants}">
+            IsRefreshing="{Binding IsBusy}">
+            <CollectionView x:Name="collectionView" ItemsSource="{Binding Players}">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <Grid
@@ -41,7 +46,7 @@
                                 Margin="10,10,10,10"
                                 LineBreakMode="WordWrap"
                                 Text="{Binding IsMonitored}"
-                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ParticipantViewModel}}, Path=ToggleScoreMonitor}" 
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:PlayerViewModel}}, Path=ToggleScoreMonitor}" 
                                 CommandParameter="{Binding .}">
                                 <Button.Triggers>
                                     <DataTrigger TargetType="Button" Binding="{Binding IsMonitored}" Value="false">
@@ -58,7 +63,7 @@
                                 Margin="10,10,10,10"
                                 LineBreakMode="WordWrap"
                                 Text="{Binding IsMonitored}"
-                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ParticipantViewModel}}, Path=ToggleStartMonitor}" 
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:PlayerViewModel}}, Path=ToggleStartMonitor}" 
                                 CommandParameter="{Binding .}">
                                 <Button.Triggers>
                                     <DataTrigger TargetType="Button" Binding="{Binding IsMonitored}" Value="false">
@@ -80,7 +85,7 @@
                             HorizontalTextAlignment="Center"
                             Text="No players available"
                             TextColor="Black" 
-                            IsVisible="{Binding IsRefreshing, Converter={converters:InverseBoolConverter}}"/>
+                            IsVisible="{Binding IsBusy, Converter={converters:InverseBoolConverter}}"/>
                     </VerticalStackLayout>
                 </CollectionView.EmptyView>
             </CollectionView>

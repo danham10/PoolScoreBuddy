@@ -38,16 +38,19 @@
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
 	</PropertyGroup>
 
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-android|AnyCPU'">
+	  <AndroidPackageFormat>apk</AndroidPackageFormat>
+	</PropertyGroup>
+
 	<ItemGroup>
 		<!-- App Icon -->
-    <MauiIcon Include="Resources\AppIcon\appicon.svg" Resize="false" />
+    <MauiIcon Include="Resources\AppIcon\appicon.svg" Color="#DCDFE0" Resize="false" />
 
 		<!-- Splash Screen -->
-    <MauiSplashScreen Include="Resources\Splash\cuescorebuddy1.svg" Color="#DCDFE0" BaseSize="128,128" />
+    <MauiSplashScreen Include="Resources\Splash\cuescorebuddy2.svg" Color="#DCDFE0" BaseSize="128,128" />
     
 		<!-- Images -->
 		<MauiImage Include="Resources\Images\*" />
-		<MauiImage Update="Resources\Images\dotnet_bot.png" Resize="True" BaseSize="300,185" />
 
 		<!-- Custom Fonts -->
 		<MauiFont Include="Resources\Fonts\*" />
@@ -56,8 +59,12 @@
 		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
 	</ItemGroup>
 
+	<ItemGroup>
+    <MauiImage Include="Resources\drawable\*" />
+	</ItemGroup>
+
   <ItemGroup>
-    <PackageReference Include="AsyncAwaitBestPractices" Version="8.0.0" />
+    <PackageReference Include="CommunityToolkit.Maui" Version="9.1.1" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.3.2" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.1" />
     <PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
@@ -81,14 +88,17 @@
   </ItemGroup>
 
 	<ItemGroup>
-	  <Compile Update="Views\TournamentPage.xaml.cs">
-	    <DependentUpon>TournamentPage.xaml</DependentUpon>
+	  <Compile Update="Views\TournamentSelectedPage.xaml.cs">
+	    <DependentUpon>TournamentSelectedPage.xaml</DependentUpon>
 	  </Compile>
 	  <Compile Update="Views\TournamentPage.xaml.cs">
 	    <DependentUpon>TournamentPage.xaml</DependentUpon>
 	  </Compile>
-	  <Compile Update="Views\ParticipantPage.xaml.cs">
-	    <DependentUpon>ParticipantPage.xaml</DependentUpon>
+	  <Compile Update="Views\TournamentPage.xaml.cs">
+	    <DependentUpon>TournamentPage.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Views\PlayerPage.xaml.cs">
+	    <DependentUpon>PlayerPage.xaml</DependentUpon>
 	  </Compile>
 	</ItemGroup>
 
@@ -96,12 +106,19 @@
 	  <MauiXaml Update="AppShell.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Views\ParticipantPage.xaml">
+	  <MauiXaml Update="Views\PlayerPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\TournamentSelectedPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\TournamentPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Resources\Images\" />
 	</ItemGroup>
 
 </Project>

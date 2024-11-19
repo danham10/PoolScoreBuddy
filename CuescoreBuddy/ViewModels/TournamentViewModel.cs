@@ -1,10 +1,11 @@
-﻿using CuescoreBuddy.Models;
+﻿using CommunityToolkit.Mvvm.Input;
+using CuescoreBuddy.Models;
 using CuescoreBuddy.Services;
 using CuescoreBuddy.Views;
 using System.Runtime.CompilerServices;
 
 namespace CuescoreBuddy.ViewModels;
-public class TournamentViewModel : BaseViewModel
+public partial class TournamentViewModel : BaseViewModel
 {
     public string Platform { get; } = DeviceInfo.Platform.ToString();
     public string Version { get; } = DeviceInfo.Version.ToString();
@@ -16,7 +17,7 @@ public class TournamentViewModel : BaseViewModel
     public TournamentViewModel()
     {
         Title = "About";
-        Description = "51818677";  //50522059
+        Description = "51123145";  //50522059
 
         //TODO On activating app paste in clipboard (if tournament) to textbox
 
@@ -59,36 +60,25 @@ public class TournamentViewModel : BaseViewModel
 
         if (tournament != null)
         {
-
-            //List<Participant>? participants = await cueScoreService.GetParticipants(Convert.ToInt32(Description));
-
-            var dataStore = ServiceResolver.GetService<DataStore>();
-            //dataStore.Participants = participants;
-            dataStore.CurrentTournamentId = tournament.tournamentId;
+            TournamentFacade tournamentFacade = new(tournament);
 
             IsBusy = false;
 
-
-
-            //await Shell.Current.GoToAsync(nameof(ParticipantPage));
-            await GoToParticipantPage(tournament.tournamentId);
+            await GoToTournamentSelectedPage(tournamentFacade);
         }
 
         IsBusy = false;
         // TODO display error message
-
-
-
     }
 
-    private async Task GoToParticipantPage(int tournamentId)
+    private async Task GoToTournamentSelectedPage(TournamentFacade tournament)
     {
         var navigationParameters = new Dictionary<string, object>
         {
-            { "TournamentId", tournamentId },
+            { "Tournament", tournament },
         };
 
-        await Shell.Current.GoToAsync(nameof(ParticipantPage), false, navigationParameters);
+        await Shell.Current.GoToAsync(nameof(TournamentSelectedPage), false, navigationParameters);
     }
     #endregion
 }

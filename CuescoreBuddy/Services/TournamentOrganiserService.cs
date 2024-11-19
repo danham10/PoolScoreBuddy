@@ -3,9 +3,9 @@
 
     public class TournamentOrganiserService(DataStore dataStore, ICueScoreService cueScoreService)
     {
-        public async Task<List<ParticipantNotification>> ProcessNotifications()
+        public async Task<List<PlayerNotification>> ProcessNotifications()
         {
-            List<ParticipantNotification> matchesToNotify = new();
+            List<PlayerNotification> matchesToNotify = new();
 
 
             try
@@ -20,7 +20,7 @@
                 // remove tournaments that have finished
                 dataStore.Tournaments.RemoveAll(t => t.IsFinished());
 
-                List<ParticipantNotification> notifications = new();
+                List<PlayerNotification> notifications = new();
 
                 // for each tournament
                 foreach (var t in dataStore.Tournaments)
@@ -48,7 +48,7 @@
 
                         foreach (var match in unnotifiedMatches)
                         {
-                            matchesToNotify.Add(new ParticipantNotification(
+                            matchesToNotify.Add(new PlayerNotification(
                                 match.matchId,
                                 match.playerA.name, 
                                 match.playerB.name, 

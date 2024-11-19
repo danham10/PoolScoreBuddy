@@ -9,7 +9,6 @@
     Title="CuescoreBuddy">
     <ShellContent
         Title="Home"
-        ContentTemplate="{DataTemplate views:TournamentPage}"
-        Route="TournamentPage" />
+        ContentTemplate="{DataTemplate views:TournamentPage}" />
 
 </Shell>

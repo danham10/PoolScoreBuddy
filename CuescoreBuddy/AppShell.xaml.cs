@@ -8,7 +8,8 @@
         {
             InitializeComponent();
             Routes.Add(nameof(TournamentPage), typeof(TournamentPage));
-            Routes.Add(nameof(ParticipantPage), typeof(ParticipantPage));
+            Routes.Add(nameof(TournamentSelectedPage), typeof(TournamentSelectedPage));
+            Routes.Add(nameof(PlayerPage), typeof(PlayerPage));
 
             foreach (var route in Routes)
             {
