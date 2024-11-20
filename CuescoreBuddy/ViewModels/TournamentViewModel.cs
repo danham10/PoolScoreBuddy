@@ -1,62 +1,101 @@
-﻿using CommunityToolkit.Mvvm.Input;
-using CuescoreBuddy.Models;
-using CuescoreBuddy.Services;
-using CuescoreBuddy.Views;
-using System.Runtime.CompilerServices;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using System.Windows.Input;
 
 namespace CuescoreBuddy.ViewModels;
 public partial class TournamentViewModel : BaseViewModel
 {
-    public string Platform { get; } = DeviceInfo.Platform.ToString();
-    public string Version { get; } = DeviceInfo.Version.ToString();
-    public string DeviceName { get; } = DeviceInfo.Name;
-    public string DeviceType { get; } = DeviceInfo.DeviceType.ToString();
+    [ObservableProperty]
+    private string? tournamentId;
 
-    public Command SaveCommand { get; private set; }
+    [ObservableProperty]
+    private string? errorMessage;
+
+    public ICommand SaveCommand { get; private set; }
+    public ICommand PasteCommand { get; private set; }
 
     public TournamentViewModel()
     {
         Title = "About";
-        Description = "51123145";  //50522059
-
-        //TODO On activating app paste in clipboard (if tournament) to textbox
-
-        SaveCommand = new Command(async () => await ExecuteSave(), CanExecuteSave);
-        PropertyChanged += (_, __) => SaveCommand.ChangeCanExecute();
+        TournamentId = "";  //50522059
+        SaveCommand = new AsyncRelayCommand(ExecuteTournamentLoadAsync, CanExecuteTournamentLoad);
+        PasteCommand = new AsyncRelayCommand(ExecutePasteAsync);
     }
 
-    #region Fields
-    private string? description;
-    public string? Description
+
+    //[RelayCommand]
+    //async Task Appearing()
+    //{
+
+    //    if (Clipboard.Default.HasText)
+    //    {
+    //        var clipboard = await Clipboard.Default.GetTextAsync();
+    //        bool clipboardEndsInNumber = char.IsDigit(clipboard.Last());
+    //        TournamentId = await Clipboard.Default.GetTextAsync();
+    //    }
+    //}
+
+    //private bool CanExecutePaste()
+    //{
+    //    try
+    //    {
+    //        if (Clipboard.Default.HasText)
+    //        {
+    //            var clipboard = Clipboard.Default.GetTextAsync().Result;
+    //            bool clipboardEndsInNumber = char.IsDigit(clipboard.Last());
+    //            return clipboard.ToLower().Contains("cuescore") && clipboardEndsInNumber;
+    //        }
+    //    }
+    //    catch (Exception)
+    //    {
+    //    }
+    //    return false;
+    //}
+
+    private async Task ExecutePasteAsync()
     {
-        get => description;
-        set => SetProperty(ref description, value);
-    }
-    #endregion
+        if (Clipboard.Default.HasText)
+        {
+            var clipboard = Clipboard.Default.GetTextAsync().Result;
+            bool clipboardEndsInNumber = char.IsDigit(clipboard.Last());
+            if (clipboard.ToLower().Contains("cuescore") && clipboardEndsInNumber)
+            {
+                TournamentId = GetNumberAtEndOfString(clipboard);
+                await ExecuteTournamentLoadAsync();
+            }
+            else
+                await Application.Current.MainPage.DisplayAlert("Alert", "No CueScore tournament found in clipboard.", "OK");
 
-    #region Commands
-    private bool CanExecuteSave()
+        }
+    }
+
+
+    private bool CanExecuteTournamentLoad()
     {
         try
         {
-            Convert.ToInt32(Description);
+            if (string.IsNullOrWhiteSpace(TournamentId)) return false;
+
+            TournamentId = GetNumberAtEndOfString(TournamentId);
+
+            return true;
         }
         catch (Exception)
         {
             return false;
         }
-
-        return Description?.Length > 0;
     }
 
-    private async Task ExecuteSave()
+    private async Task ExecuteTournamentLoadAsync()
     {
         string error = "";
 
         IsBusy = true;
 
+        int tournamentId = Convert.ToInt32(GetNumberAtEndOfString(TournamentId));
+
         var cueScoreService = ServiceResolver.GetService<ICueScoreService>();
-        Tournament? tournament = await cueScoreService.GetTournament(Convert.ToInt32(Description));
+        Tournament? tournament = await cueScoreService.GetTournament(tournamentId);
 
         if (tournament != null)
         {
@@ -65,10 +104,10 @@ public partial class TournamentViewModel : BaseViewModel
             IsBusy = false;
 
             await GoToTournamentSelectedPage(tournamentFacade);
+        } else
+        {
+            ErrorMessage = "Cannot load tournament";
         }
-
-        IsBusy = false;
-        // TODO display error message
     }
 
     private async Task GoToTournamentSelectedPage(TournamentFacade tournament)
@@ -80,5 +119,6 @@ public partial class TournamentViewModel : BaseViewModel
 
         await Shell.Current.GoToAsync(nameof(TournamentSelectedPage), false, navigationParameters);
     }
-    #endregion
+
+    private string GetNumberAtEndOfString(string value) => string.Concat(value.ToArray().Reverse().TakeWhile(char.IsNumber).Reverse());
 }

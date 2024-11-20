@@ -17,14 +17,12 @@ public partial class PlayerViewModel : BaseViewModel, IQueryAttributable
     TournamentFacade? _tournament;
     bool _isRefreshing;
 
-
     public ObservableCollection<Player> Players { get; private set; } = [];
 
     [ObservableProperty]
     private bool isRefreshing;
 
-    public ICommand RefreshCommand => new Command(async () => await RefreshPlayersAsync());
-    
+    public ICommand RefreshCommand => new AsyncRelayCommand(RefreshPlayersAsync);
 
     public PlayerViewModel()
     {
@@ -37,7 +35,7 @@ public partial class PlayerViewModel : BaseViewModel, IQueryAttributable
     public void ApplyQueryAttributes(IDictionary<string, object> query)
     {
         _tournament = (query["Tournament"] as TournamentFacade);
-        query.Clear();
+        //query.Clear();
     }
 
     async static Task<bool> AllowNotificationsAsync()
@@ -49,16 +47,7 @@ public partial class PlayerViewModel : BaseViewModel, IQueryAttributable
 
         if (!allowed)
         {
-            //TODO https://stackoverflow.com/questions/72429055/how-to-displayalert-in-a-net-maui-viewmodel
             await Application.Current.MainPage.DisplayAlert("Alert", "You must manually allow notifications for this app to work properly. Go to app settings, then permissions and under the 'not allowed' list, modify the 'Notifications' entry to become allowed.", "OK");
-
-            //var request = new NotificationRequest()
-            //{
-            //    NotificationId = 100,
-            //    Title = "Notifications permission declined",
-            //    Description = "You must manually allow notifications for this app to work properly. Go to app settings, then permissions and under the 'not allowed' list, modify the 'Notifications' entry to become allowed."
-            //};
-            //await LocalNotificationCenter.Current.Show(request);
         }
             
         return allowed;
@@ -66,14 +55,13 @@ public partial class PlayerViewModel : BaseViewModel, IQueryAttributable
 
     async Task RefreshPlayersAsync()
     {
-
         IsBusy = true;
 
-        await _tournament.LoadPlayers(_cueScoreService);
+        //await _tournament.LoadPlayers(_cueScoreService);
 
         Players.Clear();
 
-        var players = _tournament.GetLoadedPlayers().ToList();
+        var players = await _tournament.GetLoadedPlayers(_cueScoreService);
 
         foreach (var player in players)
         {
@@ -83,37 +71,12 @@ public partial class PlayerViewModel : BaseViewModel, IQueryAttributable
         IsBusy = false;
     }
 
-    #region Commands
-
     [RelayCommand]
     async Task Appearing()
     {
-        //Shell.Current.SendBackButtonPressed();
-
-        try
-        {
-            if (!Players.Any())
-                await RefreshPlayersAsync();
-        }
-        catch (Exception ex)
-        {
-            System.Diagnostics.Debug.WriteLine(ex.ToString());
-        }
+        if (!Players.Any())
+            await RefreshPlayersAsync();
     }
-
-    //[RelayCommand]
-    //void Disappearing()
-    //{
-    //    try
-    //    {
-    //        // DoSomething
-
-    //    }
-    //    catch (Exception ex)
-    //    {
-    //        System.Diagnostics.Debug.WriteLine(ex.ToString());
-    //    }
-    //}
 
     public Command<Player> ToggleScoreMonitor => new(async (player) =>
     {
@@ -128,7 +91,6 @@ public partial class PlayerViewModel : BaseViewModel, IQueryAttributable
 
         player.MonitoredPlayer = _tournament!.TogglePlayerEnabled(player.playerId);
 
-        // Remove and add to force UI update
         int playerIndex = Players.IndexOf(Players.First(p => p.playerId == player.playerId));
         Players[playerIndex] = player;
 
@@ -136,5 +98,4 @@ public partial class PlayerViewModel : BaseViewModel, IQueryAttributable
 
         _messenger.Send(new CuescoreBackgroundChecker(ServiceMessageType.Default));
     });
-    #endregion
 }

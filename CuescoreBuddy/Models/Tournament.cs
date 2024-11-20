@@ -1,4 +1,6 @@
-﻿using System.ComponentModel;
+﻿using CuescoreBuddy.Services;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text.Json;
 
 namespace CuescoreBuddy.Models;
@@ -68,38 +70,43 @@ public class TournamentFacade
             return null;
         }
     }
-    public async Task LoadPlayers(ICueScoreService cueScoreService)
+    //public async Task LoadPlayers(ICueScoreService cueScoreService)
+    //{
+    //    if (_players == null)
+    //    {
+    //        IsBusy = true;
+    //        _players = await cueScoreService.GetPlayers(Tournament.tournamentId);
+    //        IsBusy = false;
+    //    }
+
+    //    //TODO currently refresh will blat the notified matches. Prob best to store those in separate class
+    //}
+
+    public async Task<IEnumerable<Player>> GetLoadedPlayers()
     {
-        if (_players == null)
-        {
-            IsBusy = true;
-            _players = await cueScoreService.GetPlayers(Tournament.tournamentId);
-            IsBusy = false;
-        }
-
-        //TODO currently refresh will blat the notified matches. Prob best to store those in separate class
-    }
-
-    public IEnumerable<Player> GetLoadedPlayers()
-    {
-        if (_players == null)
-            throw new InvalidOperationException("Must call LoadPlayers first");
-
         var players = from p in _players
-               join mp in MonitoredPlayers on p.playerId equals mp.PlayerId
-               into MonitoredPlayersGroup
-               from mp in MonitoredPlayersGroup.DefaultIfEmpty()
-               select new Player()
-               {
-                   playerId = p.playerId,
-                   firstname = p.firstname,
-                   lastname = p.lastname,
-                   name = p.name,
-                   image = p.image,
-                   MonitoredPlayer = mp,
-               };
+                      join mp in MonitoredPlayers on p.playerId equals mp.PlayerId
+                      into MonitoredPlayersGroup
+                      from mp in MonitoredPlayersGroup.DefaultIfEmpty()
+                      select new Player()
+                      {
+                          playerId = p.playerId,
+                          firstname = p.firstname,
+                          lastname = p.lastname,
+                          name = p.name,
+                          image = p.image,
+                          MonitoredPlayer = mp,
+                      };
 
         return players.OrderBy(p => p.name);
+    }
+
+    public async Task<IEnumerable<Player>> GetLoadedPlayers(ICueScoreService cueScoreService)
+    {
+        if (_players == null)
+            _players = await cueScoreService.GetPlayers(Tournament.tournamentId);
+
+        return await GetLoadedPlayers();
     }
 
     public Player? GetPlayerById(string id)

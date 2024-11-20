@@ -4,22 +4,45 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:vm="clr-namespace:CuescoreBuddy.ViewModels"
+    xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     Title="TournamentPage"
     Shell.NavBarIsVisible="False">
-
     <ContentPage.BindingContext>
         <vm:TournamentViewModel />
     </ContentPage.BindingContext>
-
+    <ContentPage.Behaviors>
+        <mct:EventToCommandBehavior Command="{Binding AppearingCommand}" EventName="Appearing" />
+    </ContentPage.Behaviors>
     <VerticalStackLayout Margin="10,0,10,0">
+
+        <Label
+            Margin="0"
+            FontSize="Medium"
+            HorizontalOptions="FillAndExpand"
+            Text="Enter tournament Id below and tap Find:" />
         <Editor
             Margin="0"
             AutoSize="TextChanges"
             FontSize="Medium"
-            Text="{Binding Description, Mode=TwoWay}" />
+            Text="{Binding TournamentId, Mode=TwoWay}" />
+
         <Button
             Command="{Binding SaveCommand}"
             HorizontalOptions="FillAndExpand"
             Text="Save" />
+        <Label
+            Margin="0"
+            FontSize="Medium"
+            HorizontalOptions="FillAndExpand"
+            Text="Or copy the link from elsewhere and tap Paste:" />
+        <Button
+            Command="{Binding PasteCommand}"
+            HorizontalOptions="FillAndExpand"
+            Text="Paste" />
+        <Label
+            Margin="0"
+            FontSize="Medium"
+            HorizontalOptions="FillAndExpand"
+            Text="{Binding ErrorMessage}" />
     </VerticalStackLayout>
 </ContentPage>

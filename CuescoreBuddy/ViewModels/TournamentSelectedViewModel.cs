@@ -15,11 +15,13 @@ public partial class TournamentSelectedViewModel : BaseViewModel, IQueryAttribut
     readonly DataStore _dataStore;
     readonly IMessenger _messenger;
 
-    int _tournamentId;
     TournamentFacade? _tournament;
 
     [ObservableProperty]
     public string tournamentName;
+
+    [ObservableProperty]
+    public string errorMessage;
 
     //public IAsyncRelayCommand MonitorCommand { get; private set; }
     public ICommand MonitorCommand { get; private set; }
@@ -28,18 +30,9 @@ public partial class TournamentSelectedViewModel : BaseViewModel, IQueryAttribut
     public TournamentSelectedViewModel()
     {
         Title = "About";
-        Description = "51123145";  //50522059
 
-        MonitorCommand = new AsyncRelayCommand(ExecuteMonitorAsync);
-        //TournamentCommand = new AsyncRelayCommand(ExecuteView);
-
-        //TODO On activating app paste in clipboard (if tournament) to textbox
-        //MonitorCommand = new AsyncRelayCommand(ExecuteMonitor);
-        //MonitorCommand = new Command(ExecuteMonitor, CanExecuteMonitor);
-        //PropertyChanged += (_, __) => MonitorCommand.ChangeCanExecute();
-
-
-        //ViewCommand = new Command(ExecuteView);
+        MonitorCommand = new AsyncRelayCommand(ExecuteMonitorAsync, CanExecuteMonitor);
+        TournamentCommand = new AsyncRelayCommand(ExecuteViewAsync);
     }
 
     public void ApplyQueryAttributes(IDictionary<string, object> query)
@@ -47,23 +40,14 @@ public partial class TournamentSelectedViewModel : BaseViewModel, IQueryAttribut
         _tournament = (query["Tournament"] as TournamentFacade);
         TournamentName = _tournament.Tournament.name;
 
-        //query.Clear();
+        ErrorMessage = _tournament.IsFinished() ? "Tournament has finished" : "";
     }
-
-    #region Fields
-    private string? description;
-    public string? Description
-    {
-        get => description;
-        set => SetProperty(ref description, value);
-    }
-    #endregion
 
     #region Commands
 
     private bool CanExecuteMonitor()
     {
-        return !_tournament.IsFinished();
+        return string.IsNullOrEmpty(ErrorMessage);
     }
 
     private async Task ExecuteMonitorAsync()
@@ -76,7 +60,7 @@ public partial class TournamentSelectedViewModel : BaseViewModel, IQueryAttribut
         await Shell.Current.GoToAsync(nameof(PlayerPage), false, navigationParameters);
     }
 
-    private async Task ExecuteView()
+    private async Task ExecuteViewAsync()
     {
         await Browser.Default.OpenAsync(_tournament.Tournament.url, BrowserLaunchMode.SystemPreferred);
     }
