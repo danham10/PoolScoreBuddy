@@ -15,7 +15,7 @@
     </ContentPage.BindingContext>
     <ContentPage.Behaviors>
         <mct:EventToCommandBehavior Command="{Binding AppearingCommand}" EventName="Appearing" />
-        <mct:EventToCommandBehavior Command="{Binding DisappearingCommand}" EventName="Disappearing" />
+        <!--<mct:EventToCommandBehavior Command="{Binding DisappearingCommand}" EventName="Disappearing" />-->
     </ContentPage.Behaviors>
     <Grid
         RowDefinitions="0,*">

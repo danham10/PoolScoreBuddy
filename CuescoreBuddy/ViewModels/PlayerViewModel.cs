@@ -97,19 +97,19 @@ public partial class PlayerViewModel : BaseViewModel, IQueryAttributable
         }
     }
 
-    [RelayCommand]
-    void Disappearing()
-    {
-        try
-        {
-            // DoSomething
+    //[RelayCommand]
+    //void Disappearing()
+    //{
+    //    try
+    //    {
+    //        // DoSomething
 
-        }
-        catch (Exception ex)
-        {
-            System.Diagnostics.Debug.WriteLine(ex.ToString());
-        }
-    }
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        System.Diagnostics.Debug.WriteLine(ex.ToString());
+    //    }
+    //}
 
     public Command<Player> ToggleScoreMonitor => new(async (player) =>
     {

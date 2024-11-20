@@ -1,9 +1,13 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using CuescoreBuddy.Models;
 using CuescoreBuddy.Services;
 using CuescoreBuddy.Views;
+using Microsoft.Maui.ApplicationModel;
+using System;
 using System.Runtime.CompilerServices;
+using System.Windows.Input;
 
 namespace CuescoreBuddy.ViewModels;
 public partial class TournamentSelectedViewModel : BaseViewModel, IQueryAttributable
@@ -17,17 +21,25 @@ public partial class TournamentSelectedViewModel : BaseViewModel, IQueryAttribut
     [ObservableProperty]
     public string tournamentName;
 
-    public Command SaveCommand { get; private set; }
+    //public IAsyncRelayCommand MonitorCommand { get; private set; }
+    public ICommand MonitorCommand { get; private set; }
+    public ICommand TournamentCommand { get; private set; }
 
     public TournamentSelectedViewModel()
     {
         Title = "About";
         Description = "51123145";  //50522059
 
-        //TODO On activating app paste in clipboard (if tournament) to textbox
+        MonitorCommand = new AsyncRelayCommand(ExecuteMonitorAsync);
+        //TournamentCommand = new AsyncRelayCommand(ExecuteView);
 
-        SaveCommand = new Command(async () => await ExecuteSave(), CanExecuteSave);
-        PropertyChanged += (_, __) => SaveCommand.ChangeCanExecute();
+        //TODO On activating app paste in clipboard (if tournament) to textbox
+        //MonitorCommand = new AsyncRelayCommand(ExecuteMonitor);
+        //MonitorCommand = new Command(ExecuteMonitor, CanExecuteMonitor);
+        //PropertyChanged += (_, __) => MonitorCommand.ChangeCanExecute();
+
+
+        //ViewCommand = new Command(ExecuteView);
     }
 
     public void ApplyQueryAttributes(IDictionary<string, object> query)
@@ -48,23 +60,26 @@ public partial class TournamentSelectedViewModel : BaseViewModel, IQueryAttribut
     #endregion
 
     #region Commands
-    private bool CanExecuteSave()
+
+    private bool CanExecuteMonitor()
     {
         return !_tournament.IsFinished();
     }
-    private async Task ExecuteSave()
-    {
-        await GoToPlayerPage(_tournament);
-    }
 
-    private async Task GoToPlayerPage(TournamentFacade tournament)
+    private async Task ExecuteMonitorAsync()
     {
         var navigationParameters = new Dictionary<string, object>
         {
-            { "Tournament", tournament },
+            { "Tournament", _tournament },
         };
 
         await Shell.Current.GoToAsync(nameof(PlayerPage), false, navigationParameters);
     }
+
+    private async Task ExecuteView()
+    {
+        await Browser.Default.OpenAsync(_tournament.Tournament.url, BrowserLaunchMode.SystemPreferred);
+    }
+
     #endregion
 }
