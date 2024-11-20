@@ -31,6 +31,7 @@ public partial class PlayerViewModel : BaseViewModel, IQueryAttributable
         _dataStore = ServiceResolver.GetService<DataStore>();
         _messenger = ServiceResolver.GetService<IMessenger>();
         _cueScoreService = ServiceResolver.GetService<ICueScoreService>();
+
     }
 
     public void ApplyQueryAttributes(IDictionary<string, object> query)
@@ -65,6 +66,7 @@ public partial class PlayerViewModel : BaseViewModel, IQueryAttributable
 
     async Task RefreshPlayersAsync()
     {
+
         IsBusy = true;
 
         await _tournament.LoadPlayers(_cueScoreService);
@@ -86,6 +88,8 @@ public partial class PlayerViewModel : BaseViewModel, IQueryAttributable
     [RelayCommand]
     async Task Appearing()
     {
+        //Shell.Current.SendBackButtonPressed();
+
         try
         {
             if (!Players.Any())

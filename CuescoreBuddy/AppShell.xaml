@@ -10,5 +10,7 @@
     <ShellContent
         Title="Home"
         ContentTemplate="{DataTemplate views:TournamentPage}" />
-
+    <!--<Shell.BackButtonBehavior>
+        <BackButtonBehavior Command="{Binding BackButtonPressedCommand}"/>
+    </Shell.BackButtonBehavior>-->
 </Shell>

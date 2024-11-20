@@ -47,7 +47,7 @@ public partial class TournamentSelectedViewModel : BaseViewModel, IQueryAttribut
         _tournament = (query["Tournament"] as TournamentFacade);
         TournamentName = _tournament.Tournament.name;
 
-        query.Clear();
+        //query.Clear();
     }
 
     #region Fields
