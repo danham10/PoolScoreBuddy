@@ -63,6 +63,10 @@
     <MauiImage Include="Resources\drawable\*" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <None Remove="Resources\Images\tournament_link.png" />
+	</ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Maui" Version="9.1.1" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.3.2" />
@@ -115,10 +119,6 @@
 	  <MauiXaml Update="Views\TournamentPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="Resources\Images\" />
 	</ItemGroup>
 
 </Project>

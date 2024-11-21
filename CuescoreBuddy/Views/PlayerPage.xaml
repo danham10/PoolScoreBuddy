@@ -39,8 +39,8 @@
                                 FontSize="18"
                                 Text="{Binding name}"
                                 TextColor="Black" />
-
-                            <Button 
+                            <Switch IsToggled = "{Binding IsMonitored}"/>
+                            <!--<Button 
                                 Grid.Column="3"
                                 BackgroundColor="Bisque"
                                 Margin="10,10,10,10"
@@ -73,7 +73,7 @@
                                         <Setter Property="Text"  Value="Starts on" />
                                     </DataTrigger>
                                 </Button.Triggers>
-                            </Button>
+                            </Button>-->
                         </Grid>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>

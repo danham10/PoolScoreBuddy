@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
+    HideSoftInputOnTapped="True"
     x:Class="CuescoreBuddy.Views.TournamentPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
@@ -14,35 +15,23 @@
         <mct:EventToCommandBehavior Command="{Binding AppearingCommand}" EventName="Appearing" />
     </ContentPage.Behaviors>
     <VerticalStackLayout Margin="10,0,10,0">
-
         <Label
             Margin="0"
             FontSize="Medium"
             HorizontalOptions="FillAndExpand"
-            Text="Enter tournament Id below and tap Find:" />
-        <Editor
+            Text="Enter a tournament number like this one" />
+        <Image Source="tournament_link.png" />
+        <Entry
             Margin="0"
-            AutoSize="TextChanges"
             FontSize="Medium"
-            Text="{Binding TournamentId, Mode=TwoWay}" />
-
+            Placeholder="Enter tournament number here"
+            MaxLength="16"
+            Keyboard="Numeric"
+            Text="{Binding TournamentId}" />
         <Button
-            Command="{Binding SaveCommand}"
+            Command="{Binding TournamentLoadCommand}"
             HorizontalOptions="FillAndExpand"
-            Text="Save" />
-        <Label
-            Margin="0"
-            FontSize="Medium"
-            HorizontalOptions="FillAndExpand"
-            Text="Or copy the link from elsewhere and tap Paste:" />
-        <Button
-            Command="{Binding PasteCommand}"
-            HorizontalOptions="FillAndExpand"
-            Text="Paste" />
-        <Label
-            Margin="0"
-            FontSize="Medium"
-            HorizontalOptions="FillAndExpand"
-            Text="{Binding ErrorMessage}" />
+            Text="Load tournament" />
+        <ActivityIndicator IsVisible="{Binding IsBusy}" IsRunning="{Binding IsBusy}" />
     </VerticalStackLayout>
 </ContentPage>
