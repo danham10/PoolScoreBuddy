@@ -9,6 +9,8 @@ namespace CuescoreBuddy
     {
         public static MauiApp CreateMauiApp()
         {
+            SetHandler();
+
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
@@ -17,6 +19,9 @@ namespace CuescoreBuddy
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
+                    fonts.AddFont("Roboto-Regular.ttf", "RobotoRegular");
+                    fonts.AddFont("Roboto-Bold.ttf", "Roboto-Bold");
+                    
                 });
 
 #if DEBUG
@@ -39,6 +44,21 @@ namespace CuescoreBuddy
             builder.Services.AddSingleton<IMessenger, WeakReferenceMessenger>();
 
             return builder.Build();
+        }
+
+        private static void SetHandler()
+        {
+
+            Microsoft.Maui.Handlers.EntryHandler.Mapper.AppendToMapping("MyCustomization", (handler, view) =>
+            {
+                if (view is Entry)
+                {
+                    #if ANDROID
+                    handler.PlatformView.Background = null;
+                    #endif
+                }
+            });
+
         }
     }
 }

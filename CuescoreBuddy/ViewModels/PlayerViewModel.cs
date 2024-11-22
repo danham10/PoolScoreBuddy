@@ -78,10 +78,6 @@ public partial class PlayerViewModel : BaseViewModel, IQueryAttributable
             await RefreshPlayersAsync();
     }
 
-    public Command<Player> ToggleScoreMonitor => new(async (player) =>
-    {
-    });
-
     public Command<Player> ToggleStartMonitor => new(async (player) =>
     {
         var notificationsAllowed = await AllowNotificationsAsync();

@@ -1,18 +1,23 @@
+using CommunityToolkit.Maui.Core.Platform;
+
 namespace CuescoreBuddy.Views;
 
 public partial class TournamentPage : ContentPage
 {
-	public TournamentPage()
+    private TournamentViewModel _viewModel;
+
+    public TournamentPage()
 	{
-		try
-		{
-            InitializeComponent();
-        }
-		catch (Exception)
-		{
+        InitializeComponent();
+        _viewModel = new TournamentViewModel();
+        BindingContext = _viewModel;
+        _viewModel.FocusView += TournamentEntrySetFocus;
+    }
 
-			throw;
-		}
+    private void TournamentEntrySetFocus(object? sender, EventArgs e)
+    {
 
-	}
+        TournamentEntry.Focus();
+        //TournamentEntry.ShowKeyboardAsync(CancellationToken.None);
+    }
 }

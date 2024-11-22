@@ -64,6 +64,19 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="Resources\Fonts\OdinRounded-Bold.otf" />
+	  <None Remove="Resources\Fonts\Roboto-Black.ttf" />
+	  <None Remove="Resources\Fonts\Roboto-BlackItalic.ttf" />
+	  <None Remove="Resources\Fonts\Roboto-Bold.ttf" />
+	  <None Remove="Resources\Fonts\Roboto-BoldItalic.ttf" />
+	  <None Remove="Resources\Fonts\Roboto-Italic.ttf" />
+	  <None Remove="Resources\Fonts\Roboto-Light.ttf" />
+	  <None Remove="Resources\Fonts\Roboto-LightItalic.ttf" />
+	  <None Remove="Resources\Fonts\Roboto-Medium.ttf" />
+	  <None Remove="Resources\Fonts\Roboto-MediumItalic.ttf" />
+	  <None Remove="Resources\Fonts\Roboto-Regular.ttf" />
+	  <None Remove="Resources\Fonts\Roboto-Thin.ttf" />
+	  <None Remove="Resources\Fonts\Roboto-ThinItalic.ttf" />
 	  <None Remove="Resources\Images\tournament_link.png" />
 	</ItemGroup>
 
@@ -108,6 +121,9 @@
 
 	<ItemGroup>
 	  <MauiXaml Update="AppShell.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Resources\Styles\CueScore.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\PlayerPage.xaml">

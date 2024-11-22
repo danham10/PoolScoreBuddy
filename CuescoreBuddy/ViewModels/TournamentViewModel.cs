@@ -7,10 +7,12 @@ public partial class TournamentViewModel : BaseViewModel
 {
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(TournamentLoadCommand))]
-    private string? tournamentId;
+    private string? tournamentId = "42345382";
 
     [ObservableProperty]
     private string? errorMessage;
+
+    public event EventHandler FocusView;
 
     public TournamentViewModel()
     {
@@ -41,9 +43,8 @@ public partial class TournamentViewModel : BaseViewModel
         {
             IsBusy = false;
             await Application.Current.MainPage.DisplayAlert("Cannot load tournament", "Check tournament number and network connectivity", "OK");
+            FocusView?.Invoke(this, EventArgs.Empty);
         }
-
-        
     }
 
     private async Task GoToTournamentSelectedPage(TournamentFacade tournament)
@@ -55,4 +56,6 @@ public partial class TournamentViewModel : BaseViewModel
 
         await Shell.Current.GoToAsync(nameof(TournamentSelectedPage), false, navigationParameters);
     }
+
+
 }

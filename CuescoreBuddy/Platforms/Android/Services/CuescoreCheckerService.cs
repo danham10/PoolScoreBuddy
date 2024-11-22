@@ -209,7 +209,7 @@ public class CuescoreCheckerService : Service
 
         return new NotificationCompat.Builder(this, MainApplication.ChannelId)
            .SetContentTitle("Cuescore buddy")
-           .SetContentText($"Listening {(_isCheckerRunning ? "started" : "stopped. No players or active tournaments to monitor.")}")
+           .SetContentText($"Monitoring {(_isCheckerRunning ? "started" : "stopped. No players or active tournaments to monitor.")}")
            .SetSmallIcon(Resource.Drawable.cuescore_notify_icon)
            .SetContentIntent(pendingIntent)
            .Build();

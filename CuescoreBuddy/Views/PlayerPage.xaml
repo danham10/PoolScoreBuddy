@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
     x:Class="CuescoreBuddy.Views.PlayerPage"
+    x:Name="this"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:icons="clr-namespace:CuescoreBuddy.Services"
@@ -23,11 +24,13 @@
             Grid.Row="1"
             Command="{Binding RefreshCommand}"
             IsRefreshing="{Binding IsBusy}">
-            <CollectionView x:Name="collectionView" ItemsSource="{Binding Players}">
+            <CollectionView 
+                x:Name="collectionView" 
+                ItemsSource="{Binding Players}">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <Grid
-                            ColumnDefinitions="0, 64, *, 100, 100">
+                            ColumnDefinitions="0, 64, *, 150">
                             <Image
                                 Grid.Column="1"
                                 HeightRequest="64"
@@ -39,27 +42,8 @@
                                 FontSize="18"
                                 Text="{Binding name}"
                                 TextColor="Black" />
-                            <Switch IsToggled = "{Binding IsMonitored}"/>
-                            <!--<Button 
-                                Grid.Column="3"
-                                BackgroundColor="Bisque"
-                                Margin="10,10,10,10"
-                                LineBreakMode="WordWrap"
-                                Text="{Binding IsMonitored}"
-                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:PlayerViewModel}}, Path=ToggleScoreMonitor}" 
-                                CommandParameter="{Binding .}">
-                                <Button.Triggers>
-                                    <DataTrigger TargetType="Button" Binding="{Binding IsMonitored}" Value="false">
-                                        <Setter Property="Text"  Value="Scores off" />
-                                    </DataTrigger>
-                                    <DataTrigger TargetType="Button" Binding="{Binding IsMonitored}" Value="true">
-                                        <Setter Property="Text"  Value="Scores on" />
-                                    </DataTrigger>
-                                </Button.Triggers>
-                            </Button>
                             <Button 
-                                Grid.Column="4" 
-                                BackgroundColor="Red"
+                                Grid.Column="3"
                                 Margin="10,10,10,10"
                                 LineBreakMode="WordWrap"
                                 Text="{Binding IsMonitored}"
@@ -67,13 +51,18 @@
                                 CommandParameter="{Binding .}">
                                 <Button.Triggers>
                                     <DataTrigger TargetType="Button" Binding="{Binding IsMonitored}" Value="false">
-                                        <Setter Property="Text"  Value="Starts off" />
+                                        <Setter Property="Text"  Value="Unmonitored" />
+                                        <!--<Setter Property="BackgroundColor"  Value="Transparent" />-->
+                                        <Setter Property="BorderColor" Value="Red" />
+
                                     </DataTrigger>
                                     <DataTrigger TargetType="Button" Binding="{Binding IsMonitored}" Value="true">
-                                        <Setter Property="Text"  Value="Starts on" />
+                                        <Setter Property="Text"  Value="Monitored" />
+                                        <!--<Setter Property="BackgroundColor"  Value="Transparent" />-->
+                                        <Setter Property="BorderColor"  Value="Green" />
                                     </DataTrigger>
                                 </Button.Triggers>
-                            </Button>-->
+                            </Button>
                         </Grid>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
