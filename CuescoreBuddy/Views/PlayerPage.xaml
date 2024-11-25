@@ -35,13 +35,20 @@
                                 Grid.Column="1"
                                 HeightRequest="64"
                                 Source="{Binding image}"
-                                WidthRequest="64" />
+                                WidthRequest="64" >
+                                <Image.Shadow>
+                                    <Shadow 
+                        Brush="Black"
+                        Offset="0,0"
+                        Radius="-20"
+                        Opacity="0.5" />
+                                </Image.Shadow>
+                            </Image>
                             <Label
                                 VerticalTextAlignment="Center"
                                 Grid.Column="2"
                                 FontSize="18"
-                                Text="{Binding name}"
-                                TextColor="Black" />
+                                Text="{Binding name}" />
                             <Button 
                                 Grid.Column="3"
                                 Margin="10,10,10,10"
@@ -52,13 +59,11 @@
                                 <Button.Triggers>
                                     <DataTrigger TargetType="Button" Binding="{Binding IsMonitored}" Value="false">
                                         <Setter Property="Text"  Value="Unmonitored" />
-                                        <!--<Setter Property="BackgroundColor"  Value="Transparent" />-->
                                         <Setter Property="BorderColor" Value="Red" />
 
                                     </DataTrigger>
                                     <DataTrigger TargetType="Button" Binding="{Binding IsMonitored}" Value="true">
                                         <Setter Property="Text"  Value="Monitored" />
-                                        <!--<Setter Property="BackgroundColor"  Value="Transparent" />-->
                                         <Setter Property="BorderColor"  Value="Green" />
                                     </DataTrigger>
                                 </Button.Triggers>

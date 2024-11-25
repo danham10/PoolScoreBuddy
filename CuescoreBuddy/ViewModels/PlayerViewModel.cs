@@ -74,7 +74,7 @@ public partial class PlayerViewModel : BaseViewModel, IQueryAttributable
     [RelayCommand]
     async Task Appearing()
     {
-        if (!Players.Any())
+        //if (!Players.Any())
             await RefreshPlayersAsync();
     }
 
@@ -94,4 +94,6 @@ public partial class PlayerViewModel : BaseViewModel, IQueryAttributable
 
         _messenger.Send(new CuescoreBackgroundChecker(ServiceMessageType.Default));
     });
+
+
 }

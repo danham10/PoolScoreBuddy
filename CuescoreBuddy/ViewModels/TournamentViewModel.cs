@@ -1,13 +1,14 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Maui.Core.Platform;
+using System.Windows.Input;
 
 namespace CuescoreBuddy.ViewModels;
 public partial class TournamentViewModel : BaseViewModel
 {
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(TournamentLoadCommand))]
-    private string? tournamentId = "42345382";
+    private string? tournamentId = "";
 
     [ObservableProperty]
     private string? errorMessage;
@@ -17,6 +18,13 @@ public partial class TournamentViewModel : BaseViewModel
     public TournamentViewModel()
     {
         Title = "About";
+    }
+
+
+    [RelayCommand]
+    private async Task TapCommand(string url)
+    {
+        await Launcher.OpenAsync(url);
     }
 
     private bool CanExecuteTournamentLoad() => !string.IsNullOrEmpty(TournamentId);

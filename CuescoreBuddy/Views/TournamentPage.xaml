@@ -11,25 +11,95 @@
     <ContentPage.Behaviors>
         <mct:EventToCommandBehavior Command="{Binding AppearingCommand}" EventName="Appearing" />
     </ContentPage.Behaviors>
+    <ScrollView>
     <VerticalStackLayout Margin="10,0,10,0">
         <Label
-            Margin="0"
-            FontSize="Medium"
+            Margin="0,0,0,20"
+            FontSize="Default"
             HorizontalOptions="FillAndExpand"
-            Text="Enter a tournament number like this one" />
-        <Image Source="tournament_link.png" />
-        <Entry
-            x:Name="TournamentEntry"
-            FontSize="Medium"
-            Placeholder="tournament number"
-            MaxLength="16"
-            Keyboard="Numeric"
-            Text="{Binding TournamentId}"
-            Loaded="TournamentEntrySetFocus"/>
-        <Button
+            >Choose a CueScore tournament and players to monitor. You'll be notified of match starts and scores.
+        </Label>
+
+        <VerticalStackLayout>
+            <Border Padding="20,20,20,20" Margin="0,0,0,20" StrokeThickness="3" >
+                <VerticalStackLayout>
+                <Label
+            Margin="0"
+            FontSize="Default"
+            HorizontalOptions="FillAndExpand"
+            >
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="1) Find the CueScore link for your tournament (usually shared with you by the organiser). &#10;" />
+                            <Span Text="We want the number at the end. Around 8 digits. Here is an example of what to look for (do not use this one!)" />
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
+                <Image
+            HeightRequest="32"
+            WidthRequest="350"
+            Aspect="Fill"
+            Source="tournament_link.png" >
+                    <Image.Shadow>
+                            <Shadow 
+                        Brush="Black"
+                        Offset="0,20"
+                        Radius="20"
+                        Opacity="0.5" />
+                        </Image.Shadow>
+                </Image>
+                </VerticalStackLayout>
+            </Border>
+
+            <Border Padding="20,20,20,20" Margin="0,0,0,20" StrokeThickness="3" >
+                <VerticalStackLayout>
+                    <Label
+            Margin="0"
+            FontSize="Default"
+            HorizontalOptions="FillAndExpand"
+            >
+                <Label.FormattedText>
+                    <FormattedString>
+                        <Span Text="2) Copy and paste your unique tournament number below. &#10;" />
+                    </FormattedString>
+                </Label.FormattedText>
+            </Label>
+            <Entry
+                x:Name="TournamentEntry"
+                Placeholder="tournament number"
+                FontSize="Large"
+                MaxLength="16"
+                Keyboard="Numeric"
+                Text="{Binding TournamentId}"
+                Loaded="TournamentEntrySetFocus"/>
+                </VerticalStackLayout>
+            </Border>
+                <Border Padding="20,20,20,20" Margin="0,0,0,20" StrokeThickness="3" >
+                    <VerticalStackLayout>
+                        <Label
+            Margin="0"
+            FontSize="Default"
+            HorizontalOptions="FillAndExpand"
+            >
+                            <Label.FormattedText>
+                                <FormattedString>
+                                    <Span Text="3) Tap 'Load Tournament'. &#10;" />
+                                </FormattedString>
+                            </Label.FormattedText>
+                        </Label>
+                        
+                        <Button
             Command="{Binding TournamentLoadCommand}"
             HorizontalOptions="FillAndExpand"
             Text="Load tournament" />
-        <ActivityIndicator IsVisible="{Binding IsBusy}" IsRunning="{Binding IsBusy}" />
+                        <ActivityIndicator IsVisible="{Binding IsBusy}" IsRunning="{Binding IsBusy}" />
+                    </VerticalStackLayout>
+                </Border>
+
+            </VerticalStackLayout>
+
+
+
     </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>

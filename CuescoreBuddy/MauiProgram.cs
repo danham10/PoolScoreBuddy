@@ -9,7 +9,7 @@ namespace CuescoreBuddy
     {
         public static MauiApp CreateMauiApp()
         {
-            SetHandler();
+            SetHandlers();
 
             var builder = MauiApp.CreateBuilder();
             builder
@@ -46,11 +46,11 @@ namespace CuescoreBuddy
             return builder.Build();
         }
 
-        private static void SetHandler()
+        private static void SetHandlers()
         {
-
             Microsoft.Maui.Handlers.EntryHandler.Mapper.AppendToMapping("MyCustomization", (handler, view) =>
             {
+                // Hide blue underscore in Entry control
                 if (view is Entry)
                 {
                     #if ANDROID

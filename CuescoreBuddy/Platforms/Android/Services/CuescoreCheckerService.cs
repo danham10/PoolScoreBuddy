@@ -88,6 +88,7 @@ public class CuescoreCheckerService : Service
         var notification = GetServiceNotification();
         notificationManager.Notify(0, notification);
 
+        base.OnDestroy();
     }
 
     void RegisterForegroundService(string playerName)
@@ -163,7 +164,6 @@ public class CuescoreCheckerService : Service
                        .SetSmallIcon(Resource.Drawable.cuescore_notify_icon)
                        .SetAutoCancel(true)
                        .Build();
-                        //TODO tap opens app
 
                         notificationManager.Notify(notification.MatchId, matchNotification);
                     }

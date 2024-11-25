@@ -39,14 +39,13 @@ public partial class TournamentSelectedViewModel : BaseViewModel, IQueryAttribut
     {
         _tournament = (query["Tournament"] as TournamentFacade);
         TournamentName = _tournament.Tournament.name;
-
-        ErrorMessage = _tournament.IsFinished() ? "Tournament has finished" : "";
     }
 
     #region Commands
 
     private bool CanExecuteMonitor()
     {
+        ErrorMessage = _tournament.IsFinished() ? "Tournament has finished" : "";
         return string.IsNullOrEmpty(ErrorMessage);
     }
 
