@@ -11,20 +11,19 @@ namespace CuescoreBuddy.Platforms;
 [Service(ForegroundServiceType = Android.Content.PM.ForegroundService.TypeDataSync)]
 public class CuescoreCheckerService : Service
 {
-    static readonly string TAG = typeof(CuescoreCheckerService).FullName;
+    static readonly string? TAG = typeof(CuescoreCheckerService).FullName;
     CancellationTokenSource _cts = new();
     DataStore dataStore = ServiceResolver.GetService<DataStore>();
-    NotificationManagerCompat compatManager;
+    NotificationManagerCompat? compatManager;
     bool _stopping;
     bool _isCheckerRunning;
 
-    public override IBinder OnBind(Intent intent)
+    public override IBinder OnBind(Intent? intent)
     {
-        return null;
+        return null!;
     }
 
-
-    public override StartCommandResult OnStartCommand(Intent intent, StartCommandFlags flags, int startId)
+    public override StartCommandResult OnStartCommand(Intent? intent, StartCommandFlags flags, int startId)
     {
         
         var cueScoreService = ServiceResolver.GetService<ICueScoreService>();
@@ -55,7 +54,7 @@ public class CuescoreCheckerService : Service
             
             
         }
-        if (intent.Action != null && intent.Action.Equals(Constants.ACTION_STOP_SERVICE) || !dataStore.Tournaments.MonitoredPlayers().Any())
+        if (intent!.Action != null && intent.Action.Equals(Constants.ACTION_STOP_SERVICE) || !dataStore.Tournaments.MonitoredPlayers().Any())
         {
             Log.Info(TAG, "OnStartCommand: The service is stopping.");
             _cts.Cancel();
@@ -84,7 +83,7 @@ public class CuescoreCheckerService : Service
 
         _isCheckerRunning = false;
 
-        var notificationManager = (NotificationManager)GetSystemService(NotificationService);
+        var notificationManager = (NotificationManager)GetSystemService(NotificationService)!;
         var notification = GetServiceNotification();
         notificationManager.Notify(0, notification);
 
@@ -106,7 +105,10 @@ public class CuescoreCheckerService : Service
         }
         else
         {
+#pragma warning disable CA1416 // Validate platform compatibility
+            // Compatibility is enforced in if block above
             StartForeground(Constants.SERVICE_RUNNING_NOTIFICATION_ID, notification, Android.Content.PM.ForegroundService.TypeDataSync);
+#pragma warning restore CA1416 // Validate platform compatibility
         }
     }
 
@@ -138,7 +140,7 @@ public class CuescoreCheckerService : Service
     {
         var dataStore = ServiceResolver.GetService<DataStore>();
         var cueScoreService = ServiceResolver.GetService<ICueScoreService>();
-        var notificationManager = (NotificationManager)GetSystemService(NotificationService);
+        var notificationManager = (NotificationManager)GetSystemService(NotificationService)!;
 
         await Task.Run(async () =>
         {
@@ -153,19 +155,35 @@ public class CuescoreCheckerService : Service
 
                 try
                 {
-                    var organiser = new TournamentOrganiserService(dataStore, cueScoreService);
+                    var organiser = new NotificationService(dataStore, cueScoreService);
                     var notificationsToSend = await organiser.ProcessNotifications();
 
                     foreach (var notification in notificationsToSend)
                     {
-                        var matchNotification = new NotificationCompat.Builder(this, MainApplication.ChannelId)
-                       .SetContentTitle($"{notification.Player1} vs {notification.Player2}")
-                       .SetContentText($"Table {notification.TableName} {notification.StartTime.ToString("h:mm tt")}") //TODO create names
-                       .SetSmallIcon(Resource.Drawable.cuescore_notify_icon)
-                       .SetAutoCancel(true)
-                       .Build();
+                        Notification? deviceNotification = null;
 
-                        notificationManager.Notify(notification.MatchId, matchNotification);
+                        switch (notification.type)
+                        {
+                            case NotificationType.Start:
+                                deviceNotification = new NotificationCompat.Builder(this, MainApplication.ChannelId)
+                                    .SetContentTitle($"{notification.Player1} vs {notification.Player2}")
+                                    .SetContentText($"Table {notification.Message} {notification.StartTime.ToString("h:mm tt")}") //TODO create names
+                                    .SetSmallIcon(Resource.Drawable.cuescore_notify_icon)
+                                    .SetAutoCancel(true)
+                                    .Build();
+                                break;
+                            case NotificationType.Result:
+                                deviceNotification = new NotificationCompat.Builder(this, MainApplication.ChannelId)
+                                    .SetContentTitle($"{notification.Player1} vs {notification.Player2}")
+                                    .SetContentText($"Result {notification.Message}") //TODO create names
+                                    .SetSmallIcon(Resource.Drawable.cuescore_notify_icon)
+                                    .SetAutoCancel(true)
+                                    .Build();
+                                break;
+                        }
+
+
+                        notificationManager.Notify(notification.MatchId, deviceNotification);
                     }
 
                     if (!dataStore.Tournaments.ShouldMonitor())

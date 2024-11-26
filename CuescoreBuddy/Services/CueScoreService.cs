@@ -7,6 +7,7 @@ namespace CuescoreBuddy.Services
     {
         private readonly HttpClient _httpClient;
         private readonly string _remoteServiceBaseUrl = "https://api.cuescore.com"; //TODO make config?
+        private static JsonSerializerOptions _serializerOptions = new() { PropertyNameCaseInsensitive = true };
 
         public CueScoreService(HttpClient httpClient)
         {
@@ -22,7 +23,7 @@ namespace CuescoreBuddy.Services
             if (response.IsSuccessStatusCode)
             {
                 data = await response.Content.ReadAsStringAsync();
-                return JsonSerializer.Deserialize<Tournament>(data);
+                return JsonSerializer.Deserialize<Tournament>(data, _serializerOptions)!;
             }
 
             throw new Exception("Cannot fetch tournament TODO improve");
@@ -37,7 +38,7 @@ namespace CuescoreBuddy.Services
             if (response.IsSuccessStatusCode)
             {
                 data = await response.Content.ReadAsStringAsync();
-                return JsonSerializer.Deserialize<List<Player>>(data);
+                return JsonSerializer.Deserialize<List<Player>>(data, _serializerOptions)!;
             }
             throw new Exception("Cannot fetch players TODO improve");
         }

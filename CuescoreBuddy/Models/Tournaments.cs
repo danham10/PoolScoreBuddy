@@ -1,23 +1,23 @@
 ﻿namespace CuescoreBuddy.Models;
 
-public class Tournaments : List<TournamentFacade>
+public class Tournaments : List<TournamentDecorator>
 {
-    public TournamentFacade GetTournamentById(int tournamentId)
+    public TournamentDecorator GetTournamentById(int tournamentId)
     {
-        var tournament = this.FirstOrDefault(t => t.Tournament.tournamentId == tournamentId);
+        var tournament = this.FirstOrDefault(t => t.Tournament.TournamentId == tournamentId);
 
         if (tournament == null)
         { 
-            tournament = new TournamentFacade(tournamentId);
+            tournament = new TournamentDecorator(tournamentId);
         }
 
         return tournament;
     }
 
-    public void AddIfMissing(TournamentFacade tournament)
+    public void AddIfMissing(TournamentDecorator tournament)
     {
         var exists = (from t in this
-                      where t.Tournament.tournamentId == tournament.Tournament.tournamentId
+                      where t.Tournament.TournamentId == tournament.Tournament.TournamentId
                       select t).Any();
 
         if (!exists)
@@ -48,9 +48,9 @@ public class Tournaments : List<TournamentFacade>
     {
         return
             (from t in this
-             from p in t.GetLoadedPlayers().Result.Where(p => p.IsMonitored)
+             from p in t.GetLoadedPlayers().Where(p => p.IsMonitored)
              orderby p.MonitoredPlayer!.CreateDate descending
-             select p.name
+             select p.Name
             ).ToList();
     }
 

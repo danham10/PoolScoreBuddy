@@ -1,8 +1,7 @@
-﻿namespace CuescoreBuddy.Models
-{
-    public record CuescoreBackgroundChecker(ServiceMessageType type);
+﻿namespace CuescoreBuddy.Models;
 
-    public enum ServiceMessageType {
-        Default = 0,
-    }
+public record CuescoreBackgroundChecker(ServiceMessageType type);
+
+public enum ServiceMessageType {
+    Default = 0,
 }

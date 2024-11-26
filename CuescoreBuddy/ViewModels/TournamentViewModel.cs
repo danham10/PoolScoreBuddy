@@ -13,7 +13,7 @@ public partial class TournamentViewModel : BaseViewModel
     [ObservableProperty]
     private string? errorMessage;
 
-    public event EventHandler FocusView;
+    public event EventHandler? FocusView;
 
     public TournamentViewModel()
     {
@@ -41,7 +41,7 @@ public partial class TournamentViewModel : BaseViewModel
 
             if (tournament != null)
             {
-                TournamentFacade tournamentFacade = new(tournament);
+                TournamentDecorator tournamentFacade = new(tournament);
 
                 IsBusy = false;
                 await GoToTournamentSelectedPage(tournamentFacade);
@@ -50,12 +50,12 @@ public partial class TournamentViewModel : BaseViewModel
         catch (Exception)
         {
             IsBusy = false;
-            await Application.Current.MainPage.DisplayAlert("Cannot load tournament", "Check tournament number and network connectivity", "OK");
+            await Application.Current!.MainPage!.DisplayAlert("Cannot load tournament", "Check tournament number and network connectivity", "OK");
             FocusView?.Invoke(this, EventArgs.Empty);
         }
     }
 
-    private async Task GoToTournamentSelectedPage(TournamentFacade tournament)
+    private async Task GoToTournamentSelectedPage(TournamentDecorator tournament)
     {
         var navigationParameters = new Dictionary<string, object>
         {

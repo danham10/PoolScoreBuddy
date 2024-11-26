@@ -34,21 +34,13 @@
                             <Image
                                 Grid.Column="1"
                                 HeightRequest="64"
-                                Source="{Binding image}"
-                                WidthRequest="64" >
-                                <Image.Shadow>
-                                    <Shadow 
-                        Brush="Black"
-                        Offset="0,0"
-                        Radius="-20"
-                        Opacity="0.5" />
-                                </Image.Shadow>
-                            </Image>
+                                Source="{Binding Image}"
+                                WidthRequest="64" />
                             <Label
                                 VerticalTextAlignment="Center"
                                 Grid.Column="2"
                                 FontSize="18"
-                                Text="{Binding name}" />
+                                Text="{Binding Name}" />
                             <Button 
                                 Grid.Column="3"
                                 Margin="10,10,10,10"

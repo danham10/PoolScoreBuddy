@@ -12,40 +12,33 @@ using System.Windows.Input;
 namespace CuescoreBuddy.ViewModels;
 public partial class TournamentSelectedViewModel : BaseViewModel, IQueryAttributable
 {
-    readonly DataStore _dataStore;
-    readonly IMessenger _messenger;
-
-    TournamentFacade? _tournament;
+    TournamentDecorator? _tournament;
 
     [ObservableProperty]
-    public string tournamentName;
+    public required string tournamentName;
 
     [ObservableProperty]
-    public string errorMessage;
+    public string errorMessage = "";
 
-    //public IAsyncRelayCommand MonitorCommand { get; private set; }
     public ICommand MonitorCommand { get; private set; }
-    public ICommand TournamentCommand { get; private set; }
 
     public TournamentSelectedViewModel()
     {
         Title = "About";
-
         MonitorCommand = new AsyncRelayCommand(ExecuteMonitorAsync, CanExecuteMonitor);
-        TournamentCommand = new AsyncRelayCommand(ExecuteViewAsync);
     }
 
     public void ApplyQueryAttributes(IDictionary<string, object> query)
     {
-        _tournament = (query["Tournament"] as TournamentFacade);
-        TournamentName = _tournament.Tournament.name;
+        _tournament = (query["Tournament"] as TournamentDecorator);
+        TournamentName = _tournament!.Tournament!.Name!;
     }
 
     #region Commands
 
     private bool CanExecuteMonitor()
     {
-        ErrorMessage = _tournament.IsFinished() ? "Tournament has finished" : "";
+        ErrorMessage = _tournament!.IsFinished() ? "Tournament has finished" : "";
         return string.IsNullOrEmpty(ErrorMessage);
     }
 
@@ -53,15 +46,10 @@ public partial class TournamentSelectedViewModel : BaseViewModel, IQueryAttribut
     {
         var navigationParameters = new Dictionary<string, object>
         {
-            { "Tournament", _tournament },
+            { "Tournament", _tournament! },
         };
 
         await Shell.Current.GoToAsync(nameof(PlayerPage), false, navigationParameters);
-    }
-
-    private async Task ExecuteViewAsync()
-    {
-        await Browser.Default.OpenAsync(_tournament.Tournament.url, BrowserLaunchMode.SystemPreferred);
     }
 
     #endregion

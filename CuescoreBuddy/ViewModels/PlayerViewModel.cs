@@ -14,7 +14,7 @@ public partial class PlayerViewModel : BaseViewModel, IQueryAttributable
     readonly IMessenger _messenger;
     readonly ICueScoreService _cueScoreService;
 
-    TournamentFacade? _tournament;
+    TournamentDecorator? _tournament;
     bool _isRefreshing;
 
     public ObservableCollection<Player> Players { get; private set; } = [];
@@ -34,8 +34,7 @@ public partial class PlayerViewModel : BaseViewModel, IQueryAttributable
 
     public void ApplyQueryAttributes(IDictionary<string, object> query)
     {
-        _tournament = (query["Tournament"] as TournamentFacade);
-        //query.Clear();
+        _tournament = (query["Tournament"] as TournamentDecorator);
     }
 
     async static Task<bool> AllowNotificationsAsync()
@@ -47,7 +46,7 @@ public partial class PlayerViewModel : BaseViewModel, IQueryAttributable
 
         if (!allowed)
         {
-            await Application.Current.MainPage.DisplayAlert("Alert", "You must manually allow notifications for this app to work properly. Go to app settings, then permissions and under the 'not allowed' list, modify the 'Notifications' entry to become allowed.", "OK");
+            await Application.Current!.MainPage!.DisplayAlert("Alert", "You must manually allow notifications for this app to work properly. Go to app settings, then permissions and under the 'not allowed' list, modify the 'Notifications' entry to become allowed.", "OK");
         }
             
         return allowed;
@@ -61,7 +60,7 @@ public partial class PlayerViewModel : BaseViewModel, IQueryAttributable
 
         Players.Clear();
 
-        var players = await _tournament.GetLoadedPlayers(_cueScoreService);
+        var players = await _tournament!.GetLoadedPlayers(_cueScoreService);
 
         foreach (var player in players)
         {
@@ -85,9 +84,9 @@ public partial class PlayerViewModel : BaseViewModel, IQueryAttributable
         if (player == null || !notificationsAllowed)
             return;
 
-        player.MonitoredPlayer = _tournament!.TogglePlayerEnabled(player.playerId);
+        player.MonitoredPlayer = _tournament!.TogglePlayerEnabled(player.PlayerId);
 
-        int playerIndex = Players.IndexOf(Players.First(p => p.playerId == player.playerId));
+        int playerIndex = Players.IndexOf(Players.First(p => p.PlayerId == player.PlayerId));
         Players[playerIndex] = player;
 
         _dataStore.Tournaments.AddIfMissing(_tournament);
