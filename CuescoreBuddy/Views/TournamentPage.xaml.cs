@@ -16,8 +16,6 @@ public partial class TournamentPage : ContentPage
 
     private void TournamentEntrySetFocus(object? sender, EventArgs e)
     {
-
         TournamentEntry.Focus();
-        //TournamentEntry.ShowKeyboardAsync(CancellationToken.None);
     }
 }

@@ -17,7 +17,8 @@ public partial class PlayerViewModel : BaseViewModel, IQueryAttributable
 
     TournamentDecorator? _tournament;
 
-    public ObservableCollection<Player> Players { get; private set; } = [];
+    [ObservableProperty]
+    private ObservableCollection<Player> players = [];
 
     [ObservableProperty]
     private bool isRefreshing;
@@ -55,13 +56,11 @@ public partial class PlayerViewModel : BaseViewModel, IQueryAttributable
     {
         IsBusy = true;
 
-        //await _tournament.LoadPlayers(_cueScoreService);
-
         Players.Clear();
 
-        var players = await _tournament!.GetLoadedPlayers(_cueScoreService);
+        var refreshedPlayers =  await _tournament!.GetLoadedPlayers(_cueScoreService);
 
-        foreach (var player in players)
+        foreach (var player in refreshedPlayers)
         {
             Players.Add(player);
         }
@@ -72,7 +71,6 @@ public partial class PlayerViewModel : BaseViewModel, IQueryAttributable
     [RelayCommand]
     async Task Appearing()
     {
-        //if (!Players.Any())
             await RefreshPlayersAsync();
     }
 
@@ -92,6 +90,4 @@ public partial class PlayerViewModel : BaseViewModel, IQueryAttributable
 
         _messenger.Send(new CuescoreBackgroundChecker(ServiceMessageType.Default));
     });
-
-
 }

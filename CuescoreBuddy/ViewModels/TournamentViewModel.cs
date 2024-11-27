@@ -1,7 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CuescoreBuddy.Models.API;
-using System.Text.Json;
 
 namespace CuescoreBuddy.ViewModels;
 public partial class TournamentViewModel : BaseViewModel
@@ -47,14 +46,19 @@ public partial class TournamentViewModel : BaseViewModel
                 await GoToTournamentSelectedPage(tournamentFacade);
             }
         }
-        catch (JsonException)
+        catch (HttpRequestException ex)
         {
-            await Application.Current!.MainPage!.DisplayAlert($"Data error for {TournamentId}. This tournament is not yet supported.", $"Please consider emailing me your tournament number {TournamentId} at poolscorebuddy@outlook.com so I can look into fixing that. Thankyou.", "OK");
+            await Application.Current!.MainPage!.DisplayAlert($"Cannot fetch tournament {TournamentId}", "Check you have a data connection", "OK");
+            FocusView?.Invoke(this, EventArgs.Empty);
+        }
+        catch (APIException ex)
+        {
+            await Application.Current!.MainPage!.DisplayAlert($"Cannot fetch tournament {TournamentId}.", ex.Message, "OK");
             FocusView?.Invoke(this, EventArgs.Empty);
         }
         catch (Exception)
         {
-            await Application.Current!.MainPage!.DisplayAlert($"Cannot load tournament {TournamentId}", "Check number matches the link you have been sent, and ensure network connectivity", "OK");
+            await Application.Current!.MainPage!.DisplayAlert($"Cannot fetch tournament {TournamentId}", $"If the number is correct, please consider emailing me your tournament number {TournamentId} at poolscorebuddy@outlook.com so I can look into fixing that. Thankyou.", "OK");
             FocusView?.Invoke(this, EventArgs.Empty);
         }
         IsBusy = false;

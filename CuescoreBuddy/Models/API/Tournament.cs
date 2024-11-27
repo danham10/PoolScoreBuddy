@@ -7,7 +7,7 @@ namespace CuescoreBuddy.Models.API;
 /// </summary>
 public partial class Tournament
 {
-    public int TournamentId { get; set; }
+    public int? TournamentId { get; set; }
     public string? Name { get; set; }
     public string? Status { get; set; }
     public Match[]? Matches { get; set; } = [];
@@ -75,7 +75,7 @@ public class TournamentDecorator
     public async Task<IEnumerable<Player>> GetLoadedPlayers(IScoreAPIClient cueScoreService)
     {
         if (_players == null)
-            _players = await cueScoreService.GetPlayers(Tournament.TournamentId);
+            _players = await cueScoreService.GetPlayers(Tournament.TournamentId!.Value);
 
         return GetLoadedPlayers();
     }

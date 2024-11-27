@@ -13,7 +13,7 @@ public class NotificationService(IDataStore dataStore, IScoreAPIClient cueScoreS
             // load tournaments from API
             foreach( var tournament in dataStore.Tournaments)
             {
-                await tournament.Fetch(cueScoreService, tournament.Tournament.TournamentId);
+                await tournament.Fetch(cueScoreService, tournament.Tournament.TournamentId!.Value);
             }
 
             // remove tournaments that have finished

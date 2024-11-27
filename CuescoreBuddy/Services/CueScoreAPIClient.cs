@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using CuescoreBuddy.Models.API;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace CuescoreBuddy.Services
 {
@@ -23,7 +24,8 @@ namespace CuescoreBuddy.Services
             response.EnsureSuccessStatusCode();
 
             string data = await response.Content.ReadAsStringAsync();
-            return JsonSerializer.Deserialize<Tournament>(data, _serializerOptions)!;
+
+            return Deserialize<Tournament>(data);
         }
 
         public async Task<List<Player>> GetPlayers(int tournamentId)
@@ -34,7 +36,21 @@ namespace CuescoreBuddy.Services
             response.EnsureSuccessStatusCode();
 
             string data = await response.Content.ReadAsStringAsync();
-            return JsonSerializer.Deserialize<List<Player>>(data, _serializerOptions)!;
+            return Deserialize<List<Player>>(data);
+        }
+
+        private static T Deserialize<T>(string json)
+        {
+            try
+            {
+                return JsonSerializer.Deserialize<T>(json, _serializerOptions)!;
+            }
+            catch (JsonException)
+            {
+                // Below might be returned - invalid JSON unfortunately. So we need to return it verbatim.
+                // error: 'Could not find tournament with given ID.'
+                throw new APIException(json);
+            }
         }
     }
 }

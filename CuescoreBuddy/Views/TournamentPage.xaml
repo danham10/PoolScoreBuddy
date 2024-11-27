@@ -12,16 +12,20 @@
         <mct:EventToCommandBehavior Command="{Binding AppearingCommand}" EventName="Appearing" />
     </ContentPage.Behaviors>
     <ScrollView>
-    <VerticalStackLayout Margin="10,0,10,0">
-        <Label
+        <VerticalStackLayout Margin="10,0,10,0">
+            <VerticalStackLayout>
+                <Border Padding="20,20,20,20" Margin="0,0,0,20" StrokeThickness="3" >
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="10,10,10,10" />
+                    </Border.StrokeShape>
+                    <Label
             Margin="0,0,0,20"
             FontSize="Default"
             HorizontalOptions="FillAndExpand"
             >Choose a CueScore tournament and players to monitor. You'll be notified of match starts and scores.
-        </Label>
-
-        <VerticalStackLayout>
-            <Border Padding="20,20,20,20" Margin="0,0,0,20" StrokeThickness="3" >
+                    </Label>
+                </Border>
+                <Border Padding="20,20,20,20" Margin="0,0,0,20" StrokeThickness="3" >
                     <Border.StrokeShape>
                         <RoundRectangle CornerRadius="10,10,10,10" />
                     </Border.StrokeShape>
@@ -74,7 +78,7 @@
                 x:Name="TournamentEntry"
                 Placeholder="tournament number"
                 FontSize="Large"
-                MaxLength="16"
+                MaxLength="9"
                 Keyboard="Numeric"
                 Text="{Binding TournamentId}"
                 Loaded="TournamentEntrySetFocus"/>
