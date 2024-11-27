@@ -1,7 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using CommunityToolkit.Maui.Core.Platform;
-using System.Windows.Input;
+using CuescoreBuddy.Models.API;
+using System.Text.Json;
 
 namespace CuescoreBuddy.ViewModels;
 public partial class TournamentViewModel : BaseViewModel
@@ -36,7 +36,7 @@ public partial class TournamentViewModel : BaseViewModel
         {
             IsBusy = true;
 
-            var cueScoreService = ServiceResolver.GetService<ICueScoreService>();
+            var cueScoreService = ServiceResolver.GetService<IScoreAPIClient>();
             Tournament? tournament = await cueScoreService.GetTournament(Convert.ToInt32(TournamentId));
 
             if (tournament != null)
@@ -47,12 +47,17 @@ public partial class TournamentViewModel : BaseViewModel
                 await GoToTournamentSelectedPage(tournamentFacade);
             }
         }
-        catch (Exception)
+        catch (JsonException)
         {
-            IsBusy = false;
-            await Application.Current!.MainPage!.DisplayAlert("Cannot load tournament", "Check tournament number and network connectivity", "OK");
+            await Application.Current!.MainPage!.DisplayAlert($"Data error for {TournamentId}. This tournament is not yet supported.", $"Please consider emailing me your tournament number {TournamentId} at poolscorebuddy@outlook.com so I can look into fixing that. Thankyou.", "OK");
             FocusView?.Invoke(this, EventArgs.Empty);
         }
+        catch (Exception)
+        {
+            await Application.Current!.MainPage!.DisplayAlert($"Cannot load tournament {TournamentId}", "Check number matches the link you have been sent, and ensure network connectivity", "OK");
+            FocusView?.Invoke(this, EventArgs.Empty);
+        }
+        IsBusy = false;
     }
 
     private async Task GoToTournamentSelectedPage(TournamentDecorator tournament)
@@ -64,6 +69,4 @@ public partial class TournamentViewModel : BaseViewModel
 
         await Shell.Current.GoToAsync(nameof(TournamentSelectedPage), false, navigationParameters);
     }
-
-
 }

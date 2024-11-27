@@ -1,4 +1,4 @@
-﻿namespace CuescoreBuddy.Models;
+﻿namespace CuescoreBuddy.Models.API;
 
 public class Tournaments : List<TournamentDecorator>
 {
@@ -7,7 +7,7 @@ public class Tournaments : List<TournamentDecorator>
         var tournament = this.FirstOrDefault(t => t.Tournament.TournamentId == tournamentId);
 
         if (tournament == null)
-        { 
+        {
             tournament = new TournamentDecorator(tournamentId);
         }
 
@@ -28,7 +28,8 @@ public class Tournaments : List<TournamentDecorator>
 
     public bool ShouldMonitor() => ActiveTournaments() && AnyMonitoredPlayers();
 
-    public bool ActiveTournaments() {
+    public bool ActiveTournaments()
+    {
         var x = this.All(t => t.Tournament != null && t.IsFinished()) == false;
         return x;
     }

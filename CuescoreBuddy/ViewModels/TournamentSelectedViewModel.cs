@@ -1,7 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
-using CuescoreBuddy.Models;
+using CuescoreBuddy.Models.API;
 using CuescoreBuddy.Services;
 using CuescoreBuddy.Views;
 using Microsoft.Maui.ApplicationModel;

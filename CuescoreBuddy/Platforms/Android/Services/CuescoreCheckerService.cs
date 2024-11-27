@@ -3,20 +3,18 @@ using Android.Content;
 using Android.OS;
 using Android.Util;
 using AndroidX.Core.App;
-using CuescoreBuddy.Services;
-using Plugin.LocalNotification;
 
 namespace CuescoreBuddy.Platforms;
 
 [Service(ForegroundServiceType = Android.Content.PM.ForegroundService.TypeDataSync)]
-public class CuescoreCheckerService : Service
+public class AndroidCuescoreCheckerService : Service
 {
-    static readonly string? TAG = typeof(CuescoreCheckerService).FullName;
+    static readonly string? Tag = typeof(AndroidCuescoreCheckerService).FullName;
     CancellationTokenSource _cts = new();
-    DataStore dataStore = ServiceResolver.GetService<DataStore>();
-    NotificationManagerCompat? compatManager;
-    bool _stopping;
+    IDataStore dataStore = ServiceResolver.GetService<IDataStore>();
     bool _isCheckerRunning;
+
+    const int CheckIntervalMS = 60000;
 
     public override IBinder OnBind(Intent? intent)
     {
@@ -25,13 +23,8 @@ public class CuescoreCheckerService : Service
 
     public override StartCommandResult OnStartCommand(Intent? intent, StartCommandFlags flags, int startId)
     {
-        
-        var cueScoreService = ServiceResolver.GetService<ICueScoreService>();
+        var cueScoreService = ServiceResolver.GetService<IScoreAPIClient>();
 
-
-
-        
-        
         if (!_isCheckerRunning)
         {
             _isCheckerRunning = true;
@@ -39,34 +32,31 @@ public class CuescoreCheckerService : Service
 
             Task.Run(() =>
             {
-                Console.WriteLine("Task is running");
-                try 
+                Log.Info(Tag, "Task is running");
+                try
                 {
                     RunCheck(_cts).Wait();
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e);
+                    Log.Info(Tag, e.ToString());
                     throw;
                 }
             }, _cts.Token);
+        }
 
-            
-            
-        }
-        if (intent!.Action != null && intent.Action.Equals(Constants.ACTION_STOP_SERVICE) || !dataStore.Tournaments.MonitoredPlayers().Any())
+        if (ShouldStop(intent))
         {
-            Log.Info(TAG, "OnStartCommand: The service is stopping.");
+            Log.Info(Tag, "OnStartCommand: The service is stopping.");
             _cts.Cancel();
-        }
-        else
-        {
-            var monitoredPlayerNames = string.Join(",", dataStore.Tournaments.MonitoredPlayers());
-            monitoredPlayerNames.Remove(monitoredPlayerNames.Length - 1);
-            //RegisterForegroundService(monitoredPlayerNames);
         }
 
         return StartCommandResult.Sticky;
+    }
+
+    private bool ShouldStop(Intent? intent)
+    {
+        return intent!.Action != null && intent.Action.Equals(Constants.ActionStopService) || !dataStore.Tournaments.MonitoredPlayers().Any();
     }
 
     public override void OnDestroy()
@@ -74,72 +64,40 @@ public class CuescoreCheckerService : Service
         // We need to shut things down.
         dataStore.Tournaments.CancelMonitoredPlayers();
 
-        Log.Debug(TAG, "The TimeStamper has been disposed.");
-        Log.Info(TAG, "OnDestroy: The started service is shutting down.");
-
-        // Remove the notification from the status bar.
-        //var notificationManager = (NotificationManager)GetSystemService(NotificationService);
-        //notificationManager.Cancel(Constants.SERVICE_RUNNING_NOTIFICATION_ID);
-
         _isCheckerRunning = false;
 
         var notificationManager = (NotificationManager)GetSystemService(NotificationService)!;
         var notification = GetServiceNotification();
-        notificationManager.Notify(0, notification);
+        notificationManager.Notify(Constants.ServiceRunningNotificationId, notification);
 
         base.OnDestroy();
     }
 
     void RegisterForegroundService(string playerName)
     {
-
         var stopServiceIntent = new Intent(this, GetType());
-        stopServiceIntent.SetAction(Constants.ACTION_STOP_SERVICE);
+        stopServiceIntent.SetAction(Constants.ActionStopService);
         var stopServicePendingIntent = PendingIntent.GetService(this, 0, stopServiceIntent, PendingIntentFlags.Immutable);
 
         var notification = GetServiceNotification();
 
         if (Build.VERSION.SdkInt < BuildVersionCodes.Tiramisu)
         {
-            StartForeground(Constants.SERVICE_RUNNING_NOTIFICATION_ID, notification);
+            StartForeground(Constants.ServiceRunningNotificationId, notification);
         }
         else
         {
 #pragma warning disable CA1416 // Validate platform compatibility
             // Compatibility is enforced in if block above
-            StartForeground(Constants.SERVICE_RUNNING_NOTIFICATION_ID, notification, Android.Content.PM.ForegroundService.TypeDataSync);
+            StartForeground(Constants.ServiceRunningNotificationId, notification, Android.Content.PM.ForegroundService.TypeDataSync);
 #pragma warning restore CA1416 // Validate platform compatibility
         }
     }
 
-
-    /// <summary>
-    /// Builds the Notification.Action that will allow the user to stop the service via the
-    /// notification in the status bar
-    /// </summary>
-    /// <returns>The stop service action.</returns>
-    NotificationCompat.Action BuildStopServiceAction()
-    {
-        var stopServiceIntent = new Intent(this, GetType());
-        stopServiceIntent.SetAction(Constants.ACTION_STOP_SERVICE);
-        var stopServicePendingIntent = PendingIntent.GetService(this, 0, stopServiceIntent, PendingIntentFlags.Immutable);
-
-        var builder = new NotificationCompat.Action.Builder(Android.Resource.Drawable.IcMediaPause,
-                                                      "Stop service",
-                                                      stopServicePendingIntent);
-        return builder.Build();
-
-    }
-
-    public override bool StopService(Intent? name)
-    {
-        return base.StopService(name);
-    }
-
     public async Task RunCheck(CancellationTokenSource tokenSource)
     {
-        var dataStore = ServiceResolver.GetService<DataStore>();
-        var cueScoreService = ServiceResolver.GetService<ICueScoreService>();
+        IDataStore dataStore = ServiceResolver.GetService<IDataStore>();
+        var cueScoreService = ServiceResolver.GetService<IScoreAPIClient>();
         var notificationManager = (NotificationManager)GetSystemService(NotificationService)!;
 
         await Task.Run(async () =>
@@ -165,17 +123,17 @@ public class CuescoreCheckerService : Service
                         switch (notification.type)
                         {
                             case NotificationType.Start:
-                                deviceNotification = new NotificationCompat.Builder(this, MainApplication.ChannelId)
+                                deviceNotification = new NotificationCompat.Builder(this, Constants.ChannelId)
                                     .SetContentTitle($"{notification.Player1} vs {notification.Player2}")
-                                    .SetContentText($"Table {notification.Message} {notification.StartTime.ToString("h:mm tt")}") //TODO create names
+                                    .SetContentText($"Table {notification.Message} {notification.StartTime.ToString("h:mm tt")}")
                                     .SetSmallIcon(Resource.Drawable.cuescore_notify_icon)
                                     .SetAutoCancel(true)
                                     .Build();
                                 break;
                             case NotificationType.Result:
-                                deviceNotification = new NotificationCompat.Builder(this, MainApplication.ChannelId)
+                                deviceNotification = new NotificationCompat.Builder(this, Constants.ChannelId)
                                     .SetContentTitle($"{notification.Player1} vs {notification.Player2}")
-                                    .SetContentText($"Result {notification.Message}") //TODO create names
+                                    .SetContentText($"Result {notification.Message}")
                                     .SetSmallIcon(Resource.Drawable.cuescore_notify_icon)
                                     .SetAutoCancel(true)
                                     .Build();
@@ -191,22 +149,14 @@ public class CuescoreCheckerService : Service
                         OnDestroy();
                     }
 
-                    await Task.Delay(60000, tokenSource.Token); //TODO make config
-
-                    System.Diagnostics.Debug.WriteLine("Checking tournament API for AmIOnYet!!");
+                    await Task.Delay(CheckIntervalMS, tokenSource.Token); 
                 }
                 catch (TaskCanceledException)
                 {
-                    _stopping = true;
-
-                    //TODO tap opens app
-
                     StopForeground(StopForegroundFlags.Remove);
                     StopSelf();
                     _isCheckerRunning = false;
                     break;
-
-                    //TODO show message saying listener stopped
                 }
                 catch (Exception ex)
                 {
@@ -214,18 +164,14 @@ public class CuescoreCheckerService : Service
                 }
             }
         }, tokenSource.Token);
-
-
-
-
     }
 
-    public Notification GetServiceNotification()
+    private Notification GetServiceNotification()
     {
         var notificationIntent = new Intent(this, typeof(MainActivity));
         var pendingIntent = PendingIntent.GetActivity(this, 0, notificationIntent, PendingIntentFlags.Immutable);
 
-        return new NotificationCompat.Builder(this, MainApplication.ChannelId)
+        return new NotificationCompat.Builder(this, Constants.ChannelId)
            .SetContentTitle("Cuescore buddy")
            .SetContentText($"Monitoring {(_isCheckerRunning ? "started" : "stopped. No players or active tournaments to monitor.")}")
            .SetSmallIcon(Resource.Drawable.cuescore_notify_icon)

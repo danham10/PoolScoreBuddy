@@ -47,7 +47,7 @@
     <MauiIcon Include="Resources\AppIcon\appicon.svg" Color="#DCDFE0" Resize="false" />
 
 		<!-- Splash Screen -->
-    <MauiSplashScreen Include="Resources\Splash\cuescorebuddy2.svg" Color="#DCDFE0" BaseSize="128,128" />
+    <MauiSplashScreen Include="Resources\Splash\poolbuddy2.svg" Color="#DCDFE0" BaseSize="128,128" />
     
 		<!-- Images -->
 		<MauiImage Include="Resources\Images\*" />
@@ -64,7 +64,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Remove="Resources\Fonts\OdinRounded-Bold.otf" />
+	  <None Remove="Resources\Fonts\Quicksand-Bold.ttf" />
+	  <None Remove="Resources\Fonts\Quicksand-Light.ttf" />
+	  <None Remove="Resources\Fonts\Quicksand-Medium.ttf" />
+	  <None Remove="Resources\Fonts\Quicksand-Regular.ttf" />
+	  <None Remove="Resources\Fonts\Quicksand-SemiBold.ttf" />
 	  <None Remove="Resources\Fonts\Roboto-Black.ttf" />
 	  <None Remove="Resources\Fonts\Roboto-BlackItalic.ttf" />
 	  <None Remove="Resources\Fonts\Roboto-Bold.ttf" />

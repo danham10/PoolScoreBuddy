@@ -1,14 +1,13 @@
 ﻿using Android.App;
 using Android.OS;
 using Android.Runtime;
+using CuescoreBuddy.Platforms;
 
 namespace CuescoreBuddy;
 
 [Application]
 public class MainApplication : MauiApplication
 {
-
-    public static readonly string ChannelId = "exampleServiceChannel";
     public MainApplication(IntPtr handle, JniHandleOwnership ownership)
         : base(handle, ownership)
     {
@@ -24,7 +23,7 @@ public class MainApplication : MauiApplication
         {
 #pragma warning disable CA1416
             var serviceChannel =
-               new NotificationChannel(ChannelId, "Example Service Channel", NotificationImportance.Default);
+               new NotificationChannel(Constants.ChannelId, Constants.ChannelName, NotificationImportance.Default);
 
             if (GetSystemService(NotificationService) is NotificationManager manager)
             {

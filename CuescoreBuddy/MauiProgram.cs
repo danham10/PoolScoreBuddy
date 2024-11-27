@@ -29,8 +29,8 @@ namespace CuescoreBuddy
 #endif
 
             builder.Services.AddHttpClient();
-            builder.Services.AddTransient<ICueScoreService, CueScoreService>();
-            builder.Services.AddSingleton<DataStore>();
+            builder.Services.AddTransient<IScoreAPIClient, CueScoreAPIClient>();
+            builder.Services.AddSingleton<IDataStore, DataStore>();
 
             builder.Services.AddSingleton<TournamentPage>();
             builder.Services.AddSingleton<TournamentViewModel>();

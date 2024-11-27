@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using CuescoreBuddy.Models.API;
 using Plugin.LocalNotification;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
@@ -10,12 +11,11 @@ using System.Windows.Input;
 namespace CuescoreBuddy.ViewModels;
 public partial class PlayerViewModel : BaseViewModel, IQueryAttributable
 {
-    readonly DataStore _dataStore;
+    readonly IDataStore _dataStore;
     readonly IMessenger _messenger;
-    readonly ICueScoreService _cueScoreService;
+    readonly IScoreAPIClient _cueScoreService;
 
     TournamentDecorator? _tournament;
-    bool _isRefreshing;
 
     public ObservableCollection<Player> Players { get; private set; } = [];
 
@@ -26,10 +26,9 @@ public partial class PlayerViewModel : BaseViewModel, IQueryAttributable
 
     public PlayerViewModel()
     {
-        _dataStore = ServiceResolver.GetService<DataStore>();
+        _dataStore = ServiceResolver.GetService<IDataStore>();
         _messenger = ServiceResolver.GetService<IMessenger>();
-        _cueScoreService = ServiceResolver.GetService<ICueScoreService>();
-
+        _cueScoreService = ServiceResolver.GetService<IScoreAPIClient>();
     }
 
     public void ApplyQueryAttributes(IDictionary<string, object> query)

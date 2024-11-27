@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 
-namespace CuescoreBuddy.Models;
+namespace CuescoreBuddy.Models.API;
 
 public class Match
 {

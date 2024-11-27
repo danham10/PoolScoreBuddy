@@ -22,7 +22,10 @@
 
         <VerticalStackLayout>
             <Border Padding="20,20,20,20" Margin="0,0,0,20" StrokeThickness="3" >
-                <VerticalStackLayout>
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="10,10,10,10" />
+                    </Border.StrokeShape>
+                    <VerticalStackLayout>
                 <Label
             Margin="0"
             FontSize="Default"
@@ -52,7 +55,10 @@
             </Border>
 
             <Border Padding="20,20,20,20" Margin="0,0,0,20" StrokeThickness="3" >
-                <VerticalStackLayout>
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="10,10,10,10" />
+                    </Border.StrokeShape>
+                    <VerticalStackLayout>
                     <Label
             Margin="0"
             FontSize="Default"
@@ -75,6 +81,9 @@
                 </VerticalStackLayout>
             </Border>
                 <Border Padding="20,20,20,20" Margin="0,0,0,20" StrokeThickness="3" >
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="10,10,10,10" />
+                    </Border.StrokeShape>
                     <VerticalStackLayout>
                         <Label
             Margin="0"

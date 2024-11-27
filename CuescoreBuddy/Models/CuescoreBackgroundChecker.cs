@@ -2,6 +2,7 @@
 
 public record CuescoreBackgroundChecker(ServiceMessageType type);
 
-public enum ServiceMessageType {
+public enum ServiceMessageType
+{
     Default = 0,
 }

@@ -1,8 +1,6 @@
 ﻿using System.Text.Json;
 
-namespace CuescoreBuddy.Models;
-
-//TODO proper case this and change deserializer to ignore case
+namespace CuescoreBuddy.Models.API;
 
 /// <summary>
 /// Generated from special paste of JSON from https://api.cuescore.com/
@@ -32,7 +30,7 @@ public class TournamentDecorator
         Tournament = tournament;
     }
 
-    public async Task Fetch(ICueScoreService cueScoreService, int tournamentId)
+    public async Task Fetch(IScoreAPIClient cueScoreService, int tournamentId)
     {
         Tournament = await cueScoreService.GetTournament(tournamentId);
     }
@@ -47,7 +45,7 @@ public class TournamentDecorator
             MonitoredPlayers.Add(monitoredPlayer);
 
             return monitoredPlayer;
-        } 
+        }
         else
         {
             MonitoredPlayers.Remove(monitoredPlayer);
@@ -74,7 +72,7 @@ public class TournamentDecorator
         return players.OrderBy(p => p.Name);
     }
 
-    public async Task<IEnumerable<Player>> GetLoadedPlayers(ICueScoreService cueScoreService)
+    public async Task<IEnumerable<Player>> GetLoadedPlayers(IScoreAPIClient cueScoreService)
     {
         if (_players == null)
             _players = await cueScoreService.GetPlayers(Tournament.TournamentId);
