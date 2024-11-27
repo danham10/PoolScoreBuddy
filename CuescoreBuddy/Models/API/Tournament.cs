@@ -74,8 +74,7 @@ public class TournamentDecorator
 
     public async Task<IEnumerable<Player>> GetLoadedPlayers(IScoreAPIClient cueScoreService)
     {
-        if (_players == null)
-            _players = await cueScoreService.GetPlayers(Tournament.TournamentId!.Value);
+        _players ??= await cueScoreService.GetPlayers(Tournament.TournamentId!.Value);
 
         return GetLoadedPlayers();
     }

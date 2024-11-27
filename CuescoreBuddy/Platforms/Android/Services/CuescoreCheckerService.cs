@@ -10,8 +10,8 @@ namespace CuescoreBuddy.Platforms;
 public class AndroidCuescoreCheckerService : Service
 {
     static readonly string? Tag = typeof(AndroidCuescoreCheckerService).FullName;
-    CancellationTokenSource _cts = new();
-    IDataStore dataStore = ServiceResolver.GetService<IDataStore>();
+    readonly CancellationTokenSource _cts = new();
+    readonly IDataStore dataStore = ServiceResolver.GetService<IDataStore>();
     bool _isCheckerRunning;
 
     const int CheckIntervalMS = 60000;
@@ -28,7 +28,7 @@ public class AndroidCuescoreCheckerService : Service
         if (!_isCheckerRunning)
         {
             _isCheckerRunning = true;
-            RegisterForegroundService("");
+            RegisterForegroundService();
 
             Task.Run(() =>
             {
@@ -56,7 +56,7 @@ public class AndroidCuescoreCheckerService : Service
 
     private bool ShouldStop(Intent? intent)
     {
-        return intent!.Action != null && intent.Action.Equals(Constants.ActionStopService) || !dataStore.Tournaments.MonitoredPlayers().Any();
+        return intent!.Action != null && intent.Action.Equals(Constants.ActionStopService) || dataStore.Tournaments.MonitoredPlayers().Count() == 0;
     }
 
     public override void OnDestroy()
@@ -73,12 +73,8 @@ public class AndroidCuescoreCheckerService : Service
         base.OnDestroy();
     }
 
-    void RegisterForegroundService(string playerName)
+    void RegisterForegroundService()
     {
-        var stopServiceIntent = new Intent(this, GetType());
-        stopServiceIntent.SetAction(Constants.ActionStopService);
-        var stopServicePendingIntent = PendingIntent.GetService(this, 0, stopServiceIntent, PendingIntentFlags.Immutable);
-
         var notification = GetServiceNotification();
 
         if (Build.VERSION.SdkInt < BuildVersionCodes.Tiramisu)
@@ -120,12 +116,12 @@ public class AndroidCuescoreCheckerService : Service
                     {
                         Notification? deviceNotification = null;
 
-                        switch (notification.type)
+                        switch (notification.notificationType)
                         {
                             case NotificationType.Start:
                                 deviceNotification = new NotificationCompat.Builder(this, Constants.ChannelId)
                                     .SetContentTitle($"{notification.Player1} vs {notification.Player2}")
-                                    .SetContentText($"Table {notification.Message} {notification.StartTime.ToString("h:mm tt")}")
+                                    .SetContentText($"Table {notification.Message} {notification.StartTime:h:mm tt}")
                                     .SetSmallIcon(Resource.Drawable.cuescore_notify_icon)
                                     .SetAutoCancel(true)
                                     .Build();

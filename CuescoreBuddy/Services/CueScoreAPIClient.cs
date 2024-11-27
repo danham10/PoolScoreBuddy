@@ -4,17 +4,12 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace CuescoreBuddy.Services
 {
-    internal class CueScoreAPIClient : IScoreAPIClient
+    internal class CueScoreAPIClient(HttpClient httpClient) : IScoreAPIClient
     {
         const string RemoteServiceBaseUrl = "https://api.cuescore.com"; //TODO make config?
 
-        private readonly HttpClient _httpClient;
-        private static JsonSerializerOptions _serializerOptions = new() { PropertyNameCaseInsensitive = true };
-
-        public CueScoreAPIClient(HttpClient httpClient)
-        {
-            _httpClient = httpClient;
-        }
+        private readonly HttpClient _httpClient = httpClient;
+        private readonly static JsonSerializerOptions _serializerOptions = new() { PropertyNameCaseInsensitive = true };
 
         public async Task<Tournament> GetTournament(int tournamentId)
         {

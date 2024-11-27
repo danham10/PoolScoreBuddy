@@ -6,7 +6,7 @@ public class NotificationService(IDataStore dataStore, IScoreAPIClient cueScoreS
 {
     public async Task<List<CuescoreNotification>> ProcessNotifications()
     {
-        List<CuescoreNotification> notifications = new();
+        List<CuescoreNotification> notifications = [];
 
         try
         {
@@ -70,7 +70,7 @@ public class NotificationService(IDataStore dataStore, IScoreAPIClient cueScoreS
                 match.PlayerA.Name,
                 match.PlayerB.Name,
                 DateTime.Parse(match.StopTime.ToString()!, null, System.Globalization.DateTimeStyles.RoundtripKind),
-                $"{match.ScoreA.ToString()} - {match.ScoreB.ToString()}"));
+                $"{match.ScoreA} - {match.ScoreB}"));
 
             p.ResultsMatchIds.Add(match.MatchId);
         }

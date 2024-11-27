@@ -6,10 +6,7 @@ public class Tournaments : List<TournamentDecorator>
     {
         var tournament = this.FirstOrDefault(t => t.Tournament.TournamentId == tournamentId);
 
-        if (tournament == null)
-        {
-            tournament = new TournamentDecorator(tournamentId);
-        }
+        tournament ??= new TournamentDecorator(tournamentId);
 
         return tournament;
     }

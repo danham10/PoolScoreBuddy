@@ -21,7 +21,7 @@ public partial class TournamentViewModel : BaseViewModel
 
 
     [RelayCommand]
-    private async Task TapCommand(string url)
+    private async static Task TapCommand(string url)
     {
         await Launcher.OpenAsync(url);
     }
@@ -46,7 +46,7 @@ public partial class TournamentViewModel : BaseViewModel
                 await GoToTournamentSelectedPage(tournamentFacade);
             }
         }
-        catch (HttpRequestException ex)
+        catch (HttpRequestException)
         {
             await Application.Current!.MainPage!.DisplayAlert($"Cannot fetch tournament {TournamentId}", "Check you have a data connection", "OK");
             FocusView?.Invoke(this, EventArgs.Empty);
