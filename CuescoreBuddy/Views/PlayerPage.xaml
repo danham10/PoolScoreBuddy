@@ -10,7 +10,8 @@
     xmlns:vm="clr-namespace:CuescoreBuddy.ViewModels"
     xmlns:converters="clr-namespace:CuescoreBuddy.Converters"
     xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-    Title="Select players">
+    xmlns:res="clr-namespace:CuescoreBuddy.Resources"
+    Title="{x:Static res:AppResources.PlayersTitle}">
     <ContentPage.BindingContext>
         <vm:PlayerViewModel />
     </ContentPage.BindingContext>
@@ -19,7 +20,6 @@
     </ContentPage.Behaviors>
     <Grid
         RowDefinitions="0,*">
-        
         <RefreshView
             Grid.Row="1"
             Command="{Binding RefreshCommand}"
@@ -50,12 +50,12 @@
                                 CommandParameter="{Binding .}">
                                 <Button.Triggers>
                                     <DataTrigger TargetType="Button" Binding="{Binding IsMonitored}" Value="false">
-                                        <Setter Property="Text"  Value="Unmonitored" />
+                                        <Setter Property="Text"  Value="{x:Static res:AppResources.UnmonitoredButton}" />
                                         <Setter Property="BorderColor" Value="Red" />
 
                                     </DataTrigger>
                                     <DataTrigger TargetType="Button" Binding="{Binding IsMonitored}" Value="true">
-                                        <Setter Property="Text"  Value="Monitored" />
+                                        <Setter Property="Text"  Value="{x:Static res:AppResources.MonitoredButton}" />
                                         <Setter Property="BorderColor"  Value="Green" />
                                     </DataTrigger>
                                 </Button.Triggers>
@@ -69,8 +69,7 @@
                             FontAttributes="Bold"
                             FontSize="Large"
                             HorizontalTextAlignment="Center"
-                            Text="No players available"
-                            TextColor="Black" 
+                            Text="{x:Static res:AppResources.PlayersNoneAvailable}"
                             IsVisible="{Binding IsBusy, Converter={converters:InverseBoolConverter}}"/>
                     </VerticalStackLayout>
                 </CollectionView.EmptyView>

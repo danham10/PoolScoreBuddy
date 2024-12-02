@@ -4,17 +4,15 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:vm="clr-namespace:CuescoreBuddy.ViewModels"
-    Title="">
-
+    xmlns:res="clr-namespace:CuescoreBuddy.Resources"
+    Title="{x:Static res:AppResources.TournamentSelectedTitle}"
+>
     <ContentPage.BindingContext>
         <vm:TournamentSelectedViewModel />
     </ContentPage.BindingContext>
     <VerticalStackLayout Margin="10,0,10,0">
-    <Border Padding="20,20,20,20" Margin="0,0,0,20" StrokeThickness="3" >
-        <Border.StrokeShape>
-            <RoundRectangle CornerRadius="10,10,10,10" />
-        </Border.StrokeShape>
-        <VerticalStackLayout>
+        <Border Margin="0,0,0,20">
+            <VerticalStackLayout>
             <Label
             Margin="0"
             FontSize="Medium"
@@ -24,7 +22,7 @@
             Command="{Binding MonitorCommand}"
             HorizontalOptions="FillAndExpand"
             Margin="0,10,0,0"
-            Text="Setup monitoring" />
+            Text="{x:Static res:AppResources.MonitoringButton}" />
         </VerticalStackLayout>
     </Border>
     </VerticalStackLayout>

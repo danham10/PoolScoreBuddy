@@ -3,6 +3,7 @@ using Android.Content;
 using Android.OS;
 using Android.Util;
 using AndroidX.Core.App;
+using CuescoreBuddy.Resources;
 
 namespace CuescoreBuddy.Platforms;
 
@@ -56,7 +57,7 @@ public class AndroidCuescoreCheckerService : Service
 
     private bool ShouldStop(Intent? intent)
     {
-        return intent!.Action != null && intent.Action.Equals(Constants.ActionStopService) || dataStore.Tournaments.MonitoredPlayers().Count() == 0;
+        return intent!.Action != null && intent.Action.Equals(Constants.ActionStopService) || dataStore.Tournaments.MonitoredPlayers().Count == 0;
     }
 
     public override void OnDestroy()
@@ -95,57 +96,26 @@ public class AndroidCuescoreCheckerService : Service
         IDataStore dataStore = ServiceResolver.GetService<IDataStore>();
         var cueScoreService = ServiceResolver.GetService<IScoreAPIClient>();
         var notificationManager = (NotificationManager)GetSystemService(NotificationService)!;
+        var playerNotificationService = ServiceResolver.GetService<IPlayerNotificationService>(); //TODO remove
 
         await Task.Run(async () =>
         {
-            if (tokenSource.Token.IsCancellationRequested)
-            {
-
-            }
-
             while (true)
             {
                 tokenSource.Token.ThrowIfCancellationRequested();
 
                 try
                 {
-                    var organiser = new NotificationService(dataStore, cueScoreService);
-                    var notificationsToSend = await organiser.ProcessNotifications();
-
-                    foreach (var notification in notificationsToSend)
-                    {
-                        Notification? deviceNotification = null;
-
-                        switch (notification.notificationType)
-                        {
-                            case NotificationType.Start:
-                                deviceNotification = new NotificationCompat.Builder(this, Constants.ChannelId)
-                                    .SetContentTitle($"{notification.Player1} vs {notification.Player2}")
-                                    .SetContentText($"Table {notification.Message} {notification.StartTime:h:mm tt}")
-                                    .SetSmallIcon(Resource.Drawable.cuescore_notify_icon)
-                                    .SetAutoCancel(true)
-                                    .Build();
-                                break;
-                            case NotificationType.Result:
-                                deviceNotification = new NotificationCompat.Builder(this, Constants.ChannelId)
-                                    .SetContentTitle($"{notification.Player1} vs {notification.Player2}")
-                                    .SetContentText($"Result {notification.Message}")
-                                    .SetSmallIcon(Resource.Drawable.cuescore_notify_icon)
-                                    .SetAutoCancel(true)
-                                    .Build();
-                                break;
-                        }
-
-
-                        notificationManager.Notify(notification.MatchId, deviceNotification);
-                    }
+                    //var organiser = new PlayerNotificationService(dataStore, cueScoreService, notificationService);
+                    var notificationsToSend = await playerNotificationService.ProcessNotifications();
+                    await playerNotificationService.SendNotifications(notificationsToSend);
 
                     if (!dataStore.Tournaments.ShouldMonitor())
                     {
                         OnDestroy();
                     }
 
-                    await Task.Delay(CheckIntervalMS, tokenSource.Token); 
+                    await Task.Delay(CheckIntervalMS, tokenSource.Token);
                 }
                 catch (TaskCanceledException)
                 {
@@ -164,13 +134,14 @@ public class AndroidCuescoreCheckerService : Service
 
     private Notification GetServiceNotification()
     {
+        // Cannot use Plugin.Localnotification because we need Android specific type for StartForeground
         var notificationIntent = new Intent(this, typeof(MainActivity));
         var pendingIntent = PendingIntent.GetActivity(this, 0, notificationIntent, PendingIntentFlags.Immutable);
 
         return new NotificationCompat.Builder(this, Constants.ChannelId)
-           .SetContentTitle("Cuescore buddy")
-           .SetContentText($"Monitoring {(_isCheckerRunning ? "started" : "stopped. No players or active tournaments to monitor.")}")
-           .SetSmallIcon(Resource.Drawable.cuescore_notify_icon)
+           .SetContentTitle(AppResources.AppTitle)
+           .SetContentText(_isCheckerRunning ? AppResources.MonitoringStarted : AppResources.MonitoringStopped)
+           .SetSmallIcon(_Microsoft.Android.Resource.Designer.ResourceConstant.Drawable.cuescore_notify_icon)
            .SetContentIntent(pendingIntent)
            .Build();
     }

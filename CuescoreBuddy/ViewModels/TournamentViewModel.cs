@@ -1,30 +1,22 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CuescoreBuddy.Models.API;
+using CuescoreBuddy.Resources;
+using System.Text.Json;
 
 namespace CuescoreBuddy.ViewModels;
-public partial class TournamentViewModel : BaseViewModel
+public partial class TournamentViewModel(IScoreAPIClient scoreAPIClient) : BaseViewModel
 {
+    readonly IScoreAPIClient _scoreAPIClient = scoreAPIClient;
+
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(TournamentLoadCommand))]
-    private string? tournamentId = "";
+    string? tournamentId = "";
 
     [ObservableProperty]
-    private string? errorMessage;
+    string? errorMessage;
 
     public event EventHandler? FocusView;
-
-    public TournamentViewModel()
-    {
-        Title = "About";
-    }
-
-
-    [RelayCommand]
-    private async static Task TapCommand(string url)
-    {
-        await Launcher.OpenAsync(url);
-    }
 
     private bool CanExecuteTournamentLoad() => !string.IsNullOrEmpty(TournamentId);
 
@@ -35,32 +27,41 @@ public partial class TournamentViewModel : BaseViewModel
         {
             IsBusy = true;
 
-            var cueScoreService = ServiceResolver.GetService<IScoreAPIClient>();
-            Tournament? tournament = await cueScoreService.GetTournament(Convert.ToInt32(TournamentId));
+            Tournament? tournament = await _scoreAPIClient.GetTournament(Convert.ToInt32(TournamentId));
 
             if (tournament != null)
             {
-                TournamentDecorator tournamentFacade = new(tournament);
+                TournamentDecorator tournamentDecorator = new(tournament);
 
                 IsBusy = false;
-                await GoToTournamentSelectedPage(tournamentFacade);
+                await GoToTournamentSelectedPage(tournamentDecorator);
             }
         }
         catch (HttpRequestException)
         {
-            await Application.Current!.MainPage!.DisplayAlert($"Cannot fetch tournament {TournamentId}", "Check you have a data connection", "OK");
+            await Application.Current!.MainPage!.DisplayAlert(string.Format(AppResources.TournamentHttpExceptionTitle, TournamentId),
+                AppResources.TournamentHttpExceptionMessage,
+                AppResources.TournamentHttpExceptionButton);
+
             FocusView?.Invoke(this, EventArgs.Empty);
         }
-        catch (APIException ex)
+        catch (APIServerException ex)
         {
-            await Application.Current!.MainPage!.DisplayAlert($"Cannot fetch tournament {TournamentId}.", ex.Message, "OK");
+            await Application.Current!.MainPage!.DisplayAlert(string.Format(AppResources.TournamentAPIServerExceptionTitle, TournamentId), 
+                string.Format(AppResources.TournamentAPIServerExceptionMessage, ex!.Message),
+                AppResources.TournamentAPIServerExceptionButton);
+
             FocusView?.Invoke(this, EventArgs.Empty);
         }
-        catch (Exception)
+        catch (JsonException ex)
         {
-            await Application.Current!.MainPage!.DisplayAlert($"Cannot fetch tournament {TournamentId}", $"If the number is correct, please consider emailing me your tournament number {TournamentId} at poolscorebuddy@outlook.com so I can look into fixing that. Thankyou.", "OK");
+            await Application.Current!.MainPage!.DisplayAlert(string.Format(AppResources.TournamentJsonExceptionTitle, TournamentId),
+                string.Format(AppResources.TournamentJsonExceptionMessage, TournamentId, ex.Message),
+                AppResources.TournamentJsonExceptionButton);
+            
             FocusView?.Invoke(this, EventArgs.Empty);
         }
+
         IsBusy = false;
     }
 

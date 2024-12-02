@@ -1,7 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CuescoreBuddy.Models.API;
-using System.Windows.Input;
+using CuescoreBuddy.Resources;
 
 namespace CuescoreBuddy.ViewModels;
 public partial class TournamentSelectedViewModel : BaseViewModel, IQueryAttributable
@@ -14,22 +14,18 @@ public partial class TournamentSelectedViewModel : BaseViewModel, IQueryAttribut
     [ObservableProperty]
     public string message = "";
 
-    public ICommand MonitorCommand { get; private set; }
-
     public TournamentSelectedViewModel()
     {
-        Title = "About";
-        MonitorCommand = new AsyncRelayCommand(ExecuteMonitorAsync, CanExecuteMonitor);
     }
 
     public void ApplyQueryAttributes(IDictionary<string, object> query)
     {
-        _tournament = (query["Tournament"] as TournamentDecorator);
+        _tournament = query["Tournament"] as TournamentDecorator;
 
         TournamentName = _tournament!.Tournament!.Name!;
         Message = _tournament!.IsFinished() ?
-            $"'{TournamentName}' has finished. Go back and choose another." :
-            $"'{TournamentName}' was found";
+            string.Format(AppResources.TournamentFinishedLabel, TournamentName) :
+            string.Format(AppResources.TournamentSelectedLabel, TournamentName);
     }
 
     #region Commands
@@ -39,7 +35,8 @@ public partial class TournamentSelectedViewModel : BaseViewModel, IQueryAttribut
         return _tournament!.IsFinished() == false;
     }
 
-    private async Task ExecuteMonitorAsync()
+    [RelayCommand(CanExecute = nameof(CanExecuteMonitor))]
+    private async Task Monitor()
     {
         var navigationParameters = new Dictionary<string, object>
         {

@@ -1,6 +1,5 @@
 ﻿using System.Text.Json;
 using CuescoreBuddy.Models.API;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace CuescoreBuddy.Services
 {
@@ -36,16 +35,16 @@ namespace CuescoreBuddy.Services
 
         private static T Deserialize<T>(string json)
         {
-            try
+            const string expectedErrorPrefix = "{error: ";
+
+            // Below might be returned - invalid JSON unfortunately. So we need to return it verbatim.
+            // error: 'Could not find tournament with given ID.'
+            if (json.StartsWith(expectedErrorPrefix, StringComparison.CurrentCultureIgnoreCase))
             {
-                return JsonSerializer.Deserialize<T>(json, _serializerOptions)!;
+                throw new APIServerException(json);
             }
-            catch (JsonException)
-            {
-                // Below might be returned - invalid JSON unfortunately. So we need to return it verbatim.
-                // error: 'Could not find tournament with given ID.'
-                throw new APIException(json);
-            }
+
+            return JsonSerializer.Deserialize<T>(json, _serializerOptions)!;
         }
     }
 }

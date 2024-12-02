@@ -1,6 +1,6 @@
 ﻿namespace CuescoreBuddy.Models;
 
-public record CuescoreBackgroundChecker(ServiceMessageType messageType);
+public record CuescoreBackgroundChecker(ServiceMessageType MessageType);
 
 public enum ServiceMessageType
 {

@@ -1,7 +1,9 @@
 ﻿using CommunityToolkit.Maui;
 using CommunityToolkit.Mvvm.Messaging;
+using CuescoreBuddy.Platforms;
 using Microsoft.Extensions.Logging;
 using Plugin.LocalNotification;
+using Plugin.LocalNotification.AndroidOption;
 
 namespace CuescoreBuddy
 {
@@ -15,31 +17,40 @@ namespace CuescoreBuddy
             builder
                 .UseMauiApp<App>()
                 .UseMauiCommunityToolkit()
-                .UseLocalNotification()
                 .ConfigureFonts(fonts =>
                 {
-                    fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
-                    fonts.AddFont("Roboto-Regular.ttf", "RobotoRegular");
-                    fonts.AddFont("Roboto-Bold.ttf", "Roboto-Bold");
-                    
+                    fonts.AddFont("OpenSans-Regular.ttf", "Roboto-Regular");
+                    fonts.AddFont("Quicksand-Bold.ttf", "Roboto-Bold");
+
+                })
+                .UseLocalNotification(static config =>
+                {
+                    config.AddAndroid(android =>
+                    {
+                        android.AddChannel(new NotificationChannelRequest
+                        {
+                            Id = Constants.ChannelId
+                        });
+                    });
                 });
 
 #if DEBUG
-    		builder.Logging.AddDebug();
+            builder.Logging.AddDebug();
 #endif
 
             builder.Services.AddHttpClient();
             builder.Services.AddTransient<IScoreAPIClient, CueScoreAPIClient>();
+            builder.Services.AddTransient<IPlayerNotificationService, PlayerNotificationService>();
             builder.Services.AddSingleton<IDataStore, DataStore>();
 
-            builder.Services.AddSingleton<TournamentPage>();
-            builder.Services.AddSingleton<TournamentViewModel>();
+            builder.Services.AddTransient<TournamentPage>();
+            builder.Services.AddTransient<TournamentViewModel>();
 
-            builder.Services.AddSingleton<TournamentSelectedPage>();
-            builder.Services.AddSingleton<TournamentSelectedViewModel>();
+            builder.Services.AddTransient<TournamentSelectedPage>();
+            builder.Services.AddTransient<TournamentSelectedViewModel>();
 
-            builder.Services.AddSingleton<PlayerPage>();
-            builder.Services.AddSingleton<PlayerViewModel>();
+            builder.Services.AddTransient<PlayerPage>();
+            builder.Services.AddTransient<PlayerViewModel>();
 
             builder.Services.AddSingleton<IMessenger, WeakReferenceMessenger>();
 
@@ -48,14 +59,13 @@ namespace CuescoreBuddy
 
         private static void SetHandlers()
         {
-            Microsoft.Maui.Handlers.EntryHandler.Mapper.AppendToMapping("MyCustomization", (handler, view) =>
+            Microsoft.Maui.Handlers.EntryHandler.Mapper.AppendToMapping("EntryUnderscoreHide", (handler, view) =>
             {
-                // Hide blue underscore in Entry control
                 if (view is Entry)
                 {
-                    #if ANDROID
+#if ANDROID
                     handler.PlatformView.Background = null;
-                    #endif
+#endif
                 }
             });
 

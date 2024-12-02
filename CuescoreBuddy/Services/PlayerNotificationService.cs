@@ -1,8 +1,11 @@
 ﻿using CuescoreBuddy.Models.API;
+using CuescoreBuddy.Resources;
+using Plugin.LocalNotification;
+using Plugin.LocalNotification.AndroidOption;
 
 namespace CuescoreBuddy.Services;
 
-public class NotificationService(IDataStore dataStore, IScoreAPIClient cueScoreService)
+public class PlayerNotificationService(IDataStore dataStore, IScoreAPIClient cueScoreService, INotificationService notificationService) : IPlayerNotificationService
 {
     public async Task<List<CuescoreNotification>> ProcessNotifications()
     {
@@ -11,7 +14,7 @@ public class NotificationService(IDataStore dataStore, IScoreAPIClient cueScoreS
         try
         {
             // load tournaments from API
-            foreach( var tournament in dataStore.Tournaments)
+            foreach (var tournament in dataStore.Tournaments)
             {
                 await tournament.Fetch(cueScoreService, tournament.Tournament.TournamentId!.Value);
             }
@@ -37,6 +40,43 @@ public class NotificationService(IDataStore dataStore, IScoreAPIClient cueScoreS
         return notifications;
     }
 
+    public async Task SendNotifications(List<CuescoreNotification> notifications)
+    {
+        foreach (var notification in notifications)
+        {
+            string title = $"{notification.Player1} vs {notification.Player2}";
+            string text = notification.NotificationType switch
+            {
+                NotificationType.Start => string.Format(AppResources.StartNotification, notification.Message, notification.StartTime.ToString("h:mm tt")),
+                NotificationType.Result => string.Format(AppResources.ResultNotification, notification.Message),
+                _ => throw new InvalidDataException()
+            };
+
+            NotificationRequest request = new()
+            {
+                NotificationId = notification.MatchId,
+                Title = title,
+                Description = text,
+                CategoryType = NotificationCategoryType.Status,
+                Android =
+                {
+                    IconSmallName =
+                    {
+                        ResourceName = "cuescore_notify_icon",
+                    },
+                    Color =
+                    {
+                        ResourceName = "colorPrimary"
+                    },
+                    Priority = AndroidPriority.High,
+                    AutoCancel = true,
+                }
+            };
+
+            _ = await notificationService.Show(request);
+        }
+    }
+
     private static void AddErrorNotification(List<CuescoreNotification> notifications)
     {
         notifications.Add(new CuescoreNotification(
@@ -45,7 +85,7 @@ public class NotificationService(IDataStore dataStore, IScoreAPIClient cueScoreS
             "",
             "",
             DateTime.Now,
-            $"There has been a monitoring error, suggest you monitor matches yourself."));
+            AppResources.ErrorNotification));
     }
 
     private static void AddResultsNotifications(List<CuescoreNotification> notifications, TournamentDecorator t, MonitoredPlayer p)
@@ -53,7 +93,7 @@ public class NotificationService(IDataStore dataStore, IScoreAPIClient cueScoreS
         var notifiedResultsMatchIds = p.ResultsMatchIds;
 
         var resultsPlayerMatchIds = from m in t.ResultsPlayerMatches(p.PlayerId)
-                                   select m.MatchId;
+                                    select m.MatchId;
 
         var unnotifiedResultsMatchIds = resultsPlayerMatchIds.Except(notifiedResultsMatchIds);
 
@@ -69,11 +109,18 @@ public class NotificationService(IDataStore dataStore, IScoreAPIClient cueScoreS
                 match.MatchId,
                 match.PlayerA.Name,
                 match.PlayerB.Name,
-                DateTime.Parse(match.StopTime.ToString()!, null, System.Globalization.DateTimeStyles.RoundtripKind),
+                GetMatchTime(match.StopTime),
                 $"{match.ScoreA} - {match.ScoreB}"));
 
             p.ResultsMatchIds.Add(match.MatchId);
         }
+    }
+
+    private static DateTime GetMatchTime(object time)
+    {
+        return string.IsNullOrEmpty(time.ToString()) ?
+            DateTime.Now :
+            DateTime.Parse(time.ToString()!, null, System.Globalization.DateTimeStyles.RoundtripKind);
     }
 
     private static void AddMatchNotifications(List<CuescoreNotification> notifications, TournamentDecorator t, MonitoredPlayer p)
@@ -81,7 +128,7 @@ public class NotificationService(IDataStore dataStore, IScoreAPIClient cueScoreS
         var notifiedCalledMatchIds = p.CalledMatchIds;
 
         var activePlayerMatchIds = from m in t.ActivePlayerMatches(p.PlayerId)
-                                     select m.MatchId;
+                                   select m.MatchId;
 
         var unnotifiedActiveMatchIds = activePlayerMatchIds.Except(notifiedCalledMatchIds);
 
@@ -96,7 +143,7 @@ public class NotificationService(IDataStore dataStore, IScoreAPIClient cueScoreS
                 match.MatchId,
                 match.PlayerA.Name,
                 match.PlayerB.Name,
-                DateTime.Parse(match.StartTime.ToString()!, null, System.Globalization.DateTimeStyles.RoundtripKind),
+                GetMatchTime(match.StartTime),
                 match.GetTable().Name!));
 
             p.CalledMatchIds.Add(match.MatchId);

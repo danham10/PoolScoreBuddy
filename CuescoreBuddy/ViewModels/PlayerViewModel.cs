@@ -1,12 +1,10 @@
-﻿//using AsyncAwaitBestPractices;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using CuescoreBuddy.Models.API;
+using CuescoreBuddy.Resources;
 using Plugin.LocalNotification;
 using System.Collections.ObjectModel;
-using System.Threading.Tasks;
-using System.Windows.Input;
 
 namespace CuescoreBuddy.ViewModels;
 public partial class PlayerViewModel : BaseViewModel, IQueryAttributable
@@ -22,8 +20,6 @@ public partial class PlayerViewModel : BaseViewModel, IQueryAttributable
 
     [ObservableProperty]
     private bool isRefreshing;
-
-    public ICommand RefreshCommand => new AsyncRelayCommand(RefreshPlayersAsync);
 
     public PlayerViewModel()
     {
@@ -46,13 +42,14 @@ public partial class PlayerViewModel : BaseViewModel, IQueryAttributable
 
         if (!allowed)
         {
-            await Application.Current!.MainPage!.DisplayAlert("Alert", "You must manually allow notifications for this app to work properly. Go to app settings, then permissions and under the 'not allowed' list, modify the 'Notifications' entry to become allowed.", "OK");
+            await Application.Current!.MainPage!.DisplayAlert(AppResources.Alert, AppResources.ManualNotificationsWarning, "OK");
         }
             
         return allowed;
     }
 
-    async Task RefreshPlayersAsync()
+    [RelayCommand]
+    async Task Refresh()
     {
         IsBusy = true;
 
@@ -71,7 +68,7 @@ public partial class PlayerViewModel : BaseViewModel, IQueryAttributable
     [RelayCommand]
     async Task Appearing()
     {
-            await RefreshPlayersAsync();
+            await Refresh();
     }
 
     public Command<Player> ToggleStartMonitor => new(async (player) =>
