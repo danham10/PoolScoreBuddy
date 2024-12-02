@@ -19,8 +19,8 @@ namespace CuescoreBuddy
                 .UseMauiCommunityToolkit()
                 .ConfigureFonts(fonts =>
                 {
-                    fonts.AddFont("OpenSans-Regular.ttf", "Roboto-Regular");
-                    fonts.AddFont("Quicksand-Bold.ttf", "Roboto-Bold");
+                    fonts.AddFont("OpenSans-Regular.ttf", "Quicksand-Regular");
+                    fonts.AddFont("Quicksand-Bold.ttf", "Quicksand-Bold");
 
                 })
                 .UseLocalNotification(static config =>

@@ -20,7 +20,7 @@
 		<Nullable>enable</Nullable>
 
 		<!-- Display name -->
-		<ApplicationTitle>PoolScoreBuddy</ApplicationTitle>
+		<ApplicationTitle>Pool Score Buddy</ApplicationTitle>
 
 		<!-- App Identifier -->
 		<ApplicationId>com.danhammond10.poolscorebuddy</ApplicationId>
@@ -49,8 +49,7 @@
     <MauiIcon Include="Resources\AppIcon\appicon.svg" Color="#DCDFE0" Resize="false" />
 
 		<!-- Splash Screen -->
-    <MauiSplashScreen Include="Resources\Splash\poolbuddy2.svg" Color="#DCDFE0" BaseSize="128,128" />
-    
+    <MauiSplashScreen Include="Resources\Splash\poolscorebuddy.svg" Color="#DCDFE0" BaseSize="128,128" />
 		<!-- Images -->
 		<MauiImage Include="Resources\Images\*" />
 
@@ -71,18 +70,6 @@
 	  <None Remove="Resources\Fonts\Quicksand-Medium.ttf" />
 	  <None Remove="Resources\Fonts\Quicksand-Regular.ttf" />
 	  <None Remove="Resources\Fonts\Quicksand-SemiBold.ttf" />
-	  <None Remove="Resources\Fonts\Roboto-Black.ttf" />
-	  <None Remove="Resources\Fonts\Roboto-BlackItalic.ttf" />
-	  <None Remove="Resources\Fonts\Roboto-Bold.ttf" />
-	  <None Remove="Resources\Fonts\Roboto-BoldItalic.ttf" />
-	  <None Remove="Resources\Fonts\Roboto-Italic.ttf" />
-	  <None Remove="Resources\Fonts\Roboto-Light.ttf" />
-	  <None Remove="Resources\Fonts\Roboto-LightItalic.ttf" />
-	  <None Remove="Resources\Fonts\Roboto-Medium.ttf" />
-	  <None Remove="Resources\Fonts\Roboto-MediumItalic.ttf" />
-	  <None Remove="Resources\Fonts\Roboto-Regular.ttf" />
-	  <None Remove="Resources\Fonts\Roboto-Thin.ttf" />
-	  <None Remove="Resources\Fonts\Roboto-ThinItalic.ttf" />
 	  <None Remove="Resources\Images\tournament_link.png" />
 	</ItemGroup>
 
@@ -154,6 +141,7 @@
 
 	<ItemGroup>
 	  <Folder Include="Platforms\Android\Resources\drawable\" />
+	  <Folder Include="Platforms\Android\Resources\values\" />
 	</ItemGroup>
 
 </Project>

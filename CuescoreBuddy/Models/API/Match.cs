@@ -21,9 +21,11 @@ public class Match
     /// <returns></returns>
     public Table GetTable()
     {
+        JsonSerializerOptions options = new() { PropertyNameCaseInsensitive = true };
+
         try
         {
-            return JsonSerializer.Deserialize<Table>(Table.ToString() ?? "{}")!;
+            return JsonSerializer.Deserialize<Table>(Table.ToString() ?? "{}", options)!;
         }
         catch (Exception)
         {

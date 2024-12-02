@@ -8,7 +8,7 @@ using CuescoreBuddy.Resources;
 namespace CuescoreBuddy.Platforms;
 
 [Service(ForegroundServiceType = Android.Content.PM.ForegroundService.TypeDataSync)]
-public class AndroidCuescoreCheckerService : Service
+public class AndroidCuescoreCheckerService() : Service
 {
     static readonly string? Tag = typeof(AndroidCuescoreCheckerService).FullName;
     readonly CancellationTokenSource _cts = new();
@@ -93,10 +93,8 @@ public class AndroidCuescoreCheckerService : Service
 
     public async Task RunCheck(CancellationTokenSource tokenSource)
     {
-        IDataStore dataStore = ServiceResolver.GetService<IDataStore>();
-        var cueScoreService = ServiceResolver.GetService<IScoreAPIClient>();
         var notificationManager = (NotificationManager)GetSystemService(NotificationService)!;
-        var playerNotificationService = ServiceResolver.GetService<IPlayerNotificationService>(); //TODO remove
+        var playerNotificationService = ServiceResolver.GetService<IPlayerNotificationService>();
 
         await Task.Run(async () =>
         {
