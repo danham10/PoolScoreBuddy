@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="PoolScoreBuddy.Views.PlayerPage"
+    x:Name="this"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:icons="clr-namespace:PoolScoreBuddy.Services"
+    xmlns:services="clr-namespace:PoolScoreBuddy.Services"
+    xmlns:views="clr-namespace:PoolScoreBuddy.Views"
+    xmlns:vm="clr-namespace:PoolScoreBuddy.ViewModels"
+    xmlns:converters="clr-namespace:PoolScoreBuddy.Converters"
+    xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:res="clr-namespace:PoolScoreBuddy.Resources"
+    Title="{x:Static res:AppResources.PlayersTitle}">
+    <ContentPage.BindingContext>
+        <vm:PlayerViewModel />
+    </ContentPage.BindingContext>
+    <ContentPage.Behaviors>
+        <mct:EventToCommandBehavior Command="{Binding AppearingCommand}" EventName="Appearing" />
+    </ContentPage.Behaviors>
+    <Grid
+        RowDefinitions="0,*">
+        <RefreshView
+            Grid.Row="1"
+            Command="{Binding RefreshCommand}"
+            IsRefreshing="{Binding IsBusy}">
+            <CollectionView 
+                x:Name="collectionView" 
+                ItemsSource="{Binding Players}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid
+                            ColumnDefinitions="0, 64, *, 150">
+                            <Image
+                                Grid.Column="1"
+                                HeightRequest="64"
+                                Source="{Binding Image}"
+                                WidthRequest="64" />
+                            <Label
+                                VerticalTextAlignment="Center"
+                                Grid.Column="2"
+                                FontSize="18"
+                                Text="{Binding Name}" />
+                            <Button 
+                                Grid.Column="3"
+                                Margin="10,10,10,10"
+                                LineBreakMode="WordWrap"
+                                Text="{Binding IsMonitored}"
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:PlayerViewModel}}, Path=ToggleStartMonitor}" 
+                                CommandParameter="{Binding .}">
+                                <Button.Triggers>
+                                    <DataTrigger TargetType="Button" Binding="{Binding IsMonitored}" Value="false">
+                                        <Setter Property="Text"  Value="{x:Static res:AppResources.UnmonitoredButton}" />
+                                        <Setter Property="BorderColor" Value="Red" />
+
+                                    </DataTrigger>
+                                    <DataTrigger TargetType="Button" Binding="{Binding IsMonitored}" Value="true">
+                                        <Setter Property="Text"  Value="{x:Static res:AppResources.MonitoredButton}" />
+                                        <Setter Property="BorderColor"  Value="Green" />
+                                    </DataTrigger>
+                                </Button.Triggers>
+                            </Button>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+                <CollectionView.EmptyView>
+                    <VerticalStackLayout>
+                        <Label
+                            FontAttributes="Bold"
+                            FontSize="Large"
+                            HorizontalTextAlignment="Center"
+                            Text="{x:Static res:AppResources.PlayersNoneAvailable}"
+                            IsVisible="{Binding IsBusy, Converter={converters:InverseBoolConverter}}"/>
+                    </VerticalStackLayout>
+                </CollectionView.EmptyView>
+            </CollectionView>
+        </RefreshView>
+    </Grid>
+</ContentPage>
