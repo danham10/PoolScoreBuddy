@@ -3,7 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35327.3
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PoolScoreBuddy", "PoolScoreBuddy\PoolScoreBuddy.csproj", "{DFE5D336-FA5E-4B06-94C2-BB7B9CFE238F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PoolScoreBuddy.MobileUI", "PoolScoreBuddy.MobileUI\PoolScoreBuddy.MobileUI.csproj", "{DFE5D336-FA5E-4B06-94C2-BB7B9CFE238F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PoolScoreBuddy.Domain", "PoolScoreBuddy.Domain\PoolScoreBuddy.Domain.csproj", "{2D70609B-D14D-4B61-9CE4-DB8C38D5E166}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PoolScoreBuddy.API", "PoolScoreBuddy.API\PoolScoreBuddy.API.csproj", "{811D7532-47B0-49DC-A33F-311A47743356}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,6 +21,14 @@ Global
 		{DFE5D336-FA5E-4B06-94C2-BB7B9CFE238F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DFE5D336-FA5E-4B06-94C2-BB7B9CFE238F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DFE5D336-FA5E-4B06-94C2-BB7B9CFE238F}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{2D70609B-D14D-4B61-9CE4-DB8C38D5E166}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D70609B-D14D-4B61-9CE4-DB8C38D5E166}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2D70609B-D14D-4B61-9CE4-DB8C38D5E166}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2D70609B-D14D-4B61-9CE4-DB8C38D5E166}.Release|Any CPU.Build.0 = Release|Any CPU
+		{811D7532-47B0-49DC-A33F-311A47743356}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{811D7532-47B0-49DC-A33F-311A47743356}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{811D7532-47B0-49DC-A33F-311A47743356}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{811D7532-47B0-49DC-A33F-311A47743356}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
