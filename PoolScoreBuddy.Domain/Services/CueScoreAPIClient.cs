@@ -1,4 +1,7 @@
-﻿using System.Text.Json;
+﻿using System.Collections.Specialized;
+using System.Linq;
+using System.Text.Json;
+using Microsoft.AspNetCore.WebUtilities;
 using PoolScoreBuddy.Domain.Models;
 using PoolScoreBuddy.Domain.Models.API;
 
@@ -6,6 +9,7 @@ namespace PoolScoreBuddy.Domain.Services;
 
 public class CueScoreAPIClient : IScoreAPIClient
 {
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0044:Add readonly modifier", Justification = "Must be assigned in debug mode")]
     private HttpClient _httpClient;
     private readonly static JsonSerializerOptions _serializerOptions = new() { PropertyNameCaseInsensitive = true };
 
@@ -19,33 +23,22 @@ public class CueScoreAPIClient : IScoreAPIClient
 #endif
     }
 
-    public async Task<Tournament> GetTournament(string baseUrl, int tournamentId, int? playerId = null)
+    public async Task<Tournament> GetTournament(string baseUrl, int tournamentId, IEnumerable<int>? playerIds = null)
     {
-#if DEBUG
-        HttpClientHandler insecureHandler = GetInsecureHandler();
-        _httpClient = new HttpClient(insecureHandler);
-#else
-    HttpClient client = new HttpClient();
-#endif
+        string? playerQueryValue = GetPlayerQueryValue(baseUrl, playerIds);
 
-        var uri = $"{baseUrl}/tournament?id={tournamentId}";
+        var uri = $"{baseUrl}/tournament?id={tournamentId}{playerQueryValue}";
+
+
         var response = await _httpClient.GetAsync(uri);
 
-        try
-        {
-            response.EnsureSuccessStatusCode();
-        }
-        catch (Exception ex)
-        {
-
-            throw;
-        }
-   
+        response.EnsureSuccessStatusCode();
 
         string data = await response.Content.ReadAsStringAsync();
-
         return Deserialize<Tournament>(data);
     }
+
+
 
     public async Task<List<Player>> GetPlayers(string baseUrl, int tournamentId)
     {
@@ -72,17 +65,29 @@ public class CueScoreAPIClient : IScoreAPIClient
         return JsonSerializer.Deserialize<T>(json, _serializerOptions)!;
     }
 
-    //https://learn.microsoft.com/en-us/previous-versions/xamarin/cross-platform/deploy-test/connect-to-local-web-services#bypass-the-certificate-security-check
-    private HttpClientHandler GetInsecureHandler()
+    private static string? GetPlayerQueryValue(string baseUrl, IEnumerable<int>? playerIds)
     {
-        HttpClientHandler handler = new HttpClientHandler();
-        handler.ServerCertificateCustomValidationCallback =
+        bool playerFilterSupported = baseUrl != Constants.CueScoreBaseUrl;
+        if (!playerFilterSupported || playerIds == null) return null;
+
+        var q = string.Join<string>(",", playerIds.Select(p => p.ToString()));
+
+        return playerIds.Any() ? $"&playerIds={q}" : null;
+    }
+
+    //https://learn.microsoft.com/en-us/previous-versions/xamarin/cross-platform/deploy-test/connect-to-local-web-services#bypass-the-certificate-security-check
+    private static HttpClientHandler GetInsecureHandler()
+    {
+        HttpClientHandler handler = new()
+        {
+            ServerCertificateCustomValidationCallback =
             (message, cert, chain, errors) =>
             {
-                if (cert.Issuer.Equals("CN=localhost"))
+                if (cert!.Issuer.Equals("CN=localhost"))
                     return true;
                 return errors == System.Net.Security.SslPolicyErrors.None;
-            };
+            }
+        };
         return handler;
     }
 }

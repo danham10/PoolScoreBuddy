@@ -40,7 +40,7 @@ public partial class TournamentViewModel(IScoreAPIClient scoreAPIClient) : BaseV
                 await GoToTournamentSelectedPage(tournamentDecorator);
             }
         }
-        catch (HttpRequestException ex)
+        catch (HttpRequestException)
         {
             await Application.Current!.MainPage!.DisplayAlert(string.Format(AppResources.TournamentHttpExceptionTitle, TournamentId),
                 AppResources.TournamentHttpExceptionMessage,
@@ -63,6 +63,10 @@ public partial class TournamentViewModel(IScoreAPIClient scoreAPIClient) : BaseV
                 AppResources.TournamentJsonExceptionButton);
             
             FocusView?.Invoke(this, EventArgs.Empty);
+        }
+        catch(Exception ex)
+        {
+            Console.WriteLine(ex);
         }
 
         IsBusy = false;

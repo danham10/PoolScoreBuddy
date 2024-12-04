@@ -32,7 +32,7 @@ public partial class TournamentSelectedViewModel : BaseViewModel, IQueryAttribut
 
     private bool CanExecuteMonitor()
     {
-        return _tournament!.IsFinished() == false;
+        return _tournament != null &&_tournament!.IsFinished() == false;
     }
 
     [RelayCommand(CanExecute = nameof(CanExecuteMonitor))]

@@ -8,6 +8,17 @@ public static class TournamentEndpoints
     {
         var users = routes.MapGroup("/api/v1/tournament");
 
-        users.MapGet("/", async (int id, int? playerId, int[]? calledMatchIds, IScoreClient cacheClient) => await cacheClient.GetTournament(id, playerId, calledMatchIds));
+        //Need to mirror CueScores own API (https://api.cuescore.com/), so one endpoint for Tournaments and Players (!)
+        users.MapGet("/", async (int id, string? participants, string? playerIds, int[]? calledMatchIds, IScoreClient cacheClient) =>
+        {
+            int[] playerIdArray = [];
+
+            if (!string.IsNullOrEmpty(playerIds))
+            {
+                playerIdArray = playerIds!.Split(",").Select(x => Convert.ToInt32(x)).ToArray();
+            }
+
+            return await cacheClient.GetTournament(id, participants, playerIdArray, calledMatchIds);
+        });
     }
 }

@@ -74,6 +74,7 @@ public class AndroidCuescoreCheckerService() : Service
         base.OnDestroy();
     }
 
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "Compatibility is enforced in if block")]
     void RegisterForegroundService()
     {
         var notification = GetServiceNotification();
@@ -84,10 +85,7 @@ public class AndroidCuescoreCheckerService() : Service
         }
         else
         {
-#pragma warning disable CA1416 // Validate platform compatibility
-            // Compatibility is enforced in if block above
             StartForeground(Constants.ServiceRunningNotificationId, notification, Android.Content.PM.ForegroundService.TypeDataSync);
-#pragma warning restore CA1416 // Validate platform compatibility
         }
     }
 
@@ -104,7 +102,6 @@ public class AndroidCuescoreCheckerService() : Service
 
                 try
                 {
-                    //var organiser = new PlayerNotificationService(dataStore, cueScoreService, notificationService);
                     var notificationsToSend = await playerNotificationService.ProcessNotifications();
                     await playerNotificationService.SendNotifications(notificationsToSend);
 

@@ -6,6 +6,8 @@ using Plugin.LocalNotification;
 using System.Collections.ObjectModel;
 using PoolScoreBuddy.Domain.Services;
 using PoolScoreBuddy.Domain.Models.API;
+using PoolScoreBuddy.Domain.Models;
+using System.Text.Json;
 
 namespace PoolScoreBuddy.ViewModels;
 public partial class PlayerViewModel : BaseViewModel, IQueryAttributable
@@ -58,7 +60,30 @@ public partial class PlayerViewModel : BaseViewModel, IQueryAttributable
 
         Players.Clear();
 
-        var refreshedPlayers =  await _tournament!.GetLoadedPlayers(_cueScoreService);
+        IEnumerable<Player> refreshedPlayers = [];
+
+        try
+        {
+            refreshedPlayers = await _tournament!.GetPlayers(_cueScoreService);
+        }
+        catch (HttpRequestException)
+        {
+            await Application.Current!.MainPage!.DisplayAlert(string.Format(AppResources.PlayersHttpExceptionTitle, _tournament!.Tournament.TournamentId),
+                AppResources.PlayersHttpExceptionMessage,
+                AppResources.PlayersHttpExceptionButton);
+        }
+        catch (APIServerException ex)
+        {
+            await Application.Current!.MainPage!.DisplayAlert(string.Format(AppResources.PlayersAPIServerExceptionTitle, _tournament!.Tournament.TournamentId),
+                string.Format(AppResources.PlayersAPIServerExceptionMessage, ex!.Message),
+                AppResources.PlayersAPIServerExceptionButton);
+        }
+        catch (JsonException ex)
+        {
+            await Application.Current!.MainPage!.DisplayAlert(string.Format(AppResources.TournamentJsonExceptionTitle, _tournament!.Tournament.TournamentId),
+                string.Format(AppResources.PlayersJsonExceptionMessage, _tournament!.Tournament.TournamentId, ex.Message),
+                AppResources.PlayersJsonExceptionButton);
+        }
 
         foreach (var player in refreshedPlayers)
         {

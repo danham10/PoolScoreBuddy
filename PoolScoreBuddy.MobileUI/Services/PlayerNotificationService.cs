@@ -17,7 +17,10 @@ public class PlayerNotificationService(IDataStore dataStore, IScoreAPIClient cue
             // load tournaments from API
             foreach (var tournament in dataStore.Tournaments)
             {
-                await tournament.Fetch(cueScoreService, tournament.Tournament.TournamentId!.Value);
+                IEnumerable<int> monitoredPlayerIds = from player in tournament.MonitoredPlayers
+                                           select player.PlayerId;
+                                           
+                await tournament.Fetch(cueScoreService, tournament.Tournament.TournamentId!.Value, monitoredPlayerIds);
             }
 
             // remove tournaments that have finished
@@ -33,7 +36,7 @@ public class PlayerNotificationService(IDataStore dataStore, IScoreAPIClient cue
             }
             return notifications;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
             AddErrorNotification(notifications);
         }

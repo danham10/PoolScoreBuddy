@@ -30,9 +30,9 @@ public class TournamentDecorator
         Tournament = tournament;
     }
 
-    public async Task Fetch(IScoreAPIClient cueScoreService, int tournamentId)
+    public async Task Fetch(IScoreAPIClient cueScoreService, int tournamentId, IEnumerable<int>? playerIds = null)
     {
-        Tournament = await cueScoreService.GetTournament(Constants.APIBaseUrl, tournamentId);
+        Tournament = await cueScoreService.GetTournament(Constants.APIBaseUrl, tournamentId, playerIds);
     }
 
     public MonitoredPlayer? TogglePlayerEnabled(int playerId)
@@ -53,7 +53,7 @@ public class TournamentDecorator
         }
     }
 
-    public IEnumerable<Player> GetLoadedPlayers()
+    public IEnumerable<Player> GetPlayers()
     {
         var players = from p in _players
                       join mp in MonitoredPlayers on p.PlayerId equals mp.PlayerId
@@ -72,11 +72,11 @@ public class TournamentDecorator
         return players.OrderBy(p => p.Name);
     }
 
-    public async Task<IEnumerable<Player>> GetLoadedPlayers(IScoreAPIClient cueScoreService)
+    public async Task<IEnumerable<Player>> GetPlayers(IScoreAPIClient cueScoreService)
     {
         _players ??= await cueScoreService.GetPlayers(Constants.APIBaseUrl, Tournament.TournamentId!.Value);
 
-        return GetLoadedPlayers();
+        return GetPlayers();
     }
 
     public bool IsFinished() => Tournament.Status == "Finished";

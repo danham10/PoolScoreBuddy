@@ -46,7 +46,7 @@ public class Tournaments : List<TournamentDecorator>
     {
         return
             (from t in this
-             from p in t.GetLoadedPlayers().Where(p => p.IsMonitored)
+             from p in t.GetPlayers().Where(p => p.IsMonitored)
              orderby p.MonitoredPlayer!.CreateDate descending
              select p.Name
             ).ToList();

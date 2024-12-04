@@ -4,6 +4,6 @@ namespace PoolScoreBuddy.API.Services
 {
     public interface IScoreClient
     {
-        Task<Tournament> GetTournament(int id, int? playerId, int[]? notifiedMatchIds);
+        public Task<string> GetTournament(int id, string? participants, int[]? playerIds, int[]? notifiedMatchIds);
     }
 }

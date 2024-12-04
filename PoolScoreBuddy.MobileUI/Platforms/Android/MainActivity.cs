@@ -1,8 +1,8 @@
 ﻿using Android.App;
 using Android.Content;
 using Android.Content.PM;
-using Android.OS;
 using CommunityToolkit.Mvvm.Messaging;
+using PoolScoreBuddy.Domain.Models;
 using PoolScoreBuddy.Platforms;
 
 namespace PoolScoreBuddy;

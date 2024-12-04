@@ -151,20 +151,38 @@ We want the number at the end. Around 8 digits. Here is an example of what to lo
   <data name="TournamentHttpExceptionMessage" xml:space="preserve">
     <value>Check you have a data connection</value>
   </data>
+  <data name="PlayersHttpExceptionMessage" xml:space="preserve">
+    <value>Check you have a data connection</value>
+  </data>
   <data name="TournamentAPIServerExceptionMessage" xml:space="preserve">
+    <value>{0}</value>
+  </data>
+  <data name="PlayersAPIServerExceptionMessage" xml:space="preserve">
     <value>{0}</value>
   </data>
   <data name="TournamentJsonExceptionMessage" xml:space="preserve">
     <value>Please consider emailing me your tournament number ({0}) and this error message ({1}) at poolscorebuddy@outlook.com so I can look into fixing that. Thankyou.</value>
   </data>
+  <data name="PlayersJsonExceptionMessage" xml:space="preserve">
+    <value>Please consider emailing me your tournament number ({0}) and this error message ({1}) at poolscorebuddy@outlook.com so I can look into fixing that. Thankyou.</value>
+  </data>
   <data name="TournamentAPIServerExceptionTitle" xml:space="preserve">
     <value>Cannot fetch tournament {0}</value>
+  </data>
+  <data name="PlayersAPIServerExceptionTitle" xml:space="preserve">
+    <value>Cannot fetch players {0}</value>
   </data>
   <data name="TournamentJsonExceptionTitle" xml:space="preserve">
     <value>Error processing tournament {0}</value>
   </data>
+  <data name="PlayersJsonExceptionTitle" xml:space="preserve">
+    <value>Error processing players{0}</value>
+  </data>
   <data name="TournamentHttpExceptionTitle" xml:space="preserve">
     <value>Cannot fetch tournament {0}</value>
+  </data>
+  <data name="PlayersHttpExceptionTitle" xml:space="preserve">
+    <value>Cannot fetch players{0}</value>
   </data>
   <data name="TournamentTitle" xml:space="preserve">
     <value>Select Tournament</value>
@@ -184,10 +202,19 @@ We want the number at the end. Around 8 digits. Here is an example of what to lo
   <data name="TournamentJsonExceptionButton" xml:space="preserve">
     <value>OK</value>
   </data>
+  <data name="PlayersJsonExceptionButton" xml:space="preserve">
+    <value>OK</value>
+  </data>
   <data name="TournamentHttpExceptionButton" xml:space="preserve">
     <value>OK</value>
   </data>
+  <data name="PlayersHttpExceptionButton" xml:space="preserve">
+    <value>OK</value>
+  </data>
   <data name="TournamentAPIServerExceptionButton" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="PlayersAPIServerExceptionButton" xml:space="preserve">
     <value>OK</value>
   </data>
   <data name="AppTitle" xml:space="preserve">

@@ -65,6 +65,15 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <AndroidResource Remove="Platforms\Android\Resources\**" />
+	  <Compile Remove="Platforms\Android\Resources\**" />
+	  <EmbeddedResource Remove="Platforms\Android\Resources\**" />
+	  <MauiCss Remove="Platforms\Android\Resources\**" />
+	  <MauiXaml Remove="Platforms\Android\Resources\**" />
+	  <None Remove="Platforms\Android\Resources\**" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <None Remove="Resources\Fonts\Quicksand-Bold.ttf" />
 	  <None Remove="Resources\Fonts\Quicksand-Light.ttf" />
 	  <None Remove="Resources\Fonts\Quicksand-Medium.ttf" />
@@ -137,11 +146,6 @@
 	  <MauiXaml Update="Views\TournamentPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="Platforms\Android\Resources\drawable\" />
-	  <Folder Include="Platforms\Android\Resources\values\" />
 	</ItemGroup>
 
 	<ItemGroup>

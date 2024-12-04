@@ -170,6 +170,87 @@ namespace PoolScoreBuddy.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to OK.
+        /// </summary>
+        internal static string PlayersAPIServerExceptionButton {
+            get {
+                return ResourceManager.GetString("PlayersAPIServerExceptionButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0}.
+        /// </summary>
+        internal static string PlayersAPIServerExceptionMessage {
+            get {
+                return ResourceManager.GetString("PlayersAPIServerExceptionMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot fetch players {0}.
+        /// </summary>
+        internal static string PlayersAPIServerExceptionTitle {
+            get {
+                return ResourceManager.GetString("PlayersAPIServerExceptionTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to OK.
+        /// </summary>
+        internal static string PlayersHttpExceptionButton {
+            get {
+                return ResourceManager.GetString("PlayersHttpExceptionButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Check you have a data connection.
+        /// </summary>
+        internal static string PlayersHttpExceptionMessage {
+            get {
+                return ResourceManager.GetString("PlayersHttpExceptionMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot fetch players{0}.
+        /// </summary>
+        internal static string PlayersHttpExceptionTitle {
+            get {
+                return ResourceManager.GetString("PlayersHttpExceptionTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to OK.
+        /// </summary>
+        internal static string PlayersJsonExceptionButton {
+            get {
+                return ResourceManager.GetString("PlayersJsonExceptionButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please consider emailing me your tournament number ({0}) and this error message ({1}) at poolscorebuddy@outlook.com so I can look into fixing that. Thankyou..
+        /// </summary>
+        internal static string PlayersJsonExceptionMessage {
+            get {
+                return ResourceManager.GetString("PlayersJsonExceptionMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error processing players{0}.
+        /// </summary>
+        internal static string PlayersJsonExceptionTitle {
+            get {
+                return ResourceManager.GetString("PlayersJsonExceptionTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No players available.
         /// </summary>
         internal static string PlayersNoneAvailable {
