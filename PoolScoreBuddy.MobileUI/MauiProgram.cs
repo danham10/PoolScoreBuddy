@@ -5,6 +5,8 @@ using Plugin.LocalNotification;
 using Plugin.LocalNotification.AndroidOption;
 using PoolScoreBuddy.Domain.Services;
 using PoolScoreBuddy.Domain;
+using Microsoft.Extensions.Configuration;
+using System.Reflection;
 
 namespace PoolScoreBuddy
 {
@@ -35,6 +37,8 @@ namespace PoolScoreBuddy
                     });
                 });
 
+            builder.Configuration.AddConfiguration(GetAppSettings());
+
 #if DEBUG
             builder.Logging.AddDebug();
 #endif
@@ -56,6 +60,25 @@ namespace PoolScoreBuddy
             builder.Services.AddSingleton<IMessenger, WeakReferenceMessenger>();
 
             return builder.Build();
+        }
+
+        private static IConfiguration GetAppSettings()
+        {
+            //Maui needs some plumbing to implement app settings
+            //https://montemagno.com/dotnet-maui-appsettings-json-configuration/
+            string appsettingsEnv = "";
+#if DEBUG
+            appsettingsEnv = "Development";
+#else
+            appsettingsEnv = "Production"
+#endif
+            string path = FileSystem.AppDataDirectory;
+            var a = Assembly.GetExecutingAssembly();
+            var stream = a.GetManifestResourceStream($"PoolScoreBuddy.appsettings.{appsettingsEnv}.json");
+
+            return new ConfigurationBuilder()
+                .AddJsonStream(stream)
+                .Build();
         }
 
         private static void SetHandlers()

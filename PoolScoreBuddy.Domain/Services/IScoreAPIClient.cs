@@ -1,4 +1,5 @@
-﻿using PoolScoreBuddy.Domain.Models.API;
+﻿using PoolScoreBuddy.Di;
+using PoolScoreBuddy.Domain.Models.API;
 
 namespace PoolScoreBuddy.Domain.Services;
 

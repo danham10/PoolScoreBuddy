@@ -74,6 +74,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="appsettings.Production.json" />
 	  <None Remove="Resources\Fonts\Quicksand-Bold.ttf" />
 	  <None Remove="Resources\Fonts\Quicksand-Light.ttf" />
 	  <None Remove="Resources\Fonts\Quicksand-Medium.ttf" />
@@ -82,9 +83,24 @@
 	  <None Remove="Resources\Images\tournament_link.png" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <EmbeddedResource Include="appsettings.Production.json">
+	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+	    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+	  </EmbeddedResource>
+	  <EmbeddedResource Include="appsettings.Development.json">
+	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+	    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+	  </EmbeddedResource>
+	</ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Maui" Version="9.1.1" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.3.2" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="8.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.1" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.1" />
     <PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
     <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)" />

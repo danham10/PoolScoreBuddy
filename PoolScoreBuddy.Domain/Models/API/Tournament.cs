@@ -30,9 +30,9 @@ public class TournamentDecorator
         Tournament = tournament;
     }
 
-    public async Task Fetch(IScoreAPIClient cueScoreService, int tournamentId, IEnumerable<int>? playerIds = null)
+    public async Task Fetch(IScoreAPIClient cueScoreService, string baseUrl, int tournamentId, IEnumerable<int>? playerIds = null)
     {
-        Tournament = await cueScoreService.GetTournament(Constants.APIBaseUrl, tournamentId, playerIds);
+        Tournament = await cueScoreService.GetTournament(baseUrl, tournamentId, playerIds);
     }
 
     public MonitoredPlayer? TogglePlayerEnabled(int playerId)
@@ -72,9 +72,9 @@ public class TournamentDecorator
         return players.OrderBy(p => p.Name);
     }
 
-    public async Task<IEnumerable<Player>> GetPlayers(IScoreAPIClient cueScoreService)
+    public async Task<IEnumerable<Player>> GetPlayers(IScoreAPIClient cueScoreService, string APIBaseUrl)
     {
-        _players ??= await cueScoreService.GetPlayers(Constants.APIBaseUrl, Tournament.TournamentId!.Value);
+        _players ??= await cueScoreService.GetPlayers(APIBaseUrl, Tournament.TournamentId!.Value);
 
         return GetPlayers();
     }

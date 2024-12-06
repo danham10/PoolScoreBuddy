@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Configuration;
 using PoolScoreBuddy.Domain.Services;
 
 namespace PoolScoreBuddy.Views;
@@ -9,9 +10,10 @@ public partial class TournamentPage : ContentPage
     public TournamentPage()
     {
         var scoreAPIClient = ServiceResolver.GetService<IScoreAPIClient>();
+        var configuration = ServiceResolver.GetService<IConfiguration>();
 
         InitializeComponent();
-        _viewModel = new TournamentViewModel(scoreAPIClient);
+        _viewModel = new TournamentViewModel(scoreAPIClient, configuration);
         BindingContext = _viewModel;
         _viewModel.FocusView += TournamentEntrySetFocus;
     }

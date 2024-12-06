@@ -46,6 +46,7 @@
                                 Margin="10,10,10,10"
                                 LineBreakMode="WordWrap"
                                 Text="{Binding IsMonitored}"
+                                IsEnabled="{Binding MonitoringDisabled}"
                                 Command="{Binding Source={RelativeSource AncestorType={x:Type vm:PlayerViewModel}}, Path=ToggleStartMonitor}" 
                                 CommandParameter="{Binding .}">
                                 <Button.Triggers>

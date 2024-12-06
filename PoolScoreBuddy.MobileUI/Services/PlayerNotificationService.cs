@@ -3,6 +3,7 @@ using PoolScoreBuddy.Domain.Models.API;
 using PoolScoreBuddy.Resources;
 using Plugin.LocalNotification;
 using Plugin.LocalNotification.AndroidOption;
+using PoolScoreBuddy.Domain;
 
 namespace PoolScoreBuddy.Services;
 
@@ -11,6 +12,7 @@ public class PlayerNotificationService(IDataStore dataStore, IScoreAPIClient cue
     public async Task<List<CuescoreNotification>> ProcessNotifications()
     {
         List<CuescoreNotification> notifications = [];
+        var settings = SettingsResolver.GetSettings();
 
         try
         {
@@ -20,7 +22,7 @@ public class PlayerNotificationService(IDataStore dataStore, IScoreAPIClient cue
                 IEnumerable<int> monitoredPlayerIds = from player in tournament.MonitoredPlayers
                                            select player.PlayerId;
                                            
-                await tournament.Fetch(cueScoreService, tournament.Tournament.TournamentId!.Value, monitoredPlayerIds);
+                await tournament.Fetch(cueScoreService, settings.API.BaseUrl, tournament.Tournament.TournamentId!.Value, monitoredPlayerIds);
             }
 
             // remove tournaments that have finished

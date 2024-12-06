@@ -1,5 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Maui.Controls;
 using PoolScoreBuddy.Domain;
 using PoolScoreBuddy.Domain.Models;
 using PoolScoreBuddy.Domain.Models.API;
@@ -8,7 +10,7 @@ using PoolScoreBuddy.Resources;
 using System.Text.Json;
 
 namespace PoolScoreBuddy.ViewModels;
-public partial class TournamentViewModel(IScoreAPIClient scoreAPIClient) : BaseViewModel
+public partial class TournamentViewModel(IScoreAPIClient scoreAPIClient, IConfiguration configuration) : BaseViewModel
 {
     readonly IScoreAPIClient _scoreAPIClient = scoreAPIClient;
 
@@ -28,9 +30,10 @@ public partial class TournamentViewModel(IScoreAPIClient scoreAPIClient) : BaseV
     {
         try
         {
+            var settings = SettingsResolver.GetSettings();
             IsBusy = true;
 
-            Tournament? tournament = await _scoreAPIClient.GetTournament(Constants.APIBaseUrl, Convert.ToInt32(TournamentId));
+            Tournament? tournament = await _scoreAPIClient.GetTournament(settings.API.BaseUrl, Convert.ToInt32(TournamentId));
 
             if (tournament != null)
             {
@@ -81,4 +84,7 @@ public partial class TournamentViewModel(IScoreAPIClient scoreAPIClient) : BaseV
 
         await Shell.Current.GoToAsync(nameof(TournamentSelectedPage), false, navigationParameters);
     }
+
+
 }
+

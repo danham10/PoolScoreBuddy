@@ -1,6 +1,8 @@
 using PoolScoreBuddy.API.Endpoints;
 using PoolScoreBuddy.API.Services;
+using PoolScoreBuddy.Di;
 using PoolScoreBuddy.Domain.Services;
+using System.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +10,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddHttpClient();
 builder.Services.AddMemoryCache();
 builder.Services.AddTransient<IScoreAPIClient, CueScoreAPIClient>();
+
+builder.Services.Configure<Settings>(
+    builder.Configuration.GetSection("Settings"));
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

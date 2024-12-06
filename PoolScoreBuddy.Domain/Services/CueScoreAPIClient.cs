@@ -1,7 +1,5 @@
-﻿using System.Collections.Specialized;
-using System.Linq;
-using System.Text.Json;
-using Microsoft.AspNetCore.WebUtilities;
+﻿using System.Text.Json;
+using PoolScoreBuddy.Di;
 using PoolScoreBuddy.Domain.Models;
 using PoolScoreBuddy.Domain.Models.API;
 
@@ -25,7 +23,10 @@ public class CueScoreAPIClient : IScoreAPIClient
 
     public async Task<Tournament> GetTournament(string baseUrl, int tournamentId, IEnumerable<int>? playerIds = null)
     {
-        string? playerQueryValue = GetPlayerQueryValue(baseUrl, playerIds);
+        string playerQueryValue = "";
+
+        if (!baseUrl.Contains("cuescore", StringComparison.CurrentCultureIgnoreCase)) //TODO remove magic string!
+            playerQueryValue = GetPlayerQueryValue(baseUrl, playerIds);
 
         var uri = $"{baseUrl}/tournament?id={tournamentId}{playerQueryValue}";
 
@@ -67,8 +68,7 @@ public class CueScoreAPIClient : IScoreAPIClient
 
     private static string? GetPlayerQueryValue(string baseUrl, IEnumerable<int>? playerIds)
     {
-        bool playerFilterSupported = baseUrl != Constants.CueScoreBaseUrl;
-        if (!playerFilterSupported || playerIds == null) return null;
+        if (playerIds == null) return null;
 
         var q = string.Join<string>(",", playerIds.Select(p => p.ToString()));
 

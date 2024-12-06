@@ -8,6 +8,8 @@ using PoolScoreBuddy.Domain.Services;
 using PoolScoreBuddy.Domain.Models.API;
 using PoolScoreBuddy.Domain.Models;
 using System.Text.Json;
+using Microsoft.Extensions.Configuration;
+using PoolScoreBuddy.Domain;
 
 namespace PoolScoreBuddy.ViewModels;
 public partial class PlayerViewModel : BaseViewModel, IQueryAttributable
@@ -54,8 +56,6 @@ public partial class PlayerViewModel : BaseViewModel, IQueryAttributable
     [RelayCommand]
     async Task Refresh()
     {
-        if (IsBusy) return;
-
         IsBusy = true;
 
         Players.Clear();
@@ -64,7 +64,8 @@ public partial class PlayerViewModel : BaseViewModel, IQueryAttributable
 
         try
         {
-            refreshedPlayers = await _tournament!.GetPlayers(_cueScoreService);
+            var settings = SettingsResolver.GetSettings();
+            refreshedPlayers = await _tournament!.GetPlayers(_cueScoreService, settings.API.BaseUrl);
         }
         catch (HttpRequestException)
         {
@@ -101,6 +102,14 @@ public partial class PlayerViewModel : BaseViewModel, IQueryAttributable
 
     public Command<Player> ToggleStartMonitor => new(async (player) =>
     {
+        if (MaximumMonitorCountReached())
+        {
+            await Application.Current!.MainPage!.DisplayAlert(string.Format(AppResources.PlayersHttpExceptionTitle, _tournament!.Tournament.TournamentId),
+                AppResources.PlayersHttpExceptionMessage,
+                AppResources.PlayersHttpExceptionButton);
+            return;
+        }
+
         var notificationsAllowed = await AllowNotificationsAsync();
 
         if (player == null || !notificationsAllowed)
@@ -115,4 +124,9 @@ public partial class PlayerViewModel : BaseViewModel, IQueryAttributable
 
         _messenger.Send(new CuescoreBackgroundChecker(ServiceMessageType.Default));
     });
+
+    private bool MaximumMonitorCountReached()
+    {
+        return _tournament!.MonitoredPlayers.Count >= 10;
+    }
 }
