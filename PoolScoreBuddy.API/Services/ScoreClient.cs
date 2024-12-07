@@ -14,12 +14,18 @@ public class ScoreClient(IScoreAPIClient scoreAPIClient, IMemoryCache cache, IOp
 
     public async Task<Tournament> GetTournament(int tournamentId, string? participants, int[]? playerIds, int[]? notifiedMatchIds)
     {
-        
         string cacheKey = string.Format(tournamentCacheFormatter, tournamentId);
 
         if (!cache.TryGetValue(cacheKey, out Tournament? tournament))
         {
-            tournament = await scoreAPIClient.GetTournament(options.Value.CueScoreBaseUrl, tournamentId, playerIds);
+            TournamentDto dto = new()
+            {
+                BaseUrl = options.Value.CueScoreBaseUrl,
+                TournamentId = tournamentId,
+                PlayerIds = playerIds
+            };
+
+            tournament = await scoreAPIClient.GetTournament(dto);
 
             var cacheEntryOptions = new MemoryCacheEntryOptions()
                 .SetSlidingExpiration(TimeSpan.FromSeconds(options.Value.APIPingIntervalSeconds));
@@ -27,7 +33,7 @@ public class ScoreClient(IScoreAPIClient scoreAPIClient, IMemoryCache cache, IOp
             cache.Set(cacheKey, tournament, cacheEntryOptions);
         }
 
-        if (playerIds != null)
+        if (playerIds?.Length > 0)
         {
             var removedMatchCount = tournament!.Matches?.RemoveAll(m => ShouldRemoveMatch(m, playerIds, notifiedMatchIds));
             Console.WriteLine($"removed {removedMatchCount} matches");
@@ -37,12 +43,17 @@ public class ScoreClient(IScoreAPIClient scoreAPIClient, IMemoryCache cache, IOp
     }
     public async Task<IEnumerable<Player>> GetPlayers(int tournamentId)
     {
-        
         string cacheKey = string.Format(playersCacheFormatter, tournamentId);
 
         if (!cache.TryGetValue(cacheKey, out List<Player>? players))
         {
-            players = await scoreAPIClient.GetPlayers(options.Value.CueScoreBaseUrl, tournamentId);
+            PlayersDto dto = new()
+            {
+                BaseUrl = options.Value.CueScoreBaseUrl,
+                TournamentId = tournamentId,
+            };
+
+            players = await scoreAPIClient.GetPlayers(dto);
 
             var cacheEntryOptions = new MemoryCacheEntryOptions()
                 .SetSlidingExpiration(TimeSpan.FromSeconds(options.Value.APIPingIntervalSeconds));

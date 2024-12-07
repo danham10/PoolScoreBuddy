@@ -12,7 +12,7 @@ public partial class Player
 public partial class Player
 {
     public bool IsMonitored { get => MonitoredPlayer != null; }
-    public bool MonitoringDisabled;
+    public bool MonitoringEnabled{ get; set; }
     public MonitoredPlayer? MonitoredPlayer { get; set; }
 }
 

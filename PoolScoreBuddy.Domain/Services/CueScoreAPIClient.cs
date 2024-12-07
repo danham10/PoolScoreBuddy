@@ -1,5 +1,4 @@
 ﻿using System.Text.Json;
-using PoolScoreBuddy.Di;
 using PoolScoreBuddy.Domain.Models;
 using PoolScoreBuddy.Domain.Models.API;
 
@@ -21,14 +20,11 @@ public class CueScoreAPIClient : IScoreAPIClient
 #endif
     }
 
-    public async Task<Tournament> GetTournament(string baseUrl, int tournamentId, IEnumerable<int>? playerIds = null)
+    public async Task<Tournament> GetTournament(TournamentDto dto)
     {
-        string playerQueryValue = "";
+        string? playerQueryValue = GetPlayerQueryValue(dto.PlayerIds);
 
-        if (!baseUrl.Contains("cuescore", StringComparison.CurrentCultureIgnoreCase)) //TODO remove magic string!
-            playerQueryValue = GetPlayerQueryValue(baseUrl, playerIds);
-
-        var uri = $"{baseUrl}/tournament?id={tournamentId}{playerQueryValue}";
+        var uri = $"{dto.BaseUrl}/tournament?id={dto.TournamentId}{playerQueryValue}";
 
 
         var response = await _httpClient.GetAsync(uri);
@@ -41,9 +37,9 @@ public class CueScoreAPIClient : IScoreAPIClient
 
 
 
-    public async Task<List<Player>> GetPlayers(string baseUrl, int tournamentId)
+    public async Task<List<Player>> GetPlayers(PlayersDto dto)
     {
-        var uri = $"{baseUrl}/tournament/?id={tournamentId}&participants=Participants+list";
+        var uri = $"{dto.BaseUrl}/tournament/?id={dto.TournamentId}&participants=Participants+list";
         var response = await _httpClient.GetAsync(uri);
 
         response.EnsureSuccessStatusCode();
@@ -66,7 +62,7 @@ public class CueScoreAPIClient : IScoreAPIClient
         return JsonSerializer.Deserialize<T>(json, _serializerOptions)!;
     }
 
-    private static string? GetPlayerQueryValue(string baseUrl, IEnumerable<int>? playerIds)
+    private static string? GetPlayerQueryValue(IEnumerable<int>? playerIds)
     {
         if (playerIds == null) return null;
 
@@ -75,7 +71,13 @@ public class CueScoreAPIClient : IScoreAPIClient
         return playerIds.Any() ? $"&playerIds={q}" : null;
     }
 
+    /// <summary>
+    /// Android emulator requires untrusted local cert running in deug
+    /// </summary>
+    /// <returns></returns>
+    /// <remarks>
     //https://learn.microsoft.com/en-us/previous-versions/xamarin/cross-platform/deploy-test/connect-to-local-web-services#bypass-the-certificate-security-check
+    /// </remarks>
     private static HttpClientHandler GetInsecureHandler()
     {
         HttpClientHandler handler = new()

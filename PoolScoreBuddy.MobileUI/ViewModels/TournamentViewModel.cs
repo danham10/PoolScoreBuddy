@@ -33,7 +33,14 @@ public partial class TournamentViewModel(IScoreAPIClient scoreAPIClient, IConfig
             var settings = SettingsResolver.GetSettings();
             IsBusy = true;
 
-            Tournament? tournament = await _scoreAPIClient.GetTournament(settings.API.BaseUrl, Convert.ToInt32(TournamentId));
+            TournamentDto dto = new()
+            {
+                BaseUrl = settings.API.BaseUrl,
+                TournamentId = Convert.ToInt32(TournamentId),
+                PlayerIds = [],
+            };
+
+            Tournament? tournament = await _scoreAPIClient.GetTournament(dto);
 
             if (tournament != null)
             {

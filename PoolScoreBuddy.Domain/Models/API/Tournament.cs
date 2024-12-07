@@ -32,7 +32,14 @@ public class TournamentDecorator
 
     public async Task Fetch(IScoreAPIClient cueScoreService, string baseUrl, int tournamentId, IEnumerable<int>? playerIds = null)
     {
-        Tournament = await cueScoreService.GetTournament(baseUrl, tournamentId, playerIds);
+        TournamentDto dto = new()
+        {
+            BaseUrl = baseUrl,
+            TournamentId = tournamentId,
+            PlayerIds = playerIds
+        };
+
+        Tournament = await cueScoreService.GetTournament(dto);
     }
 
     public MonitoredPlayer? TogglePlayerEnabled(int playerId)
@@ -74,7 +81,13 @@ public class TournamentDecorator
 
     public async Task<IEnumerable<Player>> GetPlayers(IScoreAPIClient cueScoreService, string APIBaseUrl)
     {
-        _players ??= await cueScoreService.GetPlayers(APIBaseUrl, Tournament.TournamentId!.Value);
+        PlayersDto dto = new()
+        {
+            BaseUrl = APIBaseUrl,
+            TournamentId = Tournament.TournamentId!.Value,
+        };
+
+        _players ??= await cueScoreService.GetPlayers(dto);
 
         return GetPlayers();
     }
