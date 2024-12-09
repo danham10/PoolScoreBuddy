@@ -34,7 +34,6 @@ public class TournamentDecorator
     {
         TournamentDto dto = new()
         {
-            BaseUrl = baseUrl,
             TournamentId = tournamentId,
             PlayerIds = playerIds
         };
@@ -83,7 +82,6 @@ public class TournamentDecorator
     {
         PlayersDto dto = new()
         {
-            BaseUrl = APIBaseUrl,
             TournamentId = Tournament.TournamentId!.Value,
         };
 

@@ -8,11 +8,13 @@ public static class TournamentEndpoints
 {
     public static void RegisterTournamentEndpoints(this IEndpointRouteBuilder routes)
     {
-
+        int i;
         var users = routes.MapGroup("/api/v1/tournament");
 
         users.MapGet("/", async (int id, string? participants, string? playerIds, int[]? calledMatchIds, IScoreClient cacheClient, IConfiguration configuration) =>
         {
+            throw new Exception();
+
             return ScoreClientHelpers.GetService(participants) switch
             {
                 ScoreEndpointTypeEnum.Tournament => await ScoreClientHelpers.GetTournament(id, participants, playerIds, calledMatchIds, cacheClient),

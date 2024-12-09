@@ -35,7 +35,6 @@ public partial class TournamentViewModel(IScoreAPIClient scoreAPIClient, IConfig
 
             TournamentDto dto = new()
             {
-                BaseUrl = settings.API.BaseUrl,
                 TournamentId = Convert.ToInt32(TournamentId),
                 PlayerIds = [],
             };

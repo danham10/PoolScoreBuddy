@@ -1,13 +1,19 @@
 using PoolScoreBuddy.API.Endpoints;
 using PoolScoreBuddy.API.Services;
 using PoolScoreBuddy.Di;
+using PoolScoreBuddy.Domain;
+using PoolScoreBuddy.Domain.Models;
 using PoolScoreBuddy.Domain.Services;
 using System.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddHttpClient();
+builder.Services.AddHttpClient(ApiProviderType.CueScore.ToString(), client =>
+{
+    client.BaseAddress = new Uri(Constants.CueScoreBaseUrl);
+});
+
 builder.Services.AddMemoryCache();
 builder.Services.AddTransient<IScoreAPIClient, CueScoreAPIClient>();
 
