@@ -15,7 +15,7 @@ builder.Services.AddHttpClient(ApiProviderType.CueScore.ToString(), client =>
 });
 
 builder.Services.AddMemoryCache();
-builder.Services.AddTransient<IScoreAPIClient, CueScoreAPIClient>();
+builder.Services.AddSingleton<IScoreAPIClient, CueScoreAPIClient>(); //Singleton - need to track bad endpoints
 
 builder.Services.Configure<Settings>(
     builder.Configuration.GetSection("Settings"));

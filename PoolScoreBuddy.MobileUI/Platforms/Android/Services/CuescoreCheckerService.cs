@@ -3,6 +3,7 @@ using Android.Content;
 using Android.OS;
 using Android.Util;
 using AndroidX.Core.App;
+using Microsoft.Maui.Controls.Shapes;
 using PoolScoreBuddy.Domain;
 using PoolScoreBuddy.Domain.Services;
 using PoolScoreBuddy.Resources;
@@ -96,14 +97,37 @@ public class AndroidCuescoreCheckerService() : Service
 
         await Task.Run(async () =>
         {
+            bool onlineStatus = true;
+
             while (true)
             {
                 tokenSource.Token.ThrowIfCancellationRequested();
 
                 try
                 {
-                    var notificationsToSend = await playerNotificationService.ProcessNotifications();
-                    await playerNotificationService.SendNotifications(notificationsToSend);
+                    if (EnsureConnectivity.IsConnected())
+                    {
+                        if (!onlineStatus)
+                        {
+                            onlineStatus = true;
+                            // We have just come back online
+                            var notification = GetOnlineNotification(true);
+                            notificationManager.Notify(Constants.ServiceRunningNotificationId, notification);
+                        }
+
+                        var notificationsToSend = await playerNotificationService.ProcessNotifications();
+                        await playerNotificationService.SendNotifications(notificationsToSend);
+                    }
+                    else
+                    {
+                        if (onlineStatus)
+                        {
+                            onlineStatus = false;
+                            // We have just gone offline
+                            var notification = GetOnlineNotification(false);
+                            notificationManager.Notify(Constants.ServiceRunningNotificationId, notification);
+                        }
+                    }
 
                     if (!dataStore.Tournaments.ShouldMonitor())
                     {
@@ -136,6 +160,22 @@ public class AndroidCuescoreCheckerService() : Service
         return new NotificationCompat.Builder(this, Constants.ChannelId)
            .SetContentTitle(AppResources.AppTitle)
            .SetContentText(_isCheckerRunning ? AppResources.MonitoringStarted : AppResources.MonitoringStopped)
+           .SetSmallIcon(_Microsoft.Android.Resource.Designer.ResourceConstant.Drawable.cuescore_notify_icon)
+           .SetContentIntent(pendingIntent)
+           .Build();
+    }
+
+    private Notification GetOnlineNotification(bool online)
+    {
+        // Cannot use Plugin.Localnotification because we need Android specific type for StartForeground
+        var notificationIntent = new Intent(this, typeof(MainActivity));
+        var pendingIntent = PendingIntent.GetActivity(this, 0, notificationIntent, PendingIntentFlags.Immutable);
+
+        string text = online ? AppResources.ConnectivityResumedMonitoringMessage : AppResources.NoConnectivityMonitoringMessage;
+
+        return new NotificationCompat.Builder(this, Constants.ChannelId)
+           .SetContentTitle(AppResources.AppTitle)
+           .SetContentText(text)
            .SetSmallIcon(_Microsoft.Android.Resource.Designer.ResourceConstant.Drawable.cuescore_notify_icon)
            .SetContentIntent(pendingIntent)
            .Build();

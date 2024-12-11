@@ -13,7 +13,7 @@ public static class TournamentEndpoints
 
         users.MapGet("/", async (int id, string? participants, string? playerIds, int[]? calledMatchIds, IScoreClient cacheClient, IConfiguration configuration) =>
         {
-            throw new Exception();
+            //throw new Exception();
 
             return ScoreClientHelpers.GetService(participants) switch
             {

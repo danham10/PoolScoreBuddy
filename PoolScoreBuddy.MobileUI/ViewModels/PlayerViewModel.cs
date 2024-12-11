@@ -56,6 +56,8 @@ public partial class PlayerViewModel : BaseViewModel, IQueryAttributable
     [RelayCommand]
     async Task Refresh()
     {
+        if (!await EnsureConnectivity.IsConnectedWithAlert()) return;
+
         IsBusy = true;
 
         Players.Clear();

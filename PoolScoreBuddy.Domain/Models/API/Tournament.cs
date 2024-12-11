@@ -82,6 +82,7 @@ public class TournamentDecorator
     {
         PlayersDto dto = new()
         {
+            BaseAddresses = [Constants.APIBaseUrl, Constants.CueScoreBaseUrl],
             TournamentId = Tournament.TournamentId!.Value,
         };
 

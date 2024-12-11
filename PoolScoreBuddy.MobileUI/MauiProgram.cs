@@ -53,7 +53,7 @@ public static class MauiProgram
 
 
         //builder.Services.AddHttpClient();
-        builder.Services.AddTransient<IScoreAPIClient, CueScoreAPIClient>();
+        builder.Services.AddSingleton<IScoreAPIClient, CueScoreAPIClient>(); //Singleton - need to track bad endpoints
         builder.Services.AddTransient<IPlayerNotificationService, PlayerNotificationService>();
         builder.Services.AddSingleton<IDataStore, DataStore>();
 
@@ -71,18 +71,6 @@ public static class MauiProgram
         //builder.Services.AddTransient<LoggingDelegatingHandler>();
 
         AddHttpClients(builder);
-
-        builder.Services.AddResiliencePipeline(Constants.ResiliencePipelineKey, static builder =>
-        {
-            // See: https://www.pollydocs.org/strategies/retry.html
-            builder.AddRetry(new RetryStrategyOptions
-            {
-                ShouldHandle = new PredicateBuilder().Handle<TimeoutRejectedException>()
-            });
-
-            // See: https://www.pollydocs.org/strategies/timeout.html
-            builder.AddTimeout(TimeSpan.FromSeconds(1.5));
-        });
 
         return builder.Build();
     }
@@ -115,48 +103,7 @@ public static class MauiProgram
         }
         })
 #endif
-        .AddResilienceHandler("MyResilienceStrategy", resilienceBuilder => // Adds resilience policy named "MyResilienceStrategy"
-        {
-            // Retry Strategy configuration
-            resilienceBuilder.AddRetry(new HttpRetryStrategyOptions // Configures retry behavior
-            {
-                MaxRetryAttempts = 4, // Maximum retries before throwing an exception (default: 3)
-
-                Delay = TimeSpan.FromSeconds(2), // Delay between retries (default: varies by strategy)
-
-                BackoffType = DelayBackoffType.Exponential, // Exponential backoff for increasing delays (default)
-
-                UseJitter = true, // Adds random jitter to delay for better distribution (default: false)
-
-                ShouldHandle = new PredicateBuilder<HttpResponseMessage>() // Defines exceptions to trigger retries
-                .Handle<HttpRequestException>() // Includes any HttpRequestException
-                .HandleResult(response => !response.IsSuccessStatusCode) // Includes non-successful responses
-            });
-
-            // Timeout Strategy configuration
-            resilienceBuilder.AddTimeout(TimeSpan.FromSeconds(5)); // Sets a timeout limit for requests (throws TimeoutRejectedException)
-
-            // Circuit Breaker Strategy configuration
-            resilienceBuilder.AddCircuitBreaker(new HttpCircuitBreakerStrategyOptions // Configures circuit breaker behavior
-            {
-                // Tracks failures within this time frame
-                SamplingDuration = TimeSpan.FromSeconds(10),
-
-                // Trips the circuit if failure ratio exceeds this within sampling duration (20% failures allowed)
-                FailureRatio = 0.2,
-
-                // Requires at least this many successful requests within sampling duration to reset
-                MinimumThroughput = 3,
-
-                // How long the circuit stays open after tripping
-                BreakDuration = TimeSpan.FromSeconds(1),
-
-                // Defines exceptions to trip the circuit breaker
-                ShouldHandle = new PredicateBuilder<HttpResponseMessage>()
-                .Handle<HttpRequestException>() // Includes any HttpRequestException
-                .HandleResult(response => !response.IsSuccessStatusCode) // Includes non-successful responses
-            });
-        });
+;
     }
 
     private static IConfiguration GetAppSettings()
@@ -198,7 +145,7 @@ public static class MauiProgram
     /// </summary>
     /// <returns></returns>
     /// <remarks>
-    //https://learn.microsoft.com/en-us/previous-versions/xamarin/cross-platform/deploy-test/connect-to-local-web-services#bypass-the-certificate-security-check
+    ///https://learn.microsoft.com/en-us/previous-versions/xamarin/cross-platform/deploy-test/connect-to-local-web-services#bypass-the-certificate-security-check
     /// </remarks>
     private static HttpClientHandler GetInsecureHandler()
     {

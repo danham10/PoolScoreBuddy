@@ -2,11 +2,13 @@
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Maui.Controls;
+using Polly;
 using PoolScoreBuddy.Domain;
 using PoolScoreBuddy.Domain.Models;
 using PoolScoreBuddy.Domain.Models.API;
 using PoolScoreBuddy.Domain.Services;
 using PoolScoreBuddy.Resources;
+using System.Net;
 using System.Text.Json;
 
 namespace PoolScoreBuddy.ViewModels;
@@ -23,23 +25,24 @@ public partial class TournamentViewModel(IScoreAPIClient scoreAPIClient, IConfig
 
     public event EventHandler? FocusView;
 
-    private bool CanExecuteTournamentLoad() => !string.IsNullOrEmpty(TournamentId);
+    private bool CanExecuteTournamentLoad() 
+    {
+
+
+        return !string.IsNullOrEmpty(TournamentId); 
+    }
 
     [RelayCommand(CanExecute = nameof(CanExecuteTournamentLoad))]
     private async Task TournamentLoad()
     {
         try
         {
+            if (!await EnsureConnectivity.IsConnectedWithAlert()) return;
+
             var settings = SettingsResolver.GetSettings();
             IsBusy = true;
 
-            TournamentDto dto = new()
-            {
-                TournamentId = Convert.ToInt32(TournamentId),
-                PlayerIds = [],
-            };
-
-            Tournament? tournament = await _scoreAPIClient.GetTournament(dto);
+            Tournament tournament = await GetTournament();
 
             if (tournament != null)
             {
@@ -49,7 +52,7 @@ public partial class TournamentViewModel(IScoreAPIClient scoreAPIClient, IConfig
                 await GoToTournamentSelectedPage(tournamentDecorator);
             }
         }
-        catch (HttpRequestException)
+        catch (HttpRequestException ex)
         {
             await Application.Current!.MainPage!.DisplayAlert(string.Format(AppResources.TournamentHttpExceptionTitle, TournamentId),
                 AppResources.TournamentHttpExceptionMessage,
@@ -81,6 +84,19 @@ public partial class TournamentViewModel(IScoreAPIClient scoreAPIClient, IConfig
         IsBusy = false;
     }
 
+    private async Task<Tournament> GetTournament()
+    {
+        TournamentDto dto = new()
+        {
+            BaseAddresses = [Constants.APIBaseUrl, Constants.CueScoreBaseUrl],
+            TournamentId = Convert.ToInt32(TournamentId),
+            PlayerIds = [],
+        };
+
+        Tournament? tournament = await _scoreAPIClient.GetTournament(dto);
+        return tournament;
+    }
+
     private async Task GoToTournamentSelectedPage(TournamentDecorator tournament)
     {
         var navigationParameters = new Dictionary<string, object>
@@ -90,6 +106,8 @@ public partial class TournamentViewModel(IScoreAPIClient scoreAPIClient, IConfig
 
         await Shell.Current.GoToAsync(nameof(TournamentSelectedPage), false, navigationParameters);
     }
+
+
 
 
 }

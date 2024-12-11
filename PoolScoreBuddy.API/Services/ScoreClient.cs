@@ -21,7 +21,7 @@ public class ScoreClient(IScoreAPIClient scoreAPIClient, IMemoryCache cache, IOp
         {
             TournamentDto dto = new()
             {
-                ApiProviderType = ApiProviderType.CueScore,
+                BaseAddresses = [ Constants.CueScoreBaseUrl ],
                 TournamentId = tournamentId,
                 PlayerIds = playerIds
             };
@@ -50,7 +50,7 @@ public class ScoreClient(IScoreAPIClient scoreAPIClient, IMemoryCache cache, IOp
         {
             PlayersDto dto = new()
             {
-                ApiProviderType = ApiProviderType.CueScore,
+                BaseAddresses = [Constants.CueScoreBaseUrl],
                 TournamentId = tournamentId,
             };
 

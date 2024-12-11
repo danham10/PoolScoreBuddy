@@ -79,6 +79,15 @@ namespace PoolScoreBuddy.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Monitoring has resumed - internet connectivity found..
+        /// </summary>
+        internal static string ConnectivityResumedMonitoringMessage {
+            get {
+                return ResourceManager.GetString("ConnectivityResumedMonitoringMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 2) Copy and paste your unique tournament number below. .
         /// </summary>
         internal static string CopyPasteTournamentLabel {
@@ -88,7 +97,7 @@ namespace PoolScoreBuddy.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to There has been a monitoring error, suggest you monitor matches yourself..
+        ///   Looks up a localized string similar to  .
         /// </summary>
         internal static string ErrorNotification {
             get {
@@ -157,6 +166,24 @@ namespace PoolScoreBuddy.Resources {
         internal static string MonitoringStopped {
             get {
                 return ResourceManager.GetString("MonitoringStopped", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No internet connectivity detected. Try again later..
+        /// </summary>
+        internal static string NoConnectivityMessage {
+            get {
+                return ResourceManager.GetString("NoConnectivityMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Monitoring has paused - no internet connectivity found..
+        /// </summary>
+        internal static string NoConnectivityMonitoringMessage {
+            get {
+                return ResourceManager.GetString("NoConnectivityMonitoringMessage", resourceCulture);
             }
         }
         

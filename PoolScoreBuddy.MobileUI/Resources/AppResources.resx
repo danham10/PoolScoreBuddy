@@ -236,12 +236,21 @@ We want the number at the end. Around 8 digits. Here is an example of what to lo
     <value>OK</value>
   </data>
   <data name="ErrorNotification" xml:space="preserve">
-    <value>There has been a monitoring error, suggest you monitor matches yourself.</value>
+    <value> </value>
   </data>
   <data name="StartNotification" xml:space="preserve">
     <value>Table {0} {1}</value>
   </data>
   <data name="ResultNotification" xml:space="preserve">
     <value>Result {0}</value>
+  </data>
+  <data name="NoConnectivityMessage" xml:space="preserve">
+    <value>No internet connectivity detected. Try again later.</value>
+  </data>
+  <data name="NoConnectivityMonitoringMessage" xml:space="preserve">
+    <value>Monitoring has paused - no internet connectivity found.</value>
+  </data>
+  <data name="ConnectivityResumedMonitoringMessage" xml:space="preserve">
+    <value>Monitoring has resumed - internet connectivity found.</value>
   </data>
 </root>

@@ -64,6 +64,7 @@ public class PlayerNotificationService(IDataStore dataStore, IScoreAPIClient cue
                 Title = title,
                 Description = text,
                 CategoryType = NotificationCategoryType.Status,
+                Silent = false,
                 Android =
                 {
                     IconSmallName =
