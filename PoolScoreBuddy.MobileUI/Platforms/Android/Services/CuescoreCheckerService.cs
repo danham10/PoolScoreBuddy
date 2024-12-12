@@ -3,8 +3,8 @@ using Android.Content;
 using Android.OS;
 using Android.Util;
 using AndroidX.Core.App;
-using Microsoft.Maui.Controls.Shapes;
 using PoolScoreBuddy.Domain;
+
 using PoolScoreBuddy.Domain.Services;
 using PoolScoreBuddy.Resources;
 

@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Options;
 using PoolScoreBuddy.Di;
 using PoolScoreBuddy.Domain;
-using PoolScoreBuddy.Domain.Models;
 using PoolScoreBuddy.Domain.Models.API;
 using PoolScoreBuddy.Domain.Services;
 

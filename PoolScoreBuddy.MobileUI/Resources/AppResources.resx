@@ -236,7 +236,7 @@ We want the number at the end. Around 8 digits. Here is an example of what to lo
     <value>OK</value>
   </data>
   <data name="ErrorNotification" xml:space="preserve">
-    <value> </value>
+    <value>Error monitoring. Please manually check CueScore yourself.</value>
   </data>
   <data name="StartNotification" xml:space="preserve">
     <value>Table {0} {1}</value>
@@ -252,5 +252,11 @@ We want the number at the end. Around 8 digits. Here is an example of what to lo
   </data>
   <data name="ConnectivityResumedMonitoringMessage" xml:space="preserve">
     <value>Monitoring has resumed - internet connectivity found.</value>
+  </data>
+  <data name="TournamentHttpExceptionUnauthorisedMessage" xml:space="preserve">
+    <value>Please check for app update. Cannot authenticate with server.</value>
+  </data>
+  <data name="PlayersMaximumReached" xml:space="preserve">
+    <value>Maximum number of monitored players reached.</value>
   </data>
 </root>

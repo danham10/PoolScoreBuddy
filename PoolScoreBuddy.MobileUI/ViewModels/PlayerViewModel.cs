@@ -8,8 +8,8 @@ using PoolScoreBuddy.Domain.Services;
 using PoolScoreBuddy.Domain.Models.API;
 using PoolScoreBuddy.Domain.Models;
 using System.Text.Json;
-using Microsoft.Extensions.Configuration;
 using PoolScoreBuddy.Domain;
+
 
 namespace PoolScoreBuddy.ViewModels;
 public partial class PlayerViewModel : BaseViewModel, IQueryAttributable
@@ -67,7 +67,15 @@ public partial class PlayerViewModel : BaseViewModel, IQueryAttributable
         try
         {
             var settings = SettingsResolver.GetSettings();
-            refreshedPlayers = await _tournament!.GetPlayers(_cueScoreService, settings.API.BaseUrl);
+
+            PlayersDto dto = new()
+            {
+                BaseAddresses = [Constants.APIBaseUrl, Constants.CueScoreBaseUrl],
+                TournamentId = _tournament!.Tournament.TournamentId!.Value,
+            };
+
+            _tournament.Players = await _cueScoreService.GetPlayers(dto);
+            refreshedPlayers = _tournament.Players;
         }
         catch (HttpRequestException)
         {
@@ -106,9 +114,9 @@ public partial class PlayerViewModel : BaseViewModel, IQueryAttributable
     {
         if (MaximumMonitorCountReached())
         {
-            await Application.Current!.MainPage!.DisplayAlert(string.Format(AppResources.PlayersHttpExceptionTitle, _tournament!.Tournament.TournamentId),
-                AppResources.PlayersHttpExceptionMessage,
-                AppResources.PlayersHttpExceptionButton);
+            await Application.Current!.MainPage!.DisplayAlert(AppResources.Alert,
+                AppResources.PlayersMaximumReached,
+                AppResources.OK);
             return;
         }
 

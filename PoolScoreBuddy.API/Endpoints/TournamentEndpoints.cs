@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using PoolScoreBuddy.API.Services;
-using System.Text.Json;
+﻿using PoolScoreBuddy.API.Services;
 
 namespace PoolScoreBuddy.API.Endpoints;
 
@@ -8,7 +6,6 @@ public static class TournamentEndpoints
 {
     public static void RegisterTournamentEndpoints(this IEndpointRouteBuilder routes)
     {
-        int i;
         var users = routes.MapGroup("/api/v1/tournament");
 
         users.MapGet("/", async (int id, string? participants, string? playerIds, int[]? calledMatchIds, IScoreClient cacheClient, IConfiguration configuration) =>
@@ -21,6 +18,6 @@ public static class TournamentEndpoints
                 ScoreEndpointTypeEnum.Players => await ScoreClientHelpers.GetPlayers(id, cacheClient),
                 _ => throw new NotImplementedException(),
             };
-        });
+        }).RequireAuthorization();
     }
 }

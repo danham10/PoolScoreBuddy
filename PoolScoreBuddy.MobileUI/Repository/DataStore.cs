@@ -1,6 +1,6 @@
 using PoolScoreBuddy.Domain.Models.API;
 
-namespace PoolScoreBuddy.Domain.Services;
+namespace PoolScoreBuddy.Repository;
 
 public class DataStore : IDataStore
 {

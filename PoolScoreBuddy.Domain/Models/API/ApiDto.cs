@@ -2,10 +2,8 @@
 
 public record TournamentDto() : ApiDto
 {
-    private IEnumerable<int>? playerIds;
-
     public int TournamentId { get; set; }
-    public IEnumerable<int>? PlayerIds { get => playerIds; set => playerIds = value; }
+    public IEnumerable<int>? PlayerIds { get; set; }
 }
 
 public record PlayersDto : ApiDto
@@ -15,7 +13,5 @@ public record PlayersDto : ApiDto
 
 public record ApiDto
 {
-    //public string BaseUrl { get; set; } = "";
-    //public ApiProviderType ApiProviderType { get; set; } = ApiProviderType.CueScoreProxy;
-    public List<string> BaseAddresses { get; set; }
+    public List<string> BaseAddresses { get; set; } = [];
 }

@@ -10,9 +10,6 @@ public static class SettingsResolver
 
         var settings =  config.GetRequiredSection("Settings").Get<Settings>();
 
-        if (settings == null)
-            throw new NullReferenceException("Settings are null");
-
-        return settings;
+        return settings ?? throw new NullReferenceException("Settings are null");
     }
 }

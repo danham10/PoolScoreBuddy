@@ -21,8 +21,17 @@ public class PlayerNotificationService(IDataStore dataStore, IScoreAPIClient cue
             {
                 IEnumerable<int> monitoredPlayerIds = from player in tournament.MonitoredPlayers
                                            select player.PlayerId;
-                                           
-                await tournament.Fetch(cueScoreService, settings.API.BaseUrl, tournament.Tournament.TournamentId!.Value, monitoredPlayerIds);
+
+                TournamentDto dto = new()
+                {
+                    BaseAddresses = [Constants.APIBaseUrl, Constants.CueScoreBaseUrl],
+                    TournamentId = tournament.Tournament.TournamentId!.Value,
+                    PlayerIds = monitoredPlayerIds
+                };
+
+
+                var updatedTournament = await cueScoreService.GetTournament(dto);
+                tournament.Tournament = updatedTournament;
             }
 
             // remove tournaments that have finished
@@ -38,9 +47,9 @@ public class PlayerNotificationService(IDataStore dataStore, IScoreAPIClient cue
             }
             return notifications;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            AddErrorNotification(notifications);
+          AddErrorNotification(notifications);
         }
 
         return notifications;
@@ -50,11 +59,20 @@ public class PlayerNotificationService(IDataStore dataStore, IScoreAPIClient cue
     {
         foreach (var notification in notifications)
         {
-            string title = $"{notification.Player1} vs {notification.Player2}";
+            string title = notification.NotificationType switch
+            {
+                NotificationType.Start => $"{notification.Player1} vs {notification.Player2}",
+                NotificationType.Result => $"{notification.Player1} vs {notification.Player2}",
+                NotificationType.Error => AppResources.Alert,
+                _ => throw new InvalidDataException()
+            };
+
+
             string text = notification.NotificationType switch
             {
                 NotificationType.Start => string.Format(AppResources.StartNotification, notification.Message, notification.StartTime.ToString("h:mm tt")),
                 NotificationType.Result => string.Format(AppResources.ResultNotification, notification.Message),
+                NotificationType.Error => notification.Message,
                 _ => throw new InvalidDataException()
             };
 

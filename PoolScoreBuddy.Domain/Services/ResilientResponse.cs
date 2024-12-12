@@ -2,7 +2,7 @@
 
 internal record ResilientResponse()
 {
-    public HttpResponseMessage Response { get; set; }
+    public HttpResponseMessage Response { get; set; } = null!;
     public IEnumerable<string> KnownBadEndpoints { get; set; } = [];
 }
 

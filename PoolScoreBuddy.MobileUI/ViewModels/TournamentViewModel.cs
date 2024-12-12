@@ -1,18 +1,15 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Maui.Controls;
-using Polly;
 using PoolScoreBuddy.Domain;
 using PoolScoreBuddy.Domain.Models;
 using PoolScoreBuddy.Domain.Models.API;
 using PoolScoreBuddy.Domain.Services;
 using PoolScoreBuddy.Resources;
-using System.Net;
+using System.Diagnostics;
 using System.Text.Json;
 
 namespace PoolScoreBuddy.ViewModels;
-public partial class TournamentViewModel(IScoreAPIClient scoreAPIClient, IConfiguration configuration) : BaseViewModel
+public partial class TournamentViewModel(IScoreAPIClient scoreAPIClient) : BaseViewModel
 {
     readonly IScoreAPIClient _scoreAPIClient = scoreAPIClient;
 
@@ -54,33 +51,39 @@ public partial class TournamentViewModel(IScoreAPIClient scoreAPIClient, IConfig
         }
         catch (HttpRequestException ex)
         {
-            await Application.Current!.MainPage!.DisplayAlert(string.Format(AppResources.TournamentHttpExceptionTitle, TournamentId),
-                AppResources.TournamentHttpExceptionMessage,
-                AppResources.TournamentHttpExceptionButton);
+            switch (ex.StatusCode)
+            {
+                case System.Net.HttpStatusCode.Unauthorized:
+                    await Application.Current!.MainPage!.DisplayAlert(string.Format(AppResources.TournamentHttpExceptionTitle, TournamentId),
+                       AppResources.TournamentHttpExceptionUnauthorisedMessage,
+                       AppResources.TournamentHttpExceptionButton);
+                    break;
 
-            FocusView?.Invoke(this, EventArgs.Empty);
+                default:
+                    await Application.Current!.MainPage!.DisplayAlert(string.Format(AppResources.TournamentHttpExceptionTitle, TournamentId),
+                       AppResources.TournamentHttpExceptionMessage,
+                       AppResources.TournamentHttpExceptionButton);
+                    break;
+            }
         }
         catch (APIServerException ex)
         {
             await Application.Current!.MainPage!.DisplayAlert(string.Format(AppResources.TournamentAPIServerExceptionTitle, TournamentId), 
                 string.Format(AppResources.TournamentAPIServerExceptionMessage, ex!.Message),
                 AppResources.TournamentAPIServerExceptionButton);
-
-            FocusView?.Invoke(this, EventArgs.Empty);
         }
         catch (JsonException ex)
         {
             await Application.Current!.MainPage!.DisplayAlert(string.Format(AppResources.TournamentJsonExceptionTitle, TournamentId),
                 string.Format(AppResources.TournamentJsonExceptionMessage, TournamentId, ex.Message),
                 AppResources.TournamentJsonExceptionButton);
-            
-            FocusView?.Invoke(this, EventArgs.Empty);
         }
         catch(Exception ex)
         {
-            Console.WriteLine(ex);
+            Debug.Write(ex);
         }
 
+        FocusView?.Invoke(this, EventArgs.Empty);
         IsBusy = false;
     }
 
@@ -106,9 +109,5 @@ public partial class TournamentViewModel(IScoreAPIClient scoreAPIClient, IConfig
 
         await Shell.Current.GoToAsync(nameof(TournamentSelectedPage), false, navigationParameters);
     }
-
-
-
-
 }
 

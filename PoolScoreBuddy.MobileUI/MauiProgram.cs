@@ -7,12 +7,6 @@ using PoolScoreBuddy.Domain.Services;
 using PoolScoreBuddy.Domain;
 using Microsoft.Extensions.Configuration;
 using System.Reflection;
-using Polly;
-using Polly.Retry;
-using Polly.Timeout;
-using Microsoft.Extensions.Http.Resilience;
-using Microsoft.Extensions.Options;
-using PoolScoreBuddy.Domain.Models;
 
 namespace PoolScoreBuddy;
 
@@ -49,13 +43,11 @@ public static class MauiProgram
         builder.Logging.AddDebug();
 #endif
 
-
-
-
-        //builder.Services.AddHttpClient();
-        builder.Services.AddSingleton<IScoreAPIClient, CueScoreAPIClient>(); //Singleton - need to track bad endpoints
-        builder.Services.AddTransient<IPlayerNotificationService, PlayerNotificationService>();
+        builder.Services.AddSingleton<IScoreAPIClient, CueScoreAPIClient>();
         builder.Services.AddSingleton<IDataStore, DataStore>();
+        builder.Services.AddSingleton<IMessenger, WeakReferenceMessenger>();
+
+        builder.Services.AddTransient<IPlayerNotificationService, PlayerNotificationService>();
 
         builder.Services.AddTransient<TournamentPage>();
         builder.Services.AddTransient<TournamentViewModel>();
@@ -66,41 +58,32 @@ public static class MauiProgram
         builder.Services.AddTransient<PlayerPage>();
         builder.Services.AddTransient<PlayerViewModel>();
 
-        builder.Services.AddSingleton<IMessenger, WeakReferenceMessenger>();
-
-        //builder.Services.AddTransient<LoggingDelegatingHandler>();
-
-        AddHttpClients(builder);
+        AddHttpClient(builder);
 
         return builder.Build();
     }
 
-    private static void AddHttpClients(MauiAppBuilder builder)
+    private static void AddHttpClient(MauiAppBuilder builder)
     {
         var settings = GetAppSettings();
 
-
-        builder.Services.AddHttpClient(ApiProviderType.CueScore.ToString(), client =>
-        {
-            client.BaseAddress = new Uri(Constants.CueScoreBaseUrl);
-        });
-
         builder.Services
-        .AddHttpClient(ApiProviderType.CueScoreProxy.ToString(), client =>
+        .AddHttpClient(Constants.HttpClientName, client =>
         {
             client.BaseAddress = new Uri(Constants.APIBaseUrl);
+            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenService.GenerateToken());
         })
 #if DEBUG
-        // Android emulator requires untrusted local cert when running in deug
+        // Android emulator requires truested local cert when running in deug
         //https://learn.microsoft.com/en-us/previous-versions/xamarin/cross-platform/deploy-test/connect-to-local-web-services#bypass-the-certificate-security-check
         .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
         {
             ClientCertificateOptions = ClientCertificateOption.Manual,
             ServerCertificateCustomValidationCallback =
-        (httpRequestMessage, cert, cetChain, policyErrors) =>
-        {
-            return true;
-        }
+                (httpRequestMessage, cert, cetChain, policyErrors) =>
+                {
+                    return true;
+                }
         })
 #endif
 ;
@@ -138,55 +121,4 @@ public static class MauiProgram
         });
 
     }
-
-
-    /// <summary>
-    /// Android emulator requires untrusted local cert running in deug
-    /// </summary>
-    /// <returns></returns>
-    /// <remarks>
-    ///https://learn.microsoft.com/en-us/previous-versions/xamarin/cross-platform/deploy-test/connect-to-local-web-services#bypass-the-certificate-security-check
-    /// </remarks>
-    private static HttpClientHandler GetInsecureHandler()
-    {
-        HttpClientHandler handler = new()
-        {
-            ServerCertificateCustomValidationCallback =
-            (message, cert, chain, errors) =>
-            {
-                if (cert!.Issuer.Equals("CN=localhost"))
-                    return true;
-                return errors == System.Net.Security.SslPolicyErrors.None;
-            }
-        };
-        return handler;
-    }
 }
-
-//public class LoggingDelegatingHandler(ILogger<LoggingDelegatingHandler> logger)
-//    : DelegatingHandler
-//{
-//    protected override async Task<HttpResponseMessage> SendAsync(
-//        HttpRequestMessage request,
-//        CancellationToken cancellationToken)
-//    {
-//        try
-//        {
-//            logger.LogInformation("Before HTTP request");
-
-//            var result = await base.SendAsync(request, cancellationToken);
-
-//            result.EnsureSuccessStatusCode();
-
-//            logger.LogInformation("After HTTP request");
-
-//            return result;
-//        }
-//        catch (Exception e)
-//        {
-//            logger.LogError(e, "HTTP request failed");
-
-//            throw;
-//        }
-//    }
-//}

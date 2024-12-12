@@ -97,7 +97,7 @@ namespace PoolScoreBuddy.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to  .
+        ///   Looks up a localized string similar to Error monitoring. Please manually check CueScore yourself..
         /// </summary>
         internal static string ErrorNotification {
             get {
@@ -278,6 +278,15 @@ namespace PoolScoreBuddy.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Maximum number of monitored players reached..
+        /// </summary>
+        internal static string PlayersMaximumReached {
+            get {
+                return ResourceManager.GetString("PlayersMaximumReached", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No players available.
         /// </summary>
         internal static string PlayersNoneAvailable {
@@ -382,6 +391,15 @@ namespace PoolScoreBuddy.Resources {
         internal static string TournamentHttpExceptionTitle {
             get {
                 return ResourceManager.GetString("TournamentHttpExceptionTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please check for app update. Cannot authenticate with server..
+        /// </summary>
+        internal static string TournamentHttpExceptionUnauthorisedMessage {
+            get {
+                return ResourceManager.GetString("TournamentHttpExceptionUnauthorisedMessage", resourceCulture);
             }
         }
         

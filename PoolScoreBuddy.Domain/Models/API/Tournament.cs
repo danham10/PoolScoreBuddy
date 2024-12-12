@@ -1,9 +1,8 @@
-﻿using PoolScoreBuddy.Domain.Services;
-
-namespace PoolScoreBuddy.Domain.Models.API;
+﻿namespace PoolScoreBuddy.Domain.Models.API;
 
 /// <summary>
 /// Generated from special paste of JSON from https://api.cuescore.com/
+/// Unused properties are removed to reduce memory and chance of deserialisation error
 /// </summary>
 public partial class Tournament
 {
@@ -15,8 +14,8 @@ public partial class Tournament
 
 public class TournamentDecorator
 {
-    private List<Player>? _players;
-    public Tournament Tournament { get; private set; }
+    public List<Player>? Players { get; set; }
+    public Tournament Tournament { get; set; }
     public List<MonitoredPlayer> MonitoredPlayers { get; set; } = [];
     public bool IsBusy { get; private set; }
 
@@ -28,17 +27,6 @@ public class TournamentDecorator
     public TournamentDecorator(Tournament tournament)
     {
         Tournament = tournament;
-    }
-
-    public async Task Fetch(IScoreAPIClient cueScoreService, string baseUrl, int tournamentId, IEnumerable<int>? playerIds = null)
-    {
-        TournamentDto dto = new()
-        {
-            TournamentId = tournamentId,
-            PlayerIds = playerIds
-        };
-
-        Tournament = await cueScoreService.GetTournament(dto);
     }
 
     public MonitoredPlayer? TogglePlayerEnabled(int playerId)
@@ -59,9 +47,9 @@ public class TournamentDecorator
         }
     }
 
-    public IEnumerable<Player> GetPlayers()
+    public IEnumerable<Player> GetPlayersWithMonitoring()
     {
-        var players = from p in _players
+        var players = from p in Players
                       join mp in MonitoredPlayers on p.PlayerId equals mp.PlayerId
                       into MonitoredPlayersGroup
                       from mp in MonitoredPlayersGroup.DefaultIfEmpty()
@@ -78,20 +66,11 @@ public class TournamentDecorator
         return players.OrderBy(p => p.Name);
     }
 
-    public async Task<IEnumerable<Player>> GetPlayers(IScoreAPIClient cueScoreService, string APIBaseUrl)
+    public bool IsFinished() 
     {
-        PlayersDto dto = new()
-        {
-            BaseAddresses = [Constants.APIBaseUrl, Constants.CueScoreBaseUrl],
-            TournamentId = Tournament.TournamentId!.Value,
-        };
-
-        _players ??= await cueScoreService.GetPlayers(dto);
-
-        return GetPlayers();
+        const string TournamentFinishedStatus = "Finished";
+        return Tournament.Status!.Equals(TournamentFinishedStatus, StringComparison.InvariantCultureIgnoreCase);
     }
-
-    public bool IsFinished() => Tournament.Status == "Finished";
     public List<Match> PlayerMatches(int playerId)
     {
         return Tournament.Matches!.ToList().Where(m => m.PlayerA.PlayerId == playerId || m.PlayerB.PlayerId == playerId).ToList();
@@ -99,12 +78,14 @@ public class TournamentDecorator
 
     public List<Match> ActivePlayerMatches(int playerId)
     {
-        return PlayerMatches(playerId).Where(m => m.MatchStatusCode == 1).ToList();
+        const int MatchActiveStatus = 1;
+        return PlayerMatches(playerId).Where(m => m.MatchStatusCode == MatchActiveStatus).ToList();
     }
 
     public List<Match> ResultsPlayerMatches(int playerId)
     {
-        return PlayerMatches(playerId).Where(m => m.MatchStatusCode == 2).ToList();
+        const int MatchFinishedStatus = 2;
+        return PlayerMatches(playerId).Where(m => m.MatchStatusCode == MatchFinishedStatus).ToList();
     }
 };
 

@@ -10,7 +10,7 @@ public class CueScoreAPIClient(IHttpClientFactory httpClientFactory) : IScoreAPI
 
     public async Task<Tournament> GetTournament(TournamentDto dto)
     {
-        var httpClient = httpClientFactory.CreateClient(ApiProviderType.CueScoreProxy.ToString());
+        var httpClient = httpClientFactory.CreateClient(Constants.HttpClientName);
         var resilientClientWrapper = new ResilientClientWrapper(httpClient, dto.BaseAddresses);
 
         string? playerQueryValue = GetPlayerQueryValue(dto.PlayerIds);
@@ -28,14 +28,15 @@ public class CueScoreAPIClient(IHttpClientFactory httpClientFactory) : IScoreAPI
 
     public async Task<List<Player>> GetPlayers(PlayersDto dto)
     {
-        var httpClient = httpClientFactory.CreateClient(ApiProviderType.CueScoreProxy.ToString());
+        var httpClient = httpClientFactory.CreateClient(Constants.HttpClientName);
+        var resilientClientWrapper = new ResilientClientWrapper(httpClient, dto.BaseAddresses);
 
         var uri = $"tournament/?id={dto.TournamentId}&participants=Participants+list";
-        var response = await httpClient.GetAsync(uri);
+        var responseWrapper = await resilientClientWrapper.FetchResponse(uri);
 
-        response.EnsureSuccessStatusCode();
+        responseWrapper.Response.EnsureSuccessStatusCode();
 
-        string data = await response.Content.ReadAsStringAsync();
+        string data = await responseWrapper.Response.Content.ReadAsStringAsync();
         return Deserialize<List<Player>>(data);
     }
 
