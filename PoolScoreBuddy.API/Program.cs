@@ -20,7 +20,7 @@ builder.Services.AddAuthentication(config =>
 {
     config.RequireHttpsMetadata = false;
     config.SaveToken = true;
-    config.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+    config.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuerSigningKey = true,
         IssuerSigningKey = new SymmetricSecurityKey(secretKey),

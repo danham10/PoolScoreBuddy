@@ -1,5 +1,6 @@
 ﻿using Android.App;
 using Android.Content;
+using Android.Content.PM;
 using Android.OS;
 using Android.Util;
 using AndroidX.Core.App;
@@ -8,9 +9,9 @@ using PoolScoreBuddy.Domain;
 using PoolScoreBuddy.Domain.Services;
 using PoolScoreBuddy.Resources;
 
-namespace PoolScoreBuddy.Platforms;
+namespace PoolScoreBuddy.Platforms.Android.Services;
 
-[Service(ForegroundServiceType = Android.Content.PM.ForegroundService.TypeDataSync)]
+[Service(ForegroundServiceType = ForegroundService.TypeDataSync)]
 public class AndroidCuescoreCheckerService() : Service
 {
     static readonly string? Tag = typeof(AndroidCuescoreCheckerService).FullName;
@@ -76,6 +77,7 @@ public class AndroidCuescoreCheckerService() : Service
     }
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "Compatibility is enforced in if block")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0079:Remove unnecessary suppression", Justification = "Compatibility is enforced in if block")]
     void RegisterForegroundService()
     {
         var notification = GetServiceNotification();
@@ -86,7 +88,7 @@ public class AndroidCuescoreCheckerService() : Service
         }
         else
         {
-            StartForeground(Constants.ServiceRunningNotificationId, notification, Android.Content.PM.ForegroundService.TypeDataSync);
+            StartForeground(Constants.ServiceRunningNotificationId, notification, ForegroundService.TypeDataSync);
         }
     }
 

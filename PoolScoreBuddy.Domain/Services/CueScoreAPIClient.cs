@@ -62,8 +62,4 @@ public class CueScoreAPIClient(IHttpClientFactory httpClientFactory) : IScoreAPI
 
         return playerIds.Any() ? $"&playerIds={q}" : null;
     }
-
-
-
-
 }

@@ -22,7 +22,7 @@ public static class Constants
 #if DEBUG
     public static readonly string APIBaseUrl = "https://10.0.2.2:7181/api/v1/"; //localhost
 #else
-    public static readonly string APIBaseUrl = "https://TBC/api/v1/"; //Azure
+    public static readonly string APIBaseUrl = "https://10.0.2.2:7181/api/v1/"; //Azure TBC
 #endif
 
     public static readonly string CueScoreBaseUrl = "https://api.cuescore.com/";

@@ -74,7 +74,7 @@ public static class MauiProgram
             client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenService.GenerateToken());
         })
 #if DEBUG
-        // Android emulator requires truested local cert when running in deug
+        // Android emulator requires trusted local cert when running in deug
         //https://learn.microsoft.com/en-us/previous-versions/xamarin/cross-platform/deploy-test/connect-to-local-web-services#bypass-the-certificate-security-check
         .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
         {
@@ -97,7 +97,7 @@ public static class MauiProgram
 #if DEBUG
         appsettingsEnv = "Development";
 #else
-        appsettingsEnv = "Production"
+        appsettingsEnv = "Production";
 #endif
         string path = FileSystem.AppDataDirectory;
         var a = Assembly.GetExecutingAssembly();

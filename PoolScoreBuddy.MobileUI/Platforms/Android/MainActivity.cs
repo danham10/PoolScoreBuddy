@@ -3,7 +3,7 @@ using Android.Content;
 using Android.Content.PM;
 using CommunityToolkit.Mvvm.Messaging;
 using PoolScoreBuddy.Domain.Models;
-using PoolScoreBuddy.Platforms;
+using PoolScoreBuddy.Platforms.Android.Services;
 
 namespace PoolScoreBuddy;
 
