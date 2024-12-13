@@ -4,6 +4,7 @@ using PoolScoreBuddy.Resources;
 using Plugin.LocalNotification;
 using Plugin.LocalNotification.AndroidOption;
 using PoolScoreBuddy.Domain;
+using Microsoft.Extensions.Options;
 
 namespace PoolScoreBuddy.Services;
 
@@ -24,7 +25,7 @@ public class PlayerNotificationService(IDataStore dataStore, IScoreAPIClient cue
 
                 TournamentDto dto = new()
                 {
-                    BaseAddresses = [Constants.APIBaseUrl, Constants.CueScoreBaseUrl],
+                    BaseAddresses = [..settings.APIProxies, settings.CueScoreBaseUrl],
                     TournamentId = tournament.Tournament.TournamentId!.Value,
                     PlayerIds = monitoredPlayerIds
                 };
@@ -49,7 +50,8 @@ public class PlayerNotificationService(IDataStore dataStore, IScoreAPIClient cue
         }
         catch (Exception ex)
         {
-          AddErrorNotification(notifications);
+            Console.WriteLine(ex.ToString());
+            AddErrorNotification(notifications);
         }
 
         return notifications;

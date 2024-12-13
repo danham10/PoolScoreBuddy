@@ -5,7 +5,6 @@ using Android.OS;
 using Android.Util;
 using AndroidX.Core.App;
 using PoolScoreBuddy.Domain;
-
 using PoolScoreBuddy.Domain.Services;
 using PoolScoreBuddy.Resources;
 
@@ -96,6 +95,7 @@ public class AndroidCuescoreCheckerService() : Service
     {
         var notificationManager = (NotificationManager)GetSystemService(NotificationService)!;
         var playerNotificationService = ServiceResolver.GetService<IPlayerNotificationService>();
+        var settings = SettingsResolver.GetSettings();
 
         await Task.Run(async () =>
         {
@@ -136,7 +136,7 @@ public class AndroidCuescoreCheckerService() : Service
                         OnDestroy();
                     }
 
-                    await Task.Delay(Constants.APIPingIntervalSeconds * 1000, tokenSource.Token);
+                    await Task.Delay(settings.APIPingIntervalSeconds * 1000, tokenSource.Token);
                 }
                 catch (TaskCanceledException)
                 {

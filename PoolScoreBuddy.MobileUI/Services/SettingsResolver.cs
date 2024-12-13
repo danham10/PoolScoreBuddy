@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 
-namespace PoolScoreBuddy.Domain;
+namespace PoolScoreBuddy.Services;
 
 public static class SettingsResolver
 {

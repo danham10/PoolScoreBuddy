@@ -2,15 +2,17 @@
 using PoolScoreBuddy.Domain;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Text;
 
 namespace PoolScoreBuddy.Services;
 internal class TokenService
 {
     internal static string GenerateToken()
     {
+        var settings = SettingsResolver.GetSettings();
         var tokenHandler = new JwtSecurityTokenHandler();
 
-        var key = ApiSettings.GenerateSecretByte();
+        var key = Encoding.ASCII.GetBytes(settings.JWTToken);
 
         var tokenDescriptor = new SecurityTokenDescriptor
         {

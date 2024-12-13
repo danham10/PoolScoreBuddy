@@ -1,4 +1,4 @@
-﻿namespace PoolScoreBuddy;
+﻿namespace PoolScoreBuddy.API;
 public class Settings
 {
     public string CueScoreBaseUrl { get; set; } = null!;

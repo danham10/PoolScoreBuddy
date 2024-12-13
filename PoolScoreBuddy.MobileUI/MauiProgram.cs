@@ -70,7 +70,7 @@ public static class MauiProgram
         builder.Services
         .AddHttpClient(Constants.HttpClientName, client =>
         {
-            client.BaseAddress = new Uri(Constants.APIBaseUrl);
+            //client.BaseAddress = new Uri(Constants.APIBaseUrl);
             client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenService.GenerateToken());
         })
 #if DEBUG

@@ -89,9 +89,11 @@ public partial class TournamentViewModel(IScoreAPIClient scoreAPIClient) : BaseV
 
     private async Task<Tournament> GetTournament()
     {
+        var settings = SettingsResolver.GetSettings();
+
         TournamentDto dto = new()
         {
-            BaseAddresses = [Constants.APIBaseUrl, Constants.CueScoreBaseUrl],
+            BaseAddresses = [.. settings.APIProxies, settings.CueScoreBaseUrl],
             TournamentId = Convert.ToInt32(TournamentId),
             PlayerIds = [],
         };

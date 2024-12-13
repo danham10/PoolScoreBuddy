@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
-using PoolScoreBuddy.Di;
 using PoolScoreBuddy.Domain;
 using PoolScoreBuddy.Domain.Models.API;
 using PoolScoreBuddy.Domain.Services;
@@ -12,7 +11,7 @@ public class ScoreClient(IScoreAPIClient scoreAPIClient, IMemoryCache cache, IOp
     const string tournamentCacheFormatter = "t:{0}";
     const string playersCacheFormatter = "p:{0}";
 
-    public async Task<Tournament> GetTournament(int tournamentId, string? participants, int[]? playerIds, int[]? notifiedMatchIds)
+    public async Task<Tournament> GetTournament(int tournamentId, int[]? playerIds, int[]? notifiedMatchIds)
     {
         string cacheKey = string.Format(tournamentCacheFormatter, tournamentId);
 
@@ -20,7 +19,7 @@ public class ScoreClient(IScoreAPIClient scoreAPIClient, IMemoryCache cache, IOp
         {
             TournamentDto dto = new()
             {
-                BaseAddresses = [ Constants.CueScoreBaseUrl ],
+                BaseAddresses = [options.Value.CueScoreBaseUrl],
                 TournamentId = tournamentId,
                 PlayerIds = playerIds
             };
@@ -49,7 +48,7 @@ public class ScoreClient(IScoreAPIClient scoreAPIClient, IMemoryCache cache, IOp
         {
             PlayersDto dto = new()
             {
-                BaseAddresses = [Constants.CueScoreBaseUrl],
+                BaseAddresses = [options.Value.CueScoreBaseUrl],
                 TournamentId = tournamentId,
             };
 

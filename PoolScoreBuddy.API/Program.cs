@@ -1,17 +1,21 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using PoolScoreBuddy.API;
 using PoolScoreBuddy.API.Endpoints;
 using PoolScoreBuddy.API.Services;
-using PoolScoreBuddy.Di;
 using PoolScoreBuddy.Domain;
 using PoolScoreBuddy.Domain.Models;
 using PoolScoreBuddy.Domain.Services;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var secretKey = ApiSettings.GenerateSecretByte();
+builder.Services.Configure<Settings>(
+    builder.Configuration.GetSection("Settings"));
 
-// Add services to the container.
+var settings = builder.Configuration.GetSection("Settings").Get<Settings>();
+var secretKey = Encoding.ASCII.GetBytes(settings!.JWTToken);
+
 builder.Services.AddAuthentication(config =>
 {
     config.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -31,31 +35,18 @@ builder.Services.AddAuthentication(config =>
 
 builder.Services.AddAuthorization();
 
-builder.Services.AddHttpClient(ApiProviderType.CueScore.ToString(), client =>
-{
-    client.BaseAddress = new Uri(Constants.CueScoreBaseUrl);
-});
-
+builder.Services.AddHttpClient();
+builder.Services.AddSingleton<IScoreAPIClient, CueScoreAPIClient>();
+builder.Services.AddSingleton<IScoreClient, ScoreClient>();
 builder.Services.AddMemoryCache();
-builder.Services.AddSingleton<IScoreAPIClient, CueScoreAPIClient>(); //Singleton - need to track bad endpoints
-
-builder.Services.Configure<Settings>(
-    builder.Configuration.GetSection("Settings"));
-
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
-builder.Services.AddSingleton<IScoreClient, ScoreClient>();
 
 var app = builder.Build();
 
 app.UseAuthentication();
 app.UseAuthorization();
 
-//app.UseHsts();
-
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

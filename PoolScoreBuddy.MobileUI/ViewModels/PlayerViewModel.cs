@@ -8,7 +8,6 @@ using PoolScoreBuddy.Domain.Services;
 using PoolScoreBuddy.Domain.Models.API;
 using PoolScoreBuddy.Domain.Models;
 using System.Text.Json;
-using PoolScoreBuddy.Domain;
 
 
 namespace PoolScoreBuddy.ViewModels;
@@ -70,7 +69,7 @@ public partial class PlayerViewModel : BaseViewModel, IQueryAttributable
 
             PlayersDto dto = new()
             {
-                BaseAddresses = [Constants.APIBaseUrl, Constants.CueScoreBaseUrl],
+                BaseAddresses = [..settings.APIProxies, settings.CueScoreBaseUrl],
                 TournamentId = _tournament!.Tournament.TournamentId!.Value,
             };
 

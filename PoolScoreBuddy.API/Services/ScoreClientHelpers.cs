@@ -19,7 +19,7 @@ internal static class ScoreClientHelpers
         };
     }
 
-    internal static async Task<string> GetTournament(int id, string? participants, string? playerIds, int[]? calledMatchIds, IScoreClient cacheClient)
+    internal static async Task<string> GetTournament(int id, string? playerIds, int[]? calledMatchIds, IScoreClient cacheClient)
     {
         int[] playerIdArray = [];
 
@@ -28,6 +28,6 @@ internal static class ScoreClientHelpers
             playerIdArray = playerIds!.Split(",").Select(x => Convert.ToInt32(x)).ToArray();
         }
 
-        return JsonSerializer.Serialize(await cacheClient.GetTournament(id, participants, playerIdArray, calledMatchIds));
+        return JsonSerializer.Serialize(await cacheClient.GetTournament(id, playerIdArray, calledMatchIds));
     }
 }
