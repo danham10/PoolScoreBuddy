@@ -75,7 +75,7 @@ public partial class PlayerViewModel : BaseViewModel, IQueryAttributable
             };
 
             _tournament.Players = await _cueScoreService.GetPlayers(dto);
-            refreshedPlayers = _tournament.Players;
+            refreshedPlayers = _tournament.GetPlayersWithMonitoring();
         }
         catch (HttpRequestException)
         {

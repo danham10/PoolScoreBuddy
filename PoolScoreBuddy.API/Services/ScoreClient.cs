@@ -28,7 +28,7 @@ public class ScoreClient(IScoreAPIClient scoreAPIClient, IMemoryCache cache, IOp
             tournament = await scoreAPIClient.GetTournament(dto);
 
             var cacheEntryOptions = new MemoryCacheEntryOptions()
-                .SetSlidingExpiration(TimeSpan.FromSeconds(options.Value.APIPingIntervalSeconds));
+                .SetAbsoluteExpiration(TimeSpan.FromSeconds(options.Value.APIPingIntervalSeconds));
 
             cache.Set(cacheKey, tournament, cacheEntryOptions);
         }

@@ -39,7 +39,7 @@ public class PlayerNotificationService(IDataStore dataStore, IScoreAPIClient cue
 
             foreach (var t in dataStore.Tournaments)
             {
-                foreach (var p in t.MonitoredPlayers)
+                foreach (var p in t.MonitoredPlayers.ToList())
                 {
                     AddMatchNotifications(notifications, t, p);
                     AddResultsNotifications(notifications, t, p);
@@ -47,7 +47,7 @@ public class PlayerNotificationService(IDataStore dataStore, IScoreAPIClient cue
             }
             return notifications;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
           AddErrorNotification(notifications);
         }
