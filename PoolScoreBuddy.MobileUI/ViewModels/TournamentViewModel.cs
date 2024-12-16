@@ -1,6 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using PoolScoreBuddy.Domain;
 using PoolScoreBuddy.Domain.Models;
 using PoolScoreBuddy.Domain.Models.API;
 using PoolScoreBuddy.Domain.Services;
@@ -93,7 +92,8 @@ public partial class TournamentViewModel(IScoreAPIClient scoreAPIClient) : BaseV
 
         TournamentDto dto = new()
         {
-            BaseAddresses = [.. settings.APIProxies, settings.CueScoreBaseUrl],
+            BaseAddresses = settings.APIProxies,
+            FallbackAddress = settings.CueScoreBaseUrl,
             TournamentId = Convert.ToInt32(TournamentId),
             PlayerIds = [],
         };

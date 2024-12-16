@@ -55,11 +55,9 @@ public partial class PlayerViewModel : BaseViewModel, IQueryAttributable
     [RelayCommand]
     async Task Refresh()
     {
-        if (!await EnsureConnectivity.IsConnectedWithAlert()) return;
+        if (!await EnsureConnectivity.IsConnectedWithAlert() || IsBusy) return;
 
         IsBusy = true;
-
-        Players.Clear();
 
         IEnumerable<Player> refreshedPlayers = [];
 
@@ -69,7 +67,8 @@ public partial class PlayerViewModel : BaseViewModel, IQueryAttributable
 
             PlayersDto dto = new()
             {
-                BaseAddresses = [..settings.APIProxies, settings.CueScoreBaseUrl],
+                FallbackAddress = settings.CueScoreBaseUrl,
+                BaseAddresses = settings.APIProxies,
                 TournamentId = _tournament!.Tournament.TournamentId!.Value,
             };
 
@@ -94,19 +93,22 @@ public partial class PlayerViewModel : BaseViewModel, IQueryAttributable
                 string.Format(AppResources.PlayersJsonExceptionMessage, _tournament!.Tournament.TournamentId, ex.Message),
                 AppResources.PlayersJsonExceptionButton);
         }
+        finally
+        {
+            IsBusy = false;
+        }
 
+        Players.Clear();
         foreach (var player in refreshedPlayers)
         {
             Players.Add(player);
         }
-
-        IsBusy = false;
     }
 
     [RelayCommand]
     async Task Appearing()
     {
-            await Refresh();
+        await Refresh();
     }
 
     public Command<Player> ToggleStartMonitor => new(async (player) =>

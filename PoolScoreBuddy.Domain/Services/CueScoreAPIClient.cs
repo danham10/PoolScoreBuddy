@@ -11,17 +11,17 @@ public class CueScoreAPIClient(IHttpClientFactory httpClientFactory) : IScoreAPI
     public async Task<Tournament> GetTournament(TournamentDto dto)
     {
         var httpClient = httpClientFactory.CreateClient(Constants.HttpClientName);
-        var resilientClientWrapper = new ResilientClientWrapper(httpClient, dto.BaseAddresses);
+        var resilientClientWrapper = new ResilientClientWrapper(httpClient, dto.BaseAddresses, dto.FallbackAddress);
 
         string? playerQueryValue = GetPlayerQueryValue(dto.PlayerIds);
 
         var uri = $"tournament?id={dto.TournamentId}{playerQueryValue}";
 
-        var responseWrapper = await resilientClientWrapper.FetchResponse(uri);
+        var response = await resilientClientWrapper.FetchResponse(uri, dto.TournamentId);
 
-        responseWrapper.Response.EnsureSuccessStatusCode();
+        response.EnsureSuccessStatusCode();
 
-        string data = await responseWrapper.Response.Content.ReadAsStringAsync();
+        string data = await response.Content.ReadAsStringAsync();
         return Deserialize<Tournament>(data);
     }
 
@@ -29,14 +29,14 @@ public class CueScoreAPIClient(IHttpClientFactory httpClientFactory) : IScoreAPI
     public async Task<List<Player>> GetPlayers(PlayersDto dto)
     {
         var httpClient = httpClientFactory.CreateClient(Constants.HttpClientName);
-        var resilientClientWrapper = new ResilientClientWrapper(httpClient, dto.BaseAddresses);
+        var resilientClientWrapper = new ResilientClientWrapper(httpClient, dto.BaseAddresses, dto.FallbackAddress);
 
         var uri = $"tournament/?id={dto.TournamentId}&participants=Participants+list";
-        var responseWrapper = await resilientClientWrapper.FetchResponse(uri);
+        var response = await resilientClientWrapper.FetchResponse(uri, dto.TournamentId);
 
-        responseWrapper.Response.EnsureSuccessStatusCode();
+        response.EnsureSuccessStatusCode();
 
-        string data = await responseWrapper.Response.Content.ReadAsStringAsync();
+        string data = await response.Content.ReadAsStringAsync();
         return Deserialize<List<Player>>(data);
     }
 

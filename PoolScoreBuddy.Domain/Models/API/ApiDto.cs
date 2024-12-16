@@ -14,4 +14,5 @@ public record PlayersDto : ApiDto
 public record ApiDto
 {
     public List<string> BaseAddresses { get; set; } = [];
+    public string FallbackAddress { get; set; } = null!;
 }

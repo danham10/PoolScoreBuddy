@@ -3,8 +3,6 @@ using Microsoft.IdentityModel.Tokens;
 using PoolScoreBuddy.API;
 using PoolScoreBuddy.API.Endpoints;
 using PoolScoreBuddy.API.Services;
-using PoolScoreBuddy.Domain;
-using PoolScoreBuddy.Domain.Models;
 using PoolScoreBuddy.Domain.Services;
 using System.Text;
 

@@ -1,7 +1,11 @@
 ﻿namespace PoolScoreBuddy.Domain.Models.API;
 public partial class Player
 {
-    public int PlayerId { get; set; }
+    private int playerId;
+
+    public int PlayerId { get => playerId == 0 ? TeamId : playerId; set => playerId = value; }
+
+    public int TeamId { get; set; }
     public required string Name { get; set; }
     public string? Firstname { get; set; }
     public string? Lastname { get; set; }

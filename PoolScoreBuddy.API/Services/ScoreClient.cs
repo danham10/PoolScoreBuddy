@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
-using PoolScoreBuddy.Domain;
 using PoolScoreBuddy.Domain.Models.API;
 using PoolScoreBuddy.Domain.Services;
 
@@ -19,7 +18,7 @@ public class ScoreClient(IScoreAPIClient scoreAPIClient, IMemoryCache cache, IOp
         {
             TournamentDto dto = new()
             {
-                BaseAddresses = [options.Value.CueScoreBaseUrl],
+                FallbackAddress = options.Value.CueScoreBaseUrl,
                 TournamentId = tournamentId,
                 PlayerIds = playerIds
             };
@@ -48,7 +47,7 @@ public class ScoreClient(IScoreAPIClient scoreAPIClient, IMemoryCache cache, IOp
         {
             PlayersDto dto = new()
             {
-                BaseAddresses = [options.Value.CueScoreBaseUrl],
+                FallbackAddress = options.Value.CueScoreBaseUrl,
                 TournamentId = tournamentId,
             };
 
