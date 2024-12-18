@@ -68,7 +68,7 @@ public partial class PlayerViewModel : BaseViewModel, IQueryAttributable
             PlayersDto dto = new()
             {
                 FallbackAddress = settings.CueScoreBaseUrl,
-                BaseAddresses = settings.APIProxies,
+                BaseAddresses = settings.APIWebAppProxies,
                 TournamentId = _tournament!.Tournament.TournamentId!.Value,
             };
 

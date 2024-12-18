@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "PoolScoreBuddy.API.FunctionApp": {
+      "commandName": "Project",
+      "commandLineArgs": "host start --port 7020 --useHttps --cert \"server.pfx\" --password \"crypticpassword\"",
+      "launchBrowser": false
+    }
+  }
+}

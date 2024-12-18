@@ -2,10 +2,10 @@
 
 namespace PoolScoreBuddy.Domain.Services;
 
-internal static class EndpointSelector
+internal static class APIBalancer
 {
     /// <summary>
-    /// Selects an endpoint based on an affinity.
+    /// Selects an API endpoint based on an affinity.
     /// We want requests from the same identifier to go to the same endpoint
     /// This balances the load, with an api instance chosen based on affinity (tournament) id
     /// </summary>

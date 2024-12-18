@@ -1,6 +1,5 @@
 ﻿
 using Polly;
-using System.Net;
 
 namespace PoolScoreBuddy.Domain.Services;
 
@@ -11,23 +10,25 @@ internal class ResilientClientWrapper(HttpClient client, IEnumerable<string> can
     internal async Task<HttpResponseMessage?> FetchResponse(string relativeUrl, int apiAffinityId)
     {
         var retryPolicyForNotSuccessAnd401 = Policy
-            .HandleResult<HttpResponseMessage?>(response => response != null && !response.IsSuccessStatusCode && (int)response.StatusCode != 401 /*&& !response.IsCuescore TODO how to do this??*/)
-            //.OrResult(response => response != null && ((int)response.StatusCode > 400 && (int)response.StatusCode < 500))
+            .HandleResult<HttpResponseMessage?>(response => response != null && !response.IsSuccessStatusCode)
             .WaitAndRetryForeverAsync(_ => TimeSpan.FromSeconds(1));
 
-        string? proxyEndpoint = EndpointSelector.SelectEndpoint(candidateEndpoints, _knownBadEndpoints, apiAffinityId.ToString());
+        string? proxyEndpoint = APIBalancer.SelectEndpoint(candidateEndpoints, _knownBadEndpoints, apiAffinityId.ToString());
         
+        // Fallback to root API (cuescore)
         if (proxyEndpoint == null)
         {
             return await PerformRequest(fallbackEndpoint, relativeUrl);
         }
-            
+        
+        // Attempt a proxy API
         return await retryPolicyForNotSuccessAnd401.ExecuteAsync(async () =>
         {
             string endpoint = proxyEndpoint;
             return await PerformRequest(endpoint, relativeUrl);
         });
     }
+
     private async Task<HttpResponseMessage?> PerformRequest(string baseUrl, string uri)
     { 
         const string playerIdsQueryKey = "&playerIds";

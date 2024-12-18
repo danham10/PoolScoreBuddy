@@ -1,10 +1,10 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using PoolScoreBuddy.API;
 using PoolScoreBuddy.API.Endpoints;
-using PoolScoreBuddy.API.Services;
+using PoolScoreBuddy.API.Domain.Services;
 using PoolScoreBuddy.Domain.Services;
 using System.Text;
+using PoolScoreBuddy.API.Domain;
 
 var builder = WebApplication.CreateBuilder(args);
 

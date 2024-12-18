@@ -3,7 +3,7 @@ using Microsoft.Extensions.Options;
 using PoolScoreBuddy.Domain.Models.API;
 using PoolScoreBuddy.Domain.Services;
 
-namespace PoolScoreBuddy.API.Services;
+namespace PoolScoreBuddy.API.Domain.Services;
 
 public class ScoreClient(IScoreAPIClient scoreAPIClient, IMemoryCache cache, IOptions<Settings> options) : IScoreClient
 {

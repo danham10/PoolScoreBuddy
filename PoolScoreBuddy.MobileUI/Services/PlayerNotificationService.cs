@@ -23,7 +23,7 @@ public class PlayerNotificationService(IDataStore dataStore, IScoreAPIClient cue
 
                 TournamentDto dto = new()
                 {
-                    BaseAddresses = settings.APIProxies,
+                    BaseAddresses = settings.APIWebAppProxies,
                     FallbackAddress = settings.CueScoreBaseUrl,
                     TournamentId = tournament.Tournament.TournamentId!.Value,
                     PlayerIds = monitoredPlayerIds

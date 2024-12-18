@@ -1,16 +1,16 @@
-﻿using PoolScoreBuddy.API.Services;
+﻿using PoolScoreBuddy.API.Domain.Services;
 using System.Text.Json;
 
-internal static class ScoreClientHelpers
+public static class ScoreClientHelpers
 {
-    internal static async Task<string> GetPlayers(int id, IScoreClient cacheClient) => JsonSerializer.Serialize(await cacheClient.GetPlayers(id));
+    public static async Task<string> GetPlayers(int id, IScoreClient cacheClient) => JsonSerializer.Serialize(await cacheClient.GetPlayers(id));
 
     /// <summary>
     /// //Need to mirror CueScores own API (https://api.cuescore.com/), so one endpoint for Tournaments and Players (!)
     /// </summary>
     /// <param name="participants"></param>
     /// <returns></returns>
-    internal static ScoreEndpointTypeEnum GetService(string? participants)
+    public static ScoreEndpointTypeEnum GetService(string? participants)
     {
         return string.IsNullOrEmpty(participants) switch
         {
@@ -19,7 +19,7 @@ internal static class ScoreClientHelpers
         };
     }
 
-    internal static async Task<string> GetTournament(int id, string? playerIds, int[]? calledMatchIds, IScoreClient cacheClient)
+    public static async Task<string> GetTournament(int id, string? playerIds, int[]? calledMatchIds, IScoreClient cacheClient)
     {
         int[] playerIdArray = [];
 

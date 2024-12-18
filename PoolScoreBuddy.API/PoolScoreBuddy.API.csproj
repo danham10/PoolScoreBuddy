@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\PoolScoreBuddy.Domain\PoolScoreBuddy.Domain.csproj" />
+    <ProjectReference Include="..\PoolScoreBuddy.API.Domain\PoolScoreBuddy.API.Domain.csproj" />
   </ItemGroup>
 
 </Project>

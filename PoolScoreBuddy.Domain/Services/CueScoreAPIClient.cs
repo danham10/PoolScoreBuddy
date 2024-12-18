@@ -19,7 +19,7 @@ public class CueScoreAPIClient(IHttpClientFactory httpClientFactory) : IScoreAPI
 
         var response = await resilientClientWrapper.FetchResponse(uri, dto.TournamentId);
 
-        response.EnsureSuccessStatusCode();
+        response!.EnsureSuccessStatusCode();
 
         string data = await response.Content.ReadAsStringAsync();
         return Deserialize<Tournament>(data);
@@ -34,7 +34,7 @@ public class CueScoreAPIClient(IHttpClientFactory httpClientFactory) : IScoreAPI
         var uri = $"tournament/?id={dto.TournamentId}&participants=Participants+list";
         var response = await resilientClientWrapper.FetchResponse(uri, dto.TournamentId);
 
-        response.EnsureSuccessStatusCode();
+        response!.EnsureSuccessStatusCode();
 
         string data = await response.Content.ReadAsStringAsync();
         return Deserialize<List<Player>>(data);

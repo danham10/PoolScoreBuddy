@@ -2,7 +2,7 @@
 
 /// <summary>
 /// Generated from special paste of JSON from https://api.cuescore.com/
-/// Unused properties are removed to reduce memory and chance of deserialisation error
+/// Unused properties are removed to reduce memory footprint and chance of deserialisation error
 /// </summary>
 public partial class Tournament
 {
@@ -14,8 +14,8 @@ public partial class Tournament
 
 public class TournamentDecorator
 {
-    public List<Player>? Players { get; set; }
     public Tournament Tournament { get; set; }
+    public List<Player>? Players { get; set; }
     public List<MonitoredPlayer> MonitoredPlayers { get; set; } = [];
     public bool IsBusy { get; private set; }
 
@@ -88,8 +88,3 @@ public class TournamentDecorator
         return PlayerMatches(playerId).Where(m => m.MatchStatusCode == MatchFinishedStatus).ToList();
     }
 };
-
-
-
-
-

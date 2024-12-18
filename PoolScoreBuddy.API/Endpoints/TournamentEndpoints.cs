@@ -1,4 +1,4 @@
-﻿using PoolScoreBuddy.API.Services;
+﻿using PoolScoreBuddy.API.Domain.Services;
 
 namespace PoolScoreBuddy.API.Endpoints;
 
@@ -8,7 +8,7 @@ public static class TournamentEndpoints
     {
         var users = routes.MapGroup("/api/v1/tournament");
 
-        users.MapGet("/", async (int id, string? participants, string? playerIds, int[]? calledMatchIds, IScoreClient cacheClient) =>
+        users.MapGet("/", async (int id, string? participants, string? playerIds, int[]? calledMatchIds, IScoreClient cacheClient) => //TODO implement calledMatchIds
         {
             //throw new Exception();
 

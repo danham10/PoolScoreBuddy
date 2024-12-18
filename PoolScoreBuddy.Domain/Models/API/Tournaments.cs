@@ -15,7 +15,8 @@ public class Tournaments : List<TournamentDecorator>
     {
         var exists = (from t in this
                       where t.Tournament.TournamentId == tournament.Tournament.TournamentId
-                      select t).Any();
+                      select t)
+                      .Any();
 
         if (!exists)
         {
@@ -33,8 +34,8 @@ public class Tournaments : List<TournamentDecorator>
 
     public bool AnyMonitoredPlayers()
     {
-        var x = (
-            from t in this
+        var x =
+            (from t in this
             from mp in t.MonitoredPlayers
             select mp)
             .Any();
@@ -48,8 +49,8 @@ public class Tournaments : List<TournamentDecorator>
             (from t in this
              from p in t.GetPlayersWithMonitoring().Where(p => p.IsMonitored)
              orderby p.MonitoredPlayer!.CreateDate descending
-             select p.Name
-            ).ToList();
+             select p.Name)
+            .ToList();
     }
 
     public void CancelMonitoredPlayers() => ForEach(t => t.MonitoredPlayers = []);

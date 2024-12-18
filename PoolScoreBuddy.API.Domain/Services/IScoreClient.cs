@@ -1,6 +1,6 @@
 ﻿using PoolScoreBuddy.Domain.Models.API;
 
-namespace PoolScoreBuddy.API.Services
+namespace PoolScoreBuddy.API.Domain.Services
 {
     public interface IScoreClient
     {
