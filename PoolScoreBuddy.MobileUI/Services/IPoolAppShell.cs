@@ -1,4 +1,4 @@
-﻿namespace PoolScoreBuddy;
+﻿namespace PoolScoreBuddy.Services;
 
 public interface IPoolAppShell
 {

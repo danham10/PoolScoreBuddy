@@ -2,9 +2,9 @@
 
 namespace PoolScoreBuddy.Services;
 
-public class SettingsResolver
+public class SettingsResolver : ISettingsResolver
 {
-    public static Settings GetSettings()
+    public Settings GetSettings()
     {
         var config = ServiceResolver.GetService<IConfiguration>();
 
@@ -12,4 +12,9 @@ public class SettingsResolver
 
         return settings ?? throw new NullReferenceException("Settings are null");
     }
+}
+
+public interface ISettingsResolver
+{
+    public Settings GetSettings();
 }

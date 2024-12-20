@@ -10,7 +10,7 @@ internal class ResilientClientWrapper(HttpClient client, IEnumerable<string> can
     internal async Task<HttpResponseMessage?> FetchResponse(string relativeUrl, int apiAffinityId)
     {
         var retryPolicyForNotSuccessAnd401 = Policy
-            .HandleResult<HttpResponseMessage?>(response => response != null && !response.IsSuccessStatusCode /*&& !response.IsCuescore TODO how to do this??*/)
+            .HandleResult<HttpResponseMessage?>(response => response != null && !response.IsSuccessStatusCode)
             .OrResult(response => response != null && ((int)response.StatusCode > 400 && (int)response.StatusCode < 500))
             .WaitAndRetryForeverAsync(_ => TimeSpan.FromSeconds(1));
 

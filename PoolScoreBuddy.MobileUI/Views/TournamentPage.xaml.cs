@@ -6,16 +6,10 @@ public partial class TournamentPage : ContentPage
 {
     private readonly TournamentViewModel _viewModel;
 
-    public TournamentPage()
+    public TournamentPage(IScoreAPIClient scoreAPIClient, IEnsureConnectivity ensureConnectivity, IAlert alert, IPoolAppShell appShell, ISettingsResolver settingsResolver)
     {
-        var scoreAPIClient = ServiceResolver.GetService<IScoreAPIClient>();
-        var ensureConnectivity = ServiceResolver.GetService<IEnsureConnectivity>();
-        var alert = ServiceResolver.GetService<IAlert>();
-        var appShell = ServiceResolver.GetService<IPoolAppShell>();
-
-
         InitializeComponent();
-        _viewModel = new TournamentViewModel(scoreAPIClient, ensureConnectivity, alert, appShell);
+        _viewModel = new TournamentViewModel(scoreAPIClient, ensureConnectivity, alert, appShell, settingsResolver);
         BindingContext = _viewModel;
         _viewModel.FocusView += TournamentEntrySetFocus;
     }

@@ -6,12 +6,12 @@ using Plugin.LocalNotification.AndroidOption;
 
 namespace PoolScoreBuddy.Services;
 
-public class PlayerNotificationService(IDataStore dataStore, IScoreAPIClient cueScoreService, INotificationService notificationService) : IPlayerNotificationService
+public class PlayerNotificationService(IDataStore dataStore, IScoreAPIClient cueScoreService, INotificationService notificationService, ISettingsResolver settingsResolver) : IPlayerNotificationService
 {
     public async Task<List<CuescoreNotification>> ProcessNotifications()
     {
         List<CuescoreNotification> notifications = [];
-        var settings = SettingsResolver.GetSettings();
+        var settings = settingsResolver.GetSettings();
 
         try
         {

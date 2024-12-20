@@ -4,20 +4,19 @@ using System.Security.Claims;
 using System.Text;
 
 namespace PoolScoreBuddy.Services;
-internal class TokenService
+internal class TokenService() : ITokenService
 {
-    internal static string GenerateToken()
+    public string GenerateToken(string key)
     {
-        var settings = SettingsResolver.GetSettings();
         var tokenHandler = new JwtSecurityTokenHandler();
 
-        var key = Encoding.ASCII.GetBytes(settings.JWTToken);
+        var encodedKey = Encoding.ASCII.GetBytes(key);
 
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(),
             Expires = DateTime.UtcNow.AddMinutes(30),
-            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(encodedKey), SecurityAlgorithms.HmacSha256Signature)
         };
 
         var token = tokenHandler.CreateToken(tokenDescriptor);
@@ -25,4 +24,3 @@ internal class TokenService
         return tokenHandler.WriteToken(token);
     }
 }
-

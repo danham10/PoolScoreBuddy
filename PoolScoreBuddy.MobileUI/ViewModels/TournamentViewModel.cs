@@ -8,10 +8,11 @@ using System.Diagnostics;
 using System.Text.Json;
 
 namespace PoolScoreBuddy.ViewModels;
-public partial class TournamentViewModel(IScoreAPIClient scoreAPIClient, 
+public partial class TournamentViewModel(IScoreAPIClient scoreAPIClient,
     IEnsureConnectivity ensureConnectivity, 
     IAlert alert,
-    IPoolAppShell appShell) : BaseViewModel
+    IPoolAppShell appShell,
+    ISettingsResolver settingsResolver) : BaseViewModel
 {
     readonly IScoreAPIClient _scoreAPIClient = scoreAPIClient;
 
@@ -38,7 +39,7 @@ public partial class TournamentViewModel(IScoreAPIClient scoreAPIClient,
         {
             if (!await ensureConnectivity.IsConnectedWithAlert()) return;
 
-            var settings = SettingsResolver.GetSettings();
+            var settings = settingsResolver.GetSettings();
             IsBusy = true;
 
             Tournament tournament = await GetTournament();
@@ -91,7 +92,7 @@ public partial class TournamentViewModel(IScoreAPIClient scoreAPIClient,
 
     private async Task<Tournament> GetTournament()
     {
-        var settings = SettingsResolver.GetSettings();
+        var settings = settingsResolver.GetSettings();
 
         TournamentDto dto = new()
         {

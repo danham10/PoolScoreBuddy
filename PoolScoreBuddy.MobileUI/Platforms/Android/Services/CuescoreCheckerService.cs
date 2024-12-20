@@ -96,8 +96,9 @@ public class AndroidCuescoreCheckerService() : Service
         var notificationManager = (NotificationManager)GetSystemService(NotificationService)!;
         var playerNotificationService = ServiceResolver.GetService<IPlayerNotificationService>();
         var ensureConnectivity = ServiceResolver.GetService<IEnsureConnectivity>();
+        var settingsResolver = ServiceResolver.GetService<ISettingsResolver>();
 
-        var settings = SettingsResolver.GetSettings();
+        var settings = settingsResolver.GetSettings();
 
         await Task.Run(async () =>
         {

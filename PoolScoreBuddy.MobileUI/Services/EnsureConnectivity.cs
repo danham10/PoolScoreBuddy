@@ -1,6 +1,6 @@
 ﻿using PoolScoreBuddy.Resources;
 
-namespace PoolScoreBuddy
+namespace PoolScoreBuddy.Services
 {
     public class EnsureConnectivity(IAlert alert) : IEnsureConnectivity
     {
@@ -15,7 +15,8 @@ namespace PoolScoreBuddy
             if (IsConnected())
             {
                 return true;
-            } else
+            }
+            else
             {
                 await alert.Show(AppResources.AppTitle, AppResources.NoConnectivityMessage, AppResources.OK);
                 return false;

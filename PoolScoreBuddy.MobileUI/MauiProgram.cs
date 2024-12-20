@@ -14,8 +14,6 @@ public static class MauiProgram
 {
     public static MauiApp CreateMauiApp()
     {
-        SetHandlers();
-
         var builder = MauiApp.CreateBuilder();
         builder
             .UseMauiApp<App>()
@@ -42,6 +40,10 @@ public static class MauiProgram
 #if DEBUG
         builder.Logging.AddDebug();
 #endif
+
+        builder.Services.AddSingleton<INotificationsChallenger, NotificationsChallenger>();
+        builder.Services.AddSingleton<ITokenService, TokenService>();
+        builder.Services.AddSingleton<ISettingsResolver,  SettingsResolver>();
         builder.Services.AddSingleton<IPoolAppShell, PoolAppShell>();
         builder.Services.AddSingleton<IAlert, Alert>();
         builder.Services.AddSingleton<IEnsureConnectivity, EnsureConnectivity>();
@@ -49,7 +51,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<IDataStore, DataStore>();
         builder.Services.AddSingleton<IMessenger, WeakReferenceMessenger>();
 
-        builder.Services.AddTransient<IPlayerNotificationService, PlayerNotificationService>();
+        builder.Services.AddTransient<IPlayerNotificationService, PlayerNotificationService>(); // TODO make singleton?
 
         builder.Services.AddTransient<TournamentPage>();
         builder.Services.AddTransient<TournamentViewModel>();
@@ -61,18 +63,21 @@ public static class MauiProgram
         builder.Services.AddTransient<PlayerViewModel>();
 
         AddHttpClient(builder);
+        SetUiHandlers();
 
         return builder.Build();
     }  
 
     private static void AddHttpClient(MauiAppBuilder builder)
     {
-        var settings = GetAppSettings();
+        var settings = new Settings();
+        builder.Configuration.GetRequiredSection(nameof(Settings)).Bind(settings);
+        var tokenService = builder.Services.BuildServiceProvider().GetService<ITokenService>();
 
         builder.Services
         .AddHttpClient(Constants.HttpClientName, client =>
         {
-            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenService.GenerateToken());
+            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", tokenService!.GenerateToken(settings.JWTToken));
         })
 #if DEBUG
         // Android emulator requires trusted local cert when running in deug
@@ -109,7 +114,7 @@ public static class MauiProgram
             .Build();
     }
 
-    private static void SetHandlers()
+    private static void SetUiHandlers()
     {
         Microsoft.Maui.Handlers.EntryHandler.Mapper.AppendToMapping("EntryUnderscoreHide", (handler, view) =>
         {

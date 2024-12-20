@@ -9,9 +9,6 @@
     xmlns:res="clr-namespace:PoolScoreBuddy.Resources"
     Title="{x:Static res:AppResources.TournamentTitle}"
     Shell.NavBarIsVisible="False">
-    <!--<ContentPage.Behaviors>
-        <mct:EventToCommandBehavior Command="{Binding AppearingCommand}" EventName="Appearing" />
-    </ContentPage.Behaviors>-->
     <ScrollView>
         <VerticalStackLayout Margin="10,0,10,0">
             <VerticalStackLayout>

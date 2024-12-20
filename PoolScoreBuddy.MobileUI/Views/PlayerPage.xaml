@@ -12,9 +12,6 @@
     xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:res="clr-namespace:PoolScoreBuddy.Resources"
     Title="{x:Static res:AppResources.PlayersTitle}">
-    <ContentPage.BindingContext>
-        <vm:PlayerViewModel />
-    </ContentPage.BindingContext>
     <ContentPage.Behaviors>
         <mct:EventToCommandBehavior Command="{Binding AppearingCommand}" EventName="Appearing" />
     </ContentPage.Behaviors>

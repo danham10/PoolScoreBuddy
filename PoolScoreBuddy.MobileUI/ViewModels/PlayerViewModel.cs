@@ -17,6 +17,8 @@ public partial class PlayerViewModel : BaseViewModel, IQueryAttributable
     readonly IMessenger _messenger;
     readonly IScoreAPIClient _cueScoreService;
     readonly IEnsureConnectivity _ensureConnectivity;
+    readonly ISettingsResolver _settingsResolver;
+    readonly INotificationsChallenger _notificationsChallenger;
 
     TournamentDecorator? _tournament;
 
@@ -26,32 +28,24 @@ public partial class PlayerViewModel : BaseViewModel, IQueryAttributable
     [ObservableProperty]
     private bool isRefreshing;
 
-    public PlayerViewModel()
+    public PlayerViewModel(IDataStore dataStore,
+        IMessenger messenger,
+        IScoreAPIClient cueScoreService,
+        IEnsureConnectivity ensureConnectivity,
+        ISettingsResolver settingsResolver,
+        INotificationsChallenger notificationsChallenger)
     {
-        _dataStore = ServiceResolver.GetService<IDataStore>();
-        _messenger = ServiceResolver.GetService<IMessenger>();
-        _cueScoreService = ServiceResolver.GetService<IScoreAPIClient>();
-        _ensureConnectivity = ServiceResolver.GetService<IEnsureConnectivity>();
+        _dataStore = dataStore;
+        _messenger = messenger;
+        _cueScoreService = cueScoreService;
+        _ensureConnectivity = ensureConnectivity;
+        _settingsResolver = settingsResolver;
+        _notificationsChallenger = notificationsChallenger;
     }
 
     public void ApplyQueryAttributes(IDictionary<string, object> query)
     {
         _tournament = (query["Tournament"] as TournamentDecorator);
-    }
-
-    async static Task<bool> AllowNotificationsAsync()
-    {
-        var allowed = await LocalNotificationCenter.Current.AreNotificationsEnabled();
-
-        if (!allowed)
-            allowed = await LocalNotificationCenter.Current.RequestNotificationPermission();
-
-        if (!allowed)
-        {
-            await Application.Current!.MainPage!.DisplayAlert(AppResources.Alert, AppResources.ManualNotificationsWarning, "OK");
-        }
-            
-        return allowed;
     }
 
     [RelayCommand]
@@ -65,8 +59,7 @@ public partial class PlayerViewModel : BaseViewModel, IQueryAttributable
 
         try
         {
-            var settings = SettingsResolver.GetSettings();
-
+            var settings = _settingsResolver.GetSettings();
             PlayersDto dto = new()
             {
                 FallbackAddress = settings.CueScoreBaseUrl,
@@ -123,7 +116,7 @@ public partial class PlayerViewModel : BaseViewModel, IQueryAttributable
             return;
         }
 
-        var notificationsAllowed = await AllowNotificationsAsync();
+        var notificationsAllowed = await _notificationsChallenger.AllowNotificationsAsync();
 
         if (player == null || !notificationsAllowed)
             return;
