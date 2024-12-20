@@ -5,7 +5,6 @@ using PoolScoreBuddy.Domain.Models;
 using PoolScoreBuddy.Domain.Models.API;
 using PoolScoreBuddy.Domain.Services;
 using PoolScoreBuddy.Resources;
-using System.Diagnostics;
 using System.Text.Json;
 
 namespace PoolScoreBuddy.ViewModels;
@@ -17,7 +16,6 @@ public partial class TournamentViewModel(IScoreAPIClient scoreAPIClient,
     ISettingsResolver settingsResolver,
     ILogger<TournamentViewModel> logger) : BaseViewModel
 {
-    readonly IScoreAPIClient _scoreAPIClient = scoreAPIClient;
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(TournamentLoadCommand))]
@@ -115,7 +113,7 @@ public partial class TournamentViewModel(IScoreAPIClient scoreAPIClient,
             PlayerIds = [],
         };
 
-        Tournament? tournament = await _scoreAPIClient.GetTournament(dto);
+        Tournament? tournament = await scoreAPIClient.GetTournament(dto);
         return tournament;
     }
 
@@ -123,8 +121,9 @@ public partial class TournamentViewModel(IScoreAPIClient scoreAPIClient,
     {
         var navigationParameters = new Dictionary<string, object>
         {
-            { "TournamentId", tournament.Tournament.TournamentId! },
+            { "TournamentId", tournament.Tournament.TournamentId },
         };
+
         await appShell.GoToAsync(nameof(TournamentSelectedPage), navigationParameters);
     }
 }

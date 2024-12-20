@@ -30,7 +30,7 @@ public class PlayerNotificationService(IDataStore dataStore,
                 {
                     BaseAddresses = settings.APIWebAppProxies,
                     FallbackAddress = settings.CueScoreBaseUrl,
-                    TournamentId = tournament.Tournament.TournamentId!.Value,
+                    TournamentId = tournament.Tournament.TournamentId,
                     PlayerIds = monitoredPlayerIds
                 };
 
@@ -49,7 +49,7 @@ public class PlayerNotificationService(IDataStore dataStore,
                     AddMatchNotifications(notifications, t, p);
                     AddResultsNotifications(notifications, t, p);
                 }
-            }
+            } 
             return notifications;
         }
         catch (Exception ex)

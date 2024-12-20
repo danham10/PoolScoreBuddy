@@ -6,7 +6,7 @@
 /// </summary>
 public partial class Tournament
 {
-    public int? TournamentId { get; set; }
+    public int TournamentId { get; set; }
     public string? Name { get; set; }
     public string? Status { get; set; }
     public List<Match>? Matches { get; set; } = [];

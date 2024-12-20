@@ -22,7 +22,7 @@ public partial class PlayerViewModel(IDataStore dataStore,
     ILogger<PlayerViewModel> logger) : BaseViewModel, IQueryAttributable
 {
 
-    ITournamentDecorator? _tournament;
+    ITournamentDecorator _tournament = null!;
 
     [ObservableProperty]
     private ObservableCollection<Player> players = [];
@@ -51,7 +51,7 @@ public partial class PlayerViewModel(IDataStore dataStore,
             {
                 FallbackAddress = settings.CueScoreBaseUrl,
                 BaseAddresses = settings.APIWebAppProxies,
-                TournamentId = _tournament!.Tournament.TournamentId!.Value,
+                TournamentId = _tournament.Tournament.TournamentId,
             };
 
             _tournament.Players = await cueScoreService.GetPlayers(dto);
@@ -111,7 +111,7 @@ public partial class PlayerViewModel(IDataStore dataStore,
     {
         if (MaximumMonitorCountReached())
         {
-            await Application.Current!.MainPage!.DisplayAlert(AppResources.Alert,
+            await alert.Show(AppResources.Alert,
                 AppResources.PlayersMaximumReached,
                 AppResources.OK);
             return;
@@ -122,7 +122,7 @@ public partial class PlayerViewModel(IDataStore dataStore,
         if (player == null || !notificationsAllowed)
             return;
 
-        player.MonitoredPlayer = _tournament!.TogglePlayerEnabled(player.PlayerId);
+        player.MonitoredPlayer = _tournament.TogglePlayerEnabled(player.PlayerId);
 
         int playerIndex = Players.IndexOf(Players.First(p => p.PlayerId == player.PlayerId));
         Players[playerIndex] = player;
@@ -134,6 +134,6 @@ public partial class PlayerViewModel(IDataStore dataStore,
 
     private bool MaximumMonitorCountReached()
     {
-        return _tournament!.MonitoredPlayers.Count >= Constants.MaximumMonitoredPlayersPerTournament;
+        return _tournament.MonitoredPlayers.Count >= Constants.MaximumMonitoredPlayersPerTournament;
     }
 }
