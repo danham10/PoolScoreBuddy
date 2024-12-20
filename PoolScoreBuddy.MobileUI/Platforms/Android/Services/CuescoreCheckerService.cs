@@ -58,7 +58,7 @@ public class AndroidCuescoreCheckerService() : Service
 
     private bool ShouldStop(Intent? intent)
     {
-        return intent!.Action != null && intent.Action.Equals(Constants.ActionStopService) || dataStore.Tournaments.MonitoredPlayers().Count == 0;
+        return intent!.Action != null && intent.Action.Equals(Constants.ActionStopService) || !dataStore.Tournaments.ShouldMonitor();
     }
 
     public override void OnDestroy()
@@ -139,7 +139,7 @@ public class AndroidCuescoreCheckerService() : Service
                         OnDestroy();
                     }
 
-                    await Task.Delay(settings.APIPingIntervalSeconds * 1000, tokenSource.Token);
+                    await Task.Delay(TimeSpan.FromSeconds(settings.APIPingIntervalSeconds), tokenSource.Token);
                 }
                 catch (TaskCanceledException)
                 {

@@ -4,21 +4,22 @@ using PoolScoreBuddy.Domain.Models.API;
 using PoolScoreBuddy.Resources;
 
 namespace PoolScoreBuddy.ViewModels;
-public partial class TournamentSelectedViewModel : BaseViewModel, IQueryAttributable
+public partial class TournamentSelectedViewModel(IDataStore dataStore, IPoolAppShell appShell) : BaseViewModel, IQueryAttributable
 {
-    TournamentDecorator? _tournament;
+    ITournamentDecorator? _tournament;
 
     [ObservableProperty]
-    public required string tournamentName;
+    public string tournamentName = "";
 
     [ObservableProperty]
     public string message = "";
 
     public void ApplyQueryAttributes(IDictionary<string, object> query)
     {
-        _tournament = query["Tournament"] as TournamentDecorator;
+        _tournament = dataStore.Tournaments.GetTournamentById(Convert.ToInt32(query["TournamentId"]));
 
-        TournamentName = _tournament!.Tournament!.Name!;
+        TournamentName = _tournament.Tournament.Name ?? AppResources.TournamentNoName;
+
         Message = _tournament!.IsFinished() ?
             string.Format(AppResources.TournamentFinishedLabel, TournamentName) :
             string.Format(AppResources.TournamentSelectedLabel, TournamentName);
@@ -34,9 +35,9 @@ public partial class TournamentSelectedViewModel : BaseViewModel, IQueryAttribut
     {
         var navigationParameters = new Dictionary<string, object>
         {
-            { "Tournament", _tournament! },
+            { "TournamentId", _tournament!.Tournament.TournamentId! },
         };
 
-        await Shell.Current.GoToAsync(nameof(PlayerPage), false, navigationParameters);
+        await appShell.GoToAsync(nameof(PlayerPage), navigationParameters);
     }
 }

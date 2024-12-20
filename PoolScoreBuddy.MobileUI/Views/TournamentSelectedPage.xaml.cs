@@ -2,17 +2,14 @@ namespace PoolScoreBuddy.Views;
 
 public partial class TournamentSelectedPage : ContentPage
 {
-	public TournamentSelectedPage()
-	{
-		try
-		{
-            InitializeComponent();
-        }
-		catch (Exception)
-		{
+    private readonly TournamentSelectedViewModel _viewModel;
 
-			throw;
-		}
+    public TournamentSelectedPage(IDataStore dataStore, IPoolAppShell appShell)
+    {
+        InitializeComponent();
 
-	}
+        _viewModel = new TournamentSelectedViewModel(dataStore, appShell);
+
+        BindingContext = _viewModel;
+    }
 }

@@ -1,8 +1,8 @@
 ﻿namespace PoolScoreBuddy.Domain.Models.API;
 
-public class Tournaments : List<TournamentDecorator>
+public class Tournaments : List<ITournamentDecorator>, ITournaments
 {
-    public TournamentDecorator GetTournamentById(int tournamentId)
+    public ITournamentDecorator GetTournamentById(int tournamentId)
     {
         var tournament = this.FirstOrDefault(t => t.Tournament.TournamentId == tournamentId);
 
@@ -11,7 +11,7 @@ public class Tournaments : List<TournamentDecorator>
         return tournament;
     }
 
-    public void AddIfMissing(TournamentDecorator tournament)
+    public void AddIfMissing(ITournamentDecorator tournament)
     {
         var exists = (from t in this
                       where t.Tournament.TournamentId == tournament.Tournament.TournamentId
@@ -36,21 +36,11 @@ public class Tournaments : List<TournamentDecorator>
     {
         var x =
             (from t in this
-            from mp in t.MonitoredPlayers
-            select mp)
+             from mp in t.MonitoredPlayers
+             select mp)
             .Any();
 
         return x;
-    }
-
-    public List<string> MonitoredPlayers()
-    {
-        return
-            (from t in this
-             from p in t.GetPlayersWithMonitoring().Where(p => p.IsMonitored)
-             orderby p.MonitoredPlayer!.CreateDate descending
-             select p.Name)
-            .ToList();
     }
 
     public void CancelMonitoredPlayers() => ForEach(t => t.MonitoredPlayers = []);

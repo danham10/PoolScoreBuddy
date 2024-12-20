@@ -2,25 +2,27 @@
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using PoolScoreBuddy.Resources;
-using Plugin.LocalNotification;
 using System.Collections.ObjectModel;
 using PoolScoreBuddy.Domain.Services;
 using PoolScoreBuddy.Domain.Models.API;
 using PoolScoreBuddy.Domain.Models;
 using System.Text.Json;
+using Microsoft.Extensions.Logging;
+using PoolScoreBuddy.Domain;
 
 
 namespace PoolScoreBuddy.ViewModels;
-public partial class PlayerViewModel : BaseViewModel, IQueryAttributable
+public partial class PlayerViewModel(IDataStore dataStore,
+    IMessenger messenger,
+    IScoreAPIClient cueScoreService,
+    IEnsureConnectivity ensureConnectivity,
+    ISettingsResolver settingsResolver,
+    INotificationsChallenger notificationsChallenger,
+    IAlert alert,
+    ILogger<PlayerViewModel> logger) : BaseViewModel, IQueryAttributable
 {
-    readonly IDataStore _dataStore;
-    readonly IMessenger _messenger;
-    readonly IScoreAPIClient _cueScoreService;
-    readonly IEnsureConnectivity _ensureConnectivity;
-    readonly ISettingsResolver _settingsResolver;
-    readonly INotificationsChallenger _notificationsChallenger;
 
-    TournamentDecorator? _tournament;
+    ITournamentDecorator? _tournament;
 
     [ObservableProperty]
     private ObservableCollection<Player> players = [];
@@ -28,30 +30,15 @@ public partial class PlayerViewModel : BaseViewModel, IQueryAttributable
     [ObservableProperty]
     private bool isRefreshing;
 
-    public PlayerViewModel(IDataStore dataStore,
-        IMessenger messenger,
-        IScoreAPIClient cueScoreService,
-        IEnsureConnectivity ensureConnectivity,
-        ISettingsResolver settingsResolver,
-        INotificationsChallenger notificationsChallenger)
-    {
-        _dataStore = dataStore;
-        _messenger = messenger;
-        _cueScoreService = cueScoreService;
-        _ensureConnectivity = ensureConnectivity;
-        _settingsResolver = settingsResolver;
-        _notificationsChallenger = notificationsChallenger;
-    }
-
     public void ApplyQueryAttributes(IDictionary<string, object> query)
     {
-        _tournament = (query["Tournament"] as TournamentDecorator);
+        _tournament = dataStore.Tournaments.GetTournamentById(Convert.ToInt32(query["TournamentId"]));
     }
 
     [RelayCommand]
     async Task Refresh()
     {
-        if (!await _ensureConnectivity.IsConnectedWithAlert() || IsBusy) return;
+        if (!await ensureConnectivity.IsConnectedWithAlert() || IsBusy) return;
 
         IsBusy = true;
 
@@ -59,7 +46,7 @@ public partial class PlayerViewModel : BaseViewModel, IQueryAttributable
 
         try
         {
-            var settings = _settingsResolver.GetSettings();
+            var settings = settingsResolver.GetSettings();
             PlayersDto dto = new()
             {
                 FallbackAddress = settings.CueScoreBaseUrl,
@@ -67,26 +54,40 @@ public partial class PlayerViewModel : BaseViewModel, IQueryAttributable
                 TournamentId = _tournament!.Tournament.TournamentId!.Value,
             };
 
-            _tournament.Players = await _cueScoreService.GetPlayers(dto);
+            _tournament.Players = await cueScoreService.GetPlayers(dto);
             refreshedPlayers = _tournament.GetPlayersWithMonitoring();
         }
-        catch (HttpRequestException)
+        catch (HttpRequestException ex)
         {
-            await Application.Current!.MainPage!.DisplayAlert(string.Format(AppResources.PlayersHttpExceptionTitle, _tournament!.Tournament.TournamentId),
+            logger.LogError(ex, "HttpRequestException");
+
+            await alert.Show(string.Format(AppResources.PlayersHttpExceptionTitle, _tournament!.Tournament.TournamentId),
                 AppResources.PlayersHttpExceptionMessage,
                 AppResources.PlayersHttpExceptionButton);
         }
         catch (APIServerException ex)
         {
-            await Application.Current!.MainPage!.DisplayAlert(string.Format(AppResources.PlayersAPIServerExceptionTitle, _tournament!.Tournament.TournamentId),
+            logger.LogError(ex, "APIServerException");
+
+            await alert.Show(string.Format(AppResources.PlayersAPIServerExceptionTitle, _tournament!.Tournament.TournamentId),
                 string.Format(AppResources.PlayersAPIServerExceptionMessage, ex!.Message),
                 AppResources.PlayersAPIServerExceptionButton);
         }
         catch (JsonException ex)
         {
-            await Application.Current!.MainPage!.DisplayAlert(string.Format(AppResources.TournamentJsonExceptionTitle, _tournament!.Tournament.TournamentId),
+            logger.LogError(ex, "JsonException");
+
+            await alert.Show(string.Format(AppResources.PlayersJsonExceptionTitle, _tournament!.Tournament.TournamentId),
                 string.Format(AppResources.PlayersJsonExceptionMessage, _tournament!.Tournament.TournamentId, ex.Message),
                 AppResources.PlayersJsonExceptionButton);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Exception");
+
+            await alert.Show(string.Format(AppResources.PlayersGeneralExceptionTitle, _tournament!.Tournament.TournamentId),
+                string.Format(AppResources.PlayersGeneralExceptionMessage, _tournament!.Tournament.TournamentId, ex.Message),
+                AppResources.PlayersGeneralExceptionButton);
         }
         finally
         {
@@ -116,7 +117,7 @@ public partial class PlayerViewModel : BaseViewModel, IQueryAttributable
             return;
         }
 
-        var notificationsAllowed = await _notificationsChallenger.AllowNotificationsAsync();
+        var notificationsAllowed = await notificationsChallenger.AllowNotificationsAsync();
 
         if (player == null || !notificationsAllowed)
             return;
@@ -126,13 +127,13 @@ public partial class PlayerViewModel : BaseViewModel, IQueryAttributable
         int playerIndex = Players.IndexOf(Players.First(p => p.PlayerId == player.PlayerId));
         Players[playerIndex] = player;
 
-        _dataStore.Tournaments.AddIfMissing(_tournament);
+        dataStore.Tournaments.AddIfMissing(_tournament);
 
-        _messenger.Send(new CuescoreBackgroundChecker(ServiceMessageType.Default));
+        messenger.Send(new CuescoreBackgroundChecker(ServiceMessageType.Default));
     });
 
     private bool MaximumMonitorCountReached()
     {
-        return _tournament!.MonitoredPlayers.Count >= 10;
+        return _tournament!.MonitoredPlayers.Count >= Constants.MaximumMonitoredPlayersPerTournament;
     }
 }

@@ -157,6 +157,12 @@ We want the number at the end. Around 8 digits. Here is an example of what to lo
   <data name="TournamentAPIServerExceptionMessage" xml:space="preserve">
     <value>{0}</value>
   </data>
+  <data name="TournamentGeneralExceptionMessage" xml:space="preserve">
+    <value>{0}</value>
+  </data>
+  <data name="PlayersGeneralExceptionMessage" xml:space="preserve">
+    <value>{0}</value>
+  </data>
   <data name="PlayersAPIServerExceptionMessage" xml:space="preserve">
     <value>{0}</value>
   </data>
@@ -167,6 +173,12 @@ We want the number at the end. Around 8 digits. Here is an example of what to lo
     <value>Please consider emailing me your tournament number ({0}) and this error message ({1}) at poolscorebuddy@outlook.com so I can look into fixing that. Thankyou.</value>
   </data>
   <data name="TournamentAPIServerExceptionTitle" xml:space="preserve">
+    <value>Cannot fetch tournament {0}</value>
+  </data>
+  <data name="TournamentGeneralExceptionTitle" xml:space="preserve">
+    <value>Cannot fetch tournament {0}</value>
+  </data>
+  <data name="PlayersGeneralExceptionTitle" xml:space="preserve">
     <value>Cannot fetch tournament {0}</value>
   </data>
   <data name="PlayersAPIServerExceptionTitle" xml:space="preserve">
@@ -214,6 +226,12 @@ We want the number at the end. Around 8 digits. Here is an example of what to lo
   <data name="TournamentAPIServerExceptionButton" xml:space="preserve">
     <value>OK</value>
   </data>
+  <data name="TournamentGeneralExceptionButton" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="PlayersGeneralExceptionButton" xml:space="preserve">
+    <value>OK</value>
+  </data>
   <data name="PlayersAPIServerExceptionButton" xml:space="preserve">
     <value>OK</value>
   </data>
@@ -258,5 +276,8 @@ We want the number at the end. Around 8 digits. Here is an example of what to lo
   </data>
   <data name="PlayersMaximumReached" xml:space="preserve">
     <value>Maximum number of monitored players reached.</value>
+  </data>
+  <data name="TournamentNoName" xml:space="preserve">
+    <value>Tournament has no name</value>
   </data>
 </root>

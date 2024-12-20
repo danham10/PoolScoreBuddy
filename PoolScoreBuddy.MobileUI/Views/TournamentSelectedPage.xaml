@@ -7,9 +7,6 @@
     xmlns:res="clr-namespace:PoolScoreBuddy.Resources"
     Title="{x:Static res:AppResources.TournamentSelectedTitle}"
 >
-    <ContentPage.BindingContext>
-        <vm:TournamentSelectedViewModel />
-    </ContentPage.BindingContext>
     <VerticalStackLayout Margin="10,0,10,0">
         <Border Margin="0,0,0,20">
             <VerticalStackLayout>

@@ -226,6 +226,33 @@ namespace PoolScoreBuddy.Resources {
         /// <summary>
         ///   Looks up a localized string similar to OK.
         /// </summary>
+        internal static string PlayersGeneralExceptionButton {
+            get {
+                return ResourceManager.GetString("PlayersGeneralExceptionButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0}.
+        /// </summary>
+        internal static string PlayersGeneralExceptionMessage {
+            get {
+                return ResourceManager.GetString("PlayersGeneralExceptionMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot fetch tournament {0}.
+        /// </summary>
+        internal static string PlayersGeneralExceptionTitle {
+            get {
+                return ResourceManager.GetString("PlayersGeneralExceptionTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to OK.
+        /// </summary>
         internal static string PlayersHttpExceptionButton {
             get {
                 return ResourceManager.GetString("PlayersHttpExceptionButton", resourceCulture);
@@ -370,6 +397,33 @@ namespace PoolScoreBuddy.Resources {
         /// <summary>
         ///   Looks up a localized string similar to OK.
         /// </summary>
+        internal static string TournamentGeneralExceptionButton {
+            get {
+                return ResourceManager.GetString("TournamentGeneralExceptionButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0}.
+        /// </summary>
+        internal static string TournamentGeneralExceptionMessage {
+            get {
+                return ResourceManager.GetString("TournamentGeneralExceptionMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot fetch tournament {0}.
+        /// </summary>
+        internal static string TournamentGeneralExceptionTitle {
+            get {
+                return ResourceManager.GetString("TournamentGeneralExceptionTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to OK.
+        /// </summary>
         internal static string TournamentHttpExceptionButton {
             get {
                 return ResourceManager.GetString("TournamentHttpExceptionButton", resourceCulture);
@@ -445,6 +499,15 @@ namespace PoolScoreBuddy.Resources {
         internal static string TournamentLoadLabel {
             get {
                 return ResourceManager.GetString("TournamentLoadLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tournament has no name.
+        /// </summary>
+        internal static string TournamentNoName {
+            get {
+                return ResourceManager.GetString("TournamentNoName", resourceCulture);
             }
         }
         

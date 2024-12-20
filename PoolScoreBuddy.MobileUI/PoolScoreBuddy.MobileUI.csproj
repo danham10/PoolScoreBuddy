@@ -126,6 +126,11 @@
   </ItemGroup>
 
 	<ItemGroup>
+	  <Compile Update="Resources\AppResources - Copy %282%29.Designer.cs">
+	    <DependentUpon>AppResources - Copy (2).resx</DependentUpon>
+	    <DesignTime>True</DesignTime>
+	    <AutoGen>True</AutoGen>
+	  </Compile>
 	  <Compile Update="Resources\AppResources.Designer.cs">
 	    <DesignTime>True</DesignTime>
 	    <AutoGen>True</AutoGen>
@@ -146,6 +151,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <EmbeddedResource Update="Resources\AppResources - Copy %282%29.resx">
+	    <LastGenOutput>AppResources - Copy (2).Designer.cs</LastGenOutput>
+	    <Generator>ResXFileCodeGenerator</Generator>
+	  </EmbeddedResource>
 	  <EmbeddedResource Update="Resources\AppResources.resx">
 	    <Generator>ResXFileCodeGenerator</Generator>
 	    <LastGenOutput>AppResources.Designer.cs</LastGenOutput>

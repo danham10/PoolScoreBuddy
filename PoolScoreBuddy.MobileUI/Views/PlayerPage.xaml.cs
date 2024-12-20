@@ -1,4 +1,5 @@
 using CommunityToolkit.Mvvm.Messaging;
+using Microsoft.Extensions.Logging;
 using PoolScoreBuddy.Domain.Services;
 
 namespace PoolScoreBuddy.Views;
@@ -12,10 +13,22 @@ public partial class PlayerPage : ContentPage
         IScoreAPIClient cueScoreService, 
         IEnsureConnectivity ensureConnectivity,
         ISettingsResolver settingsResolver,
-        INotificationsChallenger notificationsChallenger)
+        INotificationsChallenger notificationsChallenger,
+        IAlert alert,
+        ILogger<PlayerViewModel> logger)
 	{
 		InitializeComponent();
-        _viewModel = new PlayerViewModel(dataStore, messenger, cueScoreService, ensureConnectivity, settingsResolver, notificationsChallenger);  
+
+        _viewModel = new PlayerViewModel(dataStore, 
+            messenger, 
+            cueScoreService, 
+            ensureConnectivity, 
+            settingsResolver, 
+            notificationsChallenger,
+            alert,
+            logger
+            );  
+
         BindingContext = _viewModel;
     }
 }

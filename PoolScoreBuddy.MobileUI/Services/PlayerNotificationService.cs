@@ -3,10 +3,15 @@ using PoolScoreBuddy.Domain.Models.API;
 using PoolScoreBuddy.Resources;
 using Plugin.LocalNotification;
 using Plugin.LocalNotification.AndroidOption;
+using Microsoft.Extensions.Logging;
 
 namespace PoolScoreBuddy.Services;
 
-public class PlayerNotificationService(IDataStore dataStore, IScoreAPIClient cueScoreService, INotificationService notificationService, ISettingsResolver settingsResolver) : IPlayerNotificationService
+public class PlayerNotificationService(IDataStore dataStore, 
+    IScoreAPIClient cueScoreService, 
+    INotificationService notificationService, 
+    ISettingsResolver settingsResolver,
+    ILogger<PlayerNotificationService> logger) : IPlayerNotificationService
 {
     public async Task<List<CuescoreNotification>> ProcessNotifications()
     {
@@ -49,7 +54,7 @@ public class PlayerNotificationService(IDataStore dataStore, IScoreAPIClient cue
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex.ToString());
+            logger.LogError(ex, "Error processing notifications");
             AddErrorNotification(notifications);
         }
 
@@ -114,7 +119,7 @@ public class PlayerNotificationService(IDataStore dataStore, IScoreAPIClient cue
             AppResources.ErrorNotification));
     }
 
-    private static void AddResultsNotifications(List<CuescoreNotification> notifications, TournamentDecorator t, MonitoredPlayer p)
+    private static void AddResultsNotifications(List<CuescoreNotification> notifications, ITournamentDecorator t, MonitoredPlayer p)
     {
         var notifiedResultsMatchIds = p.ResultsMatchIds;
 
@@ -149,7 +154,7 @@ public class PlayerNotificationService(IDataStore dataStore, IScoreAPIClient cue
             DateTime.Parse(time.ToString()!, null, System.Globalization.DateTimeStyles.RoundtripKind);
     }
 
-    private static void AddMatchNotifications(List<CuescoreNotification> notifications, TournamentDecorator t, MonitoredPlayer p)
+    private static void AddMatchNotifications(List<CuescoreNotification> notifications, ITournamentDecorator t, MonitoredPlayer p)
     {
         var notifiedCalledMatchIds = p.CalledMatchIds;
 

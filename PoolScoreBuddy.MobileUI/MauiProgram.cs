@@ -7,6 +7,7 @@ using PoolScoreBuddy.Domain.Services;
 using PoolScoreBuddy.Domain;
 using Microsoft.Extensions.Configuration;
 using System.Reflection;
+using PoolScoreBuddy.Domain.Models.API;
 
 namespace PoolScoreBuddy;
 
@@ -37,9 +38,24 @@ public static class MauiProgram
 
         builder.Configuration.AddConfiguration(GetAppSettings());
 
+        builder.Services.AddLogging(
+            configure =>
+            {
+
+#if ANDROID
 #if DEBUG
-        builder.Logging.AddDebug();
+                LogLevel androidLogLevel = LogLevel.Debug;
+#else
+        LogLevel androidLogLevel = LogLevel.Information;
 #endif
+
+                configure
+                    .AddProvider(new AndroidLoggerProvider())
+                    .AddFilter("PoolScoreBuddy", androidLogLevel);
+#endif
+
+            }
+        );
 
         builder.Services.AddSingleton<INotificationsChallenger, NotificationsChallenger>();
         builder.Services.AddSingleton<ITokenService, TokenService>();
@@ -50,8 +66,9 @@ public static class MauiProgram
         builder.Services.AddSingleton<IScoreAPIClient, CueScoreAPIClient>();
         builder.Services.AddSingleton<IDataStore, DataStore>();
         builder.Services.AddSingleton<IMessenger, WeakReferenceMessenger>();
+        builder.Services.AddSingleton<IPlayerNotificationService, PlayerNotificationService>();
 
-        builder.Services.AddTransient<IPlayerNotificationService, PlayerNotificationService>(); // TODO make singleton?
+        builder.Services.AddTransient<ITournamentDecorator, TournamentDecorator>();
 
         builder.Services.AddTransient<TournamentPage>();
         builder.Services.AddTransient<TournamentViewModel>();
