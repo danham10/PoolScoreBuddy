@@ -42,7 +42,9 @@ public static class MauiProgram
 #if DEBUG
         builder.Logging.AddDebug();
 #endif
-
+        builder.Services.AddSingleton<IPoolAppShell, PoolAppShell>();
+        builder.Services.AddSingleton<IAlert, Alert>();
+        builder.Services.AddSingleton<IEnsureConnectivity, EnsureConnectivity>();
         builder.Services.AddSingleton<IScoreAPIClient, CueScoreAPIClient>();
         builder.Services.AddSingleton<IDataStore, DataStore>();
         builder.Services.AddSingleton<IMessenger, WeakReferenceMessenger>();
@@ -61,7 +63,7 @@ public static class MauiProgram
         AddHttpClient(builder);
 
         return builder.Build();
-    }
+    }  
 
     private static void AddHttpClient(MauiAppBuilder builder)
     {
@@ -70,7 +72,6 @@ public static class MauiProgram
         builder.Services
         .AddHttpClient(Constants.HttpClientName, client =>
         {
-            //client.BaseAddress = new Uri(Constants.APIBaseUrl);
             client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenService.GenerateToken());
         })
 #if DEBUG

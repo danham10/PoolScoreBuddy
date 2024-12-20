@@ -2,7 +2,7 @@
 
 namespace PoolScoreBuddy.Services;
 
-public static class SettingsResolver
+public class SettingsResolver
 {
     public static Settings GetSettings()
     {

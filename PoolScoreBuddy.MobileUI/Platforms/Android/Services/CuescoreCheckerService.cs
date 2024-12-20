@@ -95,6 +95,8 @@ public class AndroidCuescoreCheckerService() : Service
     {
         var notificationManager = (NotificationManager)GetSystemService(NotificationService)!;
         var playerNotificationService = ServiceResolver.GetService<IPlayerNotificationService>();
+        var ensureConnectivity = ServiceResolver.GetService<IEnsureConnectivity>();
+
         var settings = SettingsResolver.GetSettings();
 
         await Task.Run(async () =>
@@ -107,7 +109,7 @@ public class AndroidCuescoreCheckerService() : Service
 
                 try
                 {
-                    if (EnsureConnectivity.IsConnected())
+                    if (ensureConnectivity.IsConnected())
                     {
                         if (!onlineStatus)
                         {

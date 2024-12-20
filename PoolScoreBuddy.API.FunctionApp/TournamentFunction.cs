@@ -46,9 +46,8 @@ public class TournamentFunction
         }
         catch (Exception ex)
         {
-            string error = $"Error processing tournament {tournamentId}";
             _logger.LogError($"Error processing tournament {ex.ToString()}", [tournamentId, participants, playerIds]);
-            return new NotFoundObjectResult(error);
+            return new StatusCodeResult(500);
         }
     }
 }

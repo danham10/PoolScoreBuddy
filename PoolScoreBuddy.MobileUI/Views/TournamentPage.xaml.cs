@@ -9,9 +9,13 @@ public partial class TournamentPage : ContentPage
     public TournamentPage()
     {
         var scoreAPIClient = ServiceResolver.GetService<IScoreAPIClient>();
+        var ensureConnectivity = ServiceResolver.GetService<IEnsureConnectivity>();
+        var alert = ServiceResolver.GetService<IAlert>();
+        var appShell = ServiceResolver.GetService<IPoolAppShell>();
+
 
         InitializeComponent();
-        _viewModel = new TournamentViewModel(scoreAPIClient);
+        _viewModel = new TournamentViewModel(scoreAPIClient, ensureConnectivity, alert, appShell);
         BindingContext = _viewModel;
         _viewModel.FocusView += TournamentEntrySetFocus;
     }

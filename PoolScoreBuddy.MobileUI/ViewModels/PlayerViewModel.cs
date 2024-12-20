@@ -16,6 +16,7 @@ public partial class PlayerViewModel : BaseViewModel, IQueryAttributable
     readonly IDataStore _dataStore;
     readonly IMessenger _messenger;
     readonly IScoreAPIClient _cueScoreService;
+    readonly IEnsureConnectivity _ensureConnectivity;
 
     TournamentDecorator? _tournament;
 
@@ -30,6 +31,7 @@ public partial class PlayerViewModel : BaseViewModel, IQueryAttributable
         _dataStore = ServiceResolver.GetService<IDataStore>();
         _messenger = ServiceResolver.GetService<IMessenger>();
         _cueScoreService = ServiceResolver.GetService<IScoreAPIClient>();
+        _ensureConnectivity = ServiceResolver.GetService<IEnsureConnectivity>();
     }
 
     public void ApplyQueryAttributes(IDictionary<string, object> query)
@@ -55,7 +57,7 @@ public partial class PlayerViewModel : BaseViewModel, IQueryAttributable
     [RelayCommand]
     async Task Refresh()
     {
-        if (!await EnsureConnectivity.IsConnectedWithAlert() || IsBusy) return;
+        if (!await _ensureConnectivity.IsConnectedWithAlert() || IsBusy) return;
 
         IsBusy = true;
 

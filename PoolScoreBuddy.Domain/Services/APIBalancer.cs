@@ -11,7 +11,7 @@ internal static class APIBalancer
     /// </summary>
     /// <param name="affinityIdentifier"></param>
     /// <returns></returns>
-    public static string? SelectEndpoint(IEnumerable<string> preferredEndpoints, IEnumerable<string> badEndpoints, string affinityIdentifier)
+    public static string? SelectEndpoint(IEnumerable<string> preferredEndpoints, IEnumerable<string> badEndpoints, int affinityIdentifier)
     {
         var goodEndpoints = preferredEndpoints.Where(p => !badEndpoints.Any(p2 => p2 == p)).ToList();
 
@@ -23,19 +23,5 @@ internal static class APIBalancer
         return goodEndpoints[index];
     }
 
-    private static int GetAffinityIndex(string candidate, int rangeCount)
-    {
-        int total = 0;
-
-        foreach (char letter in candidate)
-        {
-            // Get the integral value of the character.
-            int value = Convert.ToInt32(letter);
-            total += value;
-        }
-
-        Debug.WriteLine($"mod value of {candidate} is {total % rangeCount}");
-
-        return total % rangeCount;
-    }
+    private static int GetAffinityIndex(int candidate, int rangeCount) => candidate % rangeCount;
 }

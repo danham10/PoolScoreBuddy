@@ -10,23 +10,20 @@ internal class ResilientClientWrapper(HttpClient client, IEnumerable<string> can
     internal async Task<HttpResponseMessage?> FetchResponse(string relativeUrl, int apiAffinityId)
     {
         var retryPolicyForNotSuccessAnd401 = Policy
-            .HandleResult<HttpResponseMessage?>(response => response != null && !response.IsSuccessStatusCode)
+            .HandleResult<HttpResponseMessage?>(response => response != null && !response.IsSuccessStatusCode /*&& !response.IsCuescore TODO how to do this??*/)
+            .OrResult(response => response != null && ((int)response.StatusCode > 400 && (int)response.StatusCode < 500))
             .WaitAndRetryForeverAsync(_ => TimeSpan.FromSeconds(1));
 
-        string? proxyEndpoint = APIBalancer.SelectEndpoint(candidateEndpoints, _knownBadEndpoints, apiAffinityId.ToString());
-        
-        // Fallback to root API (cuescore)
-        if (proxyEndpoint == null)
-        {
-            return await PerformRequest(fallbackEndpoint, relativeUrl);
-        }
-        
         // Attempt a proxy API
-        return await retryPolicyForNotSuccessAnd401.ExecuteAsync(async () =>
+        await retryPolicyForNotSuccessAnd401.ExecuteAsync(async () =>
         {
-            string endpoint = proxyEndpoint;
-            return await PerformRequest(endpoint, relativeUrl);
+            string? proxyEndpoint = APIBalancer.SelectEndpoint(candidateEndpoints, _knownBadEndpoints, apiAffinityId);
+
+            return (proxyEndpoint != null) ? await PerformRequest(proxyEndpoint, relativeUrl) : null;
         });
+
+        // Fallback to root API (cuescore)
+        return await PerformRequest(fallbackEndpoint, relativeUrl);
     }
 
     private async Task<HttpResponseMessage?> PerformRequest(string baseUrl, string uri)
