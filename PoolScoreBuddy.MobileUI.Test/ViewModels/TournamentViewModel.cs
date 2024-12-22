@@ -75,7 +75,6 @@ namespace PoolScoreBuddy.MobileUI.Test.ViewModels
             _mockEnsureConnectivity.Setup(x => x.IsConnectedWithAlert()).ReturnsAsync(true);
             _mockScoreAPIClient.Setup(x => x.GetTournament(It.IsAny<TournamentDto>())).ReturnsAsync(new Tournament());
             _mockSettingsResolver.Setup(x => x.GetSettings()).Returns(new Settings());
-            //_mockTournamentService.Setup(x => x.AddIfMissing(It.IsAny<ITournamentDecorator>()));
 
             // Act
             await _viewModel.TournamentLoad();

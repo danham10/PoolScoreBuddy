@@ -26,13 +26,13 @@ public partial class TournamentSelectedViewModel(ITournamentService tournamentSe
             string.Format(AppResources.TournamentSelectedLabel, TournamentName);
     }
 
-    private bool CanExecuteMonitor()
+    internal bool CanExecuteMonitor()
     {
         return _tournament != null &&_tournament.IsFinished() == false;
     }
 
     [RelayCommand(CanExecute = nameof(CanExecuteMonitor))]
-    private async Task Monitor()
+    internal async Task Monitor()
     {
         var navigationParameters = new Dictionary<string, object>
         {

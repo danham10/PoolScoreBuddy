@@ -34,7 +34,7 @@ public partial class TournamentViewModel(IScoreAPIClient scoreAPIClient,
     }
 
     [RelayCommand(CanExecute = nameof(CanExecuteTournamentLoad))]
-    public async Task TournamentLoad()
+    internal async Task TournamentLoad()
     {
         try
         {
@@ -101,7 +101,7 @@ public partial class TournamentViewModel(IScoreAPIClient scoreAPIClient,
         }
     }
 
-    public async Task<Tournament> GetTournament()
+    internal async Task<Tournament> GetTournament()
     {
         var settings = settingsResolver.GetSettings();
 
@@ -117,7 +117,7 @@ public partial class TournamentViewModel(IScoreAPIClient scoreAPIClient,
         return tournament;
     }
 
-    public async Task GoToTournamentSelectedPage(TournamentDecorator tournament)
+    internal async Task GoToTournamentSelectedPage(TournamentDecorator tournament)
     {
         var navigationParameters = new Dictionary<string, object>
         {

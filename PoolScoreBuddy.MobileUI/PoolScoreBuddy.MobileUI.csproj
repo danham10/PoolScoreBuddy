@@ -180,4 +180,8 @@
 	  <ProjectReference Include="..\PoolScoreBuddy.Domain\PoolScoreBuddy.Domain.csproj" />
 	</ItemGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="PoolScoreBuddy.MobileUI.Test" />
+  </ItemGroup>
+
 </Project>
