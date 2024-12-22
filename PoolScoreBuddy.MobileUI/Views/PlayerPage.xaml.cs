@@ -8,7 +8,7 @@ public partial class PlayerPage : ContentPage
 {
     private readonly PlayerViewModel _viewModel;
 
-    public PlayerPage(IDataStore dataStore, 
+    public PlayerPage(ITournamentService tournamentService, 
         IMessenger messenger, 
         IScoreAPIClient cueScoreService, 
         IEnsureConnectivity ensureConnectivity,
@@ -19,7 +19,7 @@ public partial class PlayerPage : ContentPage
 	{
 		InitializeComponent();
 
-        _viewModel = new PlayerViewModel(dataStore, 
+        _viewModel = new PlayerViewModel(tournamentService, 
             messenger, 
             cueScoreService, 
             ensureConnectivity, 

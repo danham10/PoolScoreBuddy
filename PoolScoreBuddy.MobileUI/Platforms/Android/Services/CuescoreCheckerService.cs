@@ -15,7 +15,7 @@ public class AndroidCuescoreCheckerService() : Service
 {
     static readonly string? Tag = typeof(AndroidCuescoreCheckerService).FullName;
     readonly CancellationTokenSource _cts = new();
-    readonly IDataStore dataStore = ServiceResolver.GetService<IDataStore>();
+    readonly ITournamentService tournamentService = ServiceResolver.GetService<ITournamentService>();
     bool _isCheckerRunning;
 
     public override IBinder OnBind(Intent? intent)
@@ -58,13 +58,13 @@ public class AndroidCuescoreCheckerService() : Service
 
     private bool ShouldStop(Intent? intent)
     {
-        return intent!.Action != null && intent.Action.Equals(Constants.ActionStopService) || !dataStore.Tournaments.ShouldMonitor();
+        return intent!.Action != null && intent.Action.Equals(Constants.ActionStopService) || !tournamentService.ShouldMonitor();
     }
 
     public override void OnDestroy()
     {
         // We need to shut things down.
-        dataStore.Tournaments.CancelMonitoredPlayers();
+        tournamentService.CancelMonitoredPlayers();
 
         _isCheckerRunning = false;
 
@@ -134,7 +134,7 @@ public class AndroidCuescoreCheckerService() : Service
                         }
                     }
 
-                    if (!dataStore.Tournaments.ShouldMonitor())
+                    if (!tournamentService.ShouldMonitor())
                     {
                         OnDestroy();
                     }

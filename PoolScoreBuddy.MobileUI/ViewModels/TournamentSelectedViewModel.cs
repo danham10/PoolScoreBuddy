@@ -1,10 +1,11 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PoolScoreBuddy.Domain.Models.API;
+using PoolScoreBuddy.Domain.Services;
 using PoolScoreBuddy.Resources;
 
 namespace PoolScoreBuddy.ViewModels;
-public partial class TournamentSelectedViewModel(IDataStore dataStore, IPoolAppShell appShell) : BaseViewModel, IQueryAttributable
+public partial class TournamentSelectedViewModel(ITournamentService tournamentService, IPoolAppShell appShell) : BaseViewModel, IQueryAttributable
 {
     ITournamentDecorator _tournament = null!;
 
@@ -16,7 +17,7 @@ public partial class TournamentSelectedViewModel(IDataStore dataStore, IPoolAppS
 
     public void ApplyQueryAttributes(IDictionary<string, object> query)
     {
-        _tournament = dataStore.Tournaments.GetTournamentById(Convert.ToInt32(query["TournamentId"]));
+        _tournament = tournamentService.GetTournamentById(Convert.ToInt32(query["TournamentId"]));
 
         TournamentName = _tournament.Tournament.Name ?? AppResources.TournamentNoName;
 

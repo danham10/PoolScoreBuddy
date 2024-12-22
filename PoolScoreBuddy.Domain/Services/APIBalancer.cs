@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-
-namespace PoolScoreBuddy.Domain.Services;
+﻿namespace PoolScoreBuddy.Domain.Services;
 
 internal static class APIBalancer
 {

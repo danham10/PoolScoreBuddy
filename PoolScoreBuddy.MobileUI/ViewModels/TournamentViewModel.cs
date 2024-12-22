@@ -9,7 +9,7 @@ using System.Text.Json;
 
 namespace PoolScoreBuddy.ViewModels;
 public partial class TournamentViewModel(IScoreAPIClient scoreAPIClient,
-    IDataStore dataStore,
+    ITournamentService tournamentService,
     IEnsureConnectivity ensureConnectivity, 
     IAlert alert,
     IPoolAppShell appShell,
@@ -26,7 +26,7 @@ public partial class TournamentViewModel(IScoreAPIClient scoreAPIClient,
 
     public event EventHandler? FocusView;
 
-    private bool CanExecuteTournamentLoad() 
+    public bool CanExecuteTournamentLoad() 
     {
 
 
@@ -34,7 +34,7 @@ public partial class TournamentViewModel(IScoreAPIClient scoreAPIClient,
     }
 
     [RelayCommand(CanExecute = nameof(CanExecuteTournamentLoad))]
-    private async Task TournamentLoad()
+    public async Task TournamentLoad()
     {
         try
         {
@@ -48,7 +48,7 @@ public partial class TournamentViewModel(IScoreAPIClient scoreAPIClient,
             if (tournament != null)
             {
                 TournamentDecorator tournamentDecorator = new(tournament);
-                dataStore.Tournaments.AddIfMissing(tournamentDecorator);
+                tournamentService.AddIfMissing(tournamentDecorator);
 
                 await GoToTournamentSelectedPage(tournamentDecorator);
             }
@@ -101,7 +101,7 @@ public partial class TournamentViewModel(IScoreAPIClient scoreAPIClient,
         }
     }
 
-    private async Task<Tournament> GetTournament()
+    public async Task<Tournament> GetTournament()
     {
         var settings = settingsResolver.GetSettings();
 
@@ -117,7 +117,7 @@ public partial class TournamentViewModel(IScoreAPIClient scoreAPIClient,
         return tournament;
     }
 
-    private async Task GoToTournamentSelectedPage(TournamentDecorator tournament)
+    public async Task GoToTournamentSelectedPage(TournamentDecorator tournament)
     {
         var navigationParameters = new Dictionary<string, object>
         {

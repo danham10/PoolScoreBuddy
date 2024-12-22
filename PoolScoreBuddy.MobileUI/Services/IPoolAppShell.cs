@@ -2,5 +2,5 @@
 
 public interface IPoolAppShell
 {
-    public Task GoToAsync(ShellNavigationState shellNavigationState, Dictionary<string, object> navigationParameters);
+    public Task GoToAsync(string viewName, Dictionary<string, object> navigationParameters);
 }

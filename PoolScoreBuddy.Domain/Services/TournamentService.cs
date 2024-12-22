@@ -1,10 +1,14 @@
-﻿namespace PoolScoreBuddy.Domain.Models.API;
+﻿using PoolScoreBuddy.Domain.Models.API;
 
-public class Tournaments : List<ITournamentDecorator>, ITournaments
+namespace PoolScoreBuddy.Domain.Services;
+
+public class TournamentService : ITournamentService
 {
+    public List<ITournamentDecorator> Tournaments { get; set; } = [];
+
     public ITournamentDecorator GetTournamentById(int tournamentId)
     {
-        var tournament = this.FirstOrDefault(t => t.Tournament.TournamentId == tournamentId);
+        var tournament = Tournaments.FirstOrDefault(t => t.Tournament.TournamentId == tournamentId);
 
         tournament ??= new TournamentDecorator(tournamentId);
 
@@ -13,29 +17,31 @@ public class Tournaments : List<ITournamentDecorator>, ITournaments
 
     public void AddIfMissing(ITournamentDecorator tournament)
     {
-        var exists = (from t in this
+        var exists = (from t in Tournaments
                       where t.Tournament.TournamentId == tournament.Tournament.TournamentId
                       select t)
                       .Any();
 
         if (!exists)
         {
-            Add(tournament);
+            Tournaments.Add(tournament);
         }
     }
+
+    public void RemoveFinished() => Tournaments.ToList().RemoveAll(t => t.IsFinished());
 
     public bool ShouldMonitor() => ActiveTournaments() && AnyMonitoredPlayers();
 
     public bool ActiveTournaments()
     {
-        var x = this.All(t => t.Tournament != null && t.IsFinished()) == false;
+        var x = Tournaments.All(t => t.Tournament != null && t.IsFinished()) == false;
         return x;
     }
 
     public bool AnyMonitoredPlayers()
     {
         var x =
-            (from t in this
+            (from t in Tournaments
              from mp in t.MonitoredPlayers
              select mp)
             .Any();
@@ -43,5 +49,5 @@ public class Tournaments : List<ITournamentDecorator>, ITournaments
         return x;
     }
 
-    public void CancelMonitoredPlayers() => ForEach(t => t.MonitoredPlayers = []);
+    public void CancelMonitoredPlayers() => Tournaments.ToList().ForEach(t => t.MonitoredPlayers = []);
 }

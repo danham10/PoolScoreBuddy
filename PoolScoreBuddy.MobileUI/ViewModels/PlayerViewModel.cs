@@ -12,7 +12,7 @@ using PoolScoreBuddy.Domain;
 
 
 namespace PoolScoreBuddy.ViewModels;
-public partial class PlayerViewModel(IDataStore dataStore,
+public partial class PlayerViewModel(ITournamentService tournamentService,
     IMessenger messenger,
     IScoreAPIClient cueScoreService,
     IEnsureConnectivity ensureConnectivity,
@@ -32,7 +32,7 @@ public partial class PlayerViewModel(IDataStore dataStore,
 
     public void ApplyQueryAttributes(IDictionary<string, object> query)
     {
-        _tournament = dataStore.Tournaments.GetTournamentById(Convert.ToInt32(query["TournamentId"]));
+        _tournament = tournamentService.GetTournamentById(Convert.ToInt32(query["TournamentId"]));
     }
 
     [RelayCommand]
@@ -127,7 +127,7 @@ public partial class PlayerViewModel(IDataStore dataStore,
         int playerIndex = Players.IndexOf(Players.First(p => p.PlayerId == player.PlayerId));
         Players[playerIndex] = player;
 
-        dataStore.Tournaments.AddIfMissing(_tournament);
+        tournamentService.AddIfMissing(_tournament);
 
         messenger.Send(new CuescoreBackgroundChecker(ServiceMessageType.Default));
     });

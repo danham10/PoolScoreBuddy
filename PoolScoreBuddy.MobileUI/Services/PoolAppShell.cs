@@ -2,8 +2,8 @@
 
 public class PoolAppShell : IPoolAppShell
 {
-    public async Task GoToAsync(ShellNavigationState shellNavigationState, Dictionary<string, object> navigationParameters)
+    public async Task GoToAsync(string viewName, Dictionary<string, object> navigationParameters)
     {
-        await Shell.Current.GoToAsync(shellNavigationState, false, navigationParameters);
+        await Shell.Current.GoToAsync(viewName, false, navigationParameters);
     }
 }

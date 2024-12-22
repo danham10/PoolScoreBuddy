@@ -8,7 +8,7 @@ public partial class TournamentPage : ContentPage
     private readonly TournamentViewModel _viewModel;
 
     public TournamentPage(IScoreAPIClient scoreAPIClient,
-        IDataStore dataStore,
+        ITournamentService tournamentService,
         IEnsureConnectivity ensureConnectivity, 
         IAlert alert, 
         IPoolAppShell appShell, 
@@ -18,7 +18,7 @@ public partial class TournamentPage : ContentPage
         InitializeComponent();
 
         _viewModel = new TournamentViewModel(scoreAPIClient,
-            dataStore,
+            tournamentService,
             ensureConnectivity, 
             alert, 
             appShell, 

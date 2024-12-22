@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 
 namespace PoolScoreBuddy.Services;
 
-public class PlayerNotificationService(IDataStore dataStore, 
+public class PlayerNotificationService(ITournamentService tournamentService, 
     IScoreAPIClient cueScoreService, 
     INotificationService notificationService, 
     ISettingsResolver settingsResolver,
@@ -21,7 +21,7 @@ public class PlayerNotificationService(IDataStore dataStore,
         try
         {
             // load tournaments from API
-            foreach (var tournament in dataStore.Tournaments)
+            foreach (var tournament in tournamentService.Tournaments)
             {
                 IEnumerable<int> monitoredPlayerIds = from player in tournament.MonitoredPlayers
                                            select player.PlayerId;
@@ -40,9 +40,9 @@ public class PlayerNotificationService(IDataStore dataStore,
             }
 
             // remove tournaments that have finished
-            dataStore.Tournaments.RemoveAll(t => t.IsFinished());
+            tournamentService.RemoveFinished();
 
-            foreach (var t in dataStore.Tournaments)
+            foreach (var t in tournamentService.Tournaments)
             {
                 foreach (var p in t.MonitoredPlayers.ToList())
                 {

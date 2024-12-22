@@ -64,7 +64,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<IAlert, Alert>();
         builder.Services.AddSingleton<IEnsureConnectivity, EnsureConnectivity>();
         builder.Services.AddSingleton<IScoreAPIClient, CueScoreAPIClient>();
-        builder.Services.AddSingleton<IDataStore, DataStore>();
+        builder.Services.AddSingleton<ITournamentService, TournamentService>();
         builder.Services.AddSingleton<IMessenger, WeakReferenceMessenger>();
         builder.Services.AddSingleton<IPlayerNotificationService, PlayerNotificationService>();
 
