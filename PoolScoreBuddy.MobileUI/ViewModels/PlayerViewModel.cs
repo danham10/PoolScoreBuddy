@@ -36,7 +36,7 @@ public partial class PlayerViewModel(ITournamentService tournamentService,
     }
 
     [RelayCommand]
-    async Task Refresh()
+    internal async Task Refresh()
     {
         if (!await ensureConnectivity.IsConnectedWithAlert() || IsBusy) return;
 
@@ -102,12 +102,12 @@ public partial class PlayerViewModel(ITournamentService tournamentService,
     }
 
     [RelayCommand]
-    async Task Appearing()
+    internal async Task Appearing()
     {
         await Refresh();
     }
 
-    public Command<Player> ToggleStartMonitor => new(async (player) =>
+    internal Command<Player> ToggleStartMonitor => new(async (player) =>
     {
         if (MaximumMonitorCountReached())
         {

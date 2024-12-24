@@ -9,7 +9,7 @@ public class Match
     public required Player PlayerB { get; set; }
     public int ScoreA { get; set; }
     public int ScoreB { get; set; }
-    public required object Table { get; set; }
+    public object Table { get; set; } = null!;
     public int TournamentId { get; set; }
     public required object StartTime { get; set; }
     public required object StopTime { get; set; }

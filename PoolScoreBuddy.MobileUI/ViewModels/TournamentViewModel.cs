@@ -34,7 +34,7 @@ public partial class TournamentViewModel(IScoreAPIClient scoreAPIClient,
     }
 
     [RelayCommand(CanExecute = nameof(CanExecuteTournamentLoad))]
-    internal async Task TournamentLoad()
+    public async Task TournamentLoad()
     {
         try
         {

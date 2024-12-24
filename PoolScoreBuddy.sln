@@ -18,7 +18,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PoolScoreBuddy.API.Function
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PoolScoreBuddy.API.Domain", "PoolScoreBuddy.API.Domain\PoolScoreBuddy.API.Domain.csproj", "{48B0FAFF-F8E1-43DB-9463-A5060BA149A8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PoolScoreBuddy.MobileUI.Test", "PoolScoreBuddy.MobileUI.Test\PoolScoreBuddy.MobileUI.Test.csproj", "{571C9A63-8FB8-48FA-B88D-7B6C558FC8D4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PoolScoreBuddy.MobileUI.Tests", "PoolScoreBuddy.MobileUI.Tests\PoolScoreBuddy.MobileUI.Tests.csproj", "{571C9A63-8FB8-48FA-B88D-7B6C558FC8D4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

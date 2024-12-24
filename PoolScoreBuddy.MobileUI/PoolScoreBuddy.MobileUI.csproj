@@ -181,7 +181,7 @@
 	</ItemGroup>
 
   <ItemGroup>
-    <InternalsVisibleTo Include="PoolScoreBuddy.MobileUI.Test" />
+    <InternalsVisibleTo Include="PoolScoreBuddy.MobileUI.Tests" />
   </ItemGroup>
 
 </Project>
