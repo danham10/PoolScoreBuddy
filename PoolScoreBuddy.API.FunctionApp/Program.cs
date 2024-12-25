@@ -20,6 +20,7 @@ var host = new HostBuilder()
             });
 
         services.AddHttpClient();
+        services.AddSingleton<IResilientClientWrapper, ResilientClientWrapper>();
         services.AddSingleton<IScoreAPIClient, CueScoreAPIClient>();
         services.AddSingleton<IScoreClient, ScoreClient>();
     })

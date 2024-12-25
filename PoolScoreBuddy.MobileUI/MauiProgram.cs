@@ -57,6 +57,7 @@ public static class MauiProgram
             }
         );
 
+        builder.Services.AddSingleton<IResilientClientWrapper, ResilientClientWrapper>();
         builder.Services.AddSingleton<INotificationsChallenger, NotificationsChallenger>();
         builder.Services.AddSingleton<ITokenService, TokenService>();
         builder.Services.AddSingleton<ISettingsResolver,  SettingsResolver>();

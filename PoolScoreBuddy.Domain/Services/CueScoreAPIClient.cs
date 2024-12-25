@@ -4,20 +4,20 @@ using PoolScoreBuddy.Domain.Models.API;
 
 namespace PoolScoreBuddy.Domain.Services;
 
-public class CueScoreAPIClient(IHttpClientFactory httpClientFactory) : IScoreAPIClient
+public class CueScoreAPIClient(IHttpClientFactory httpClientFactory, IResilientClientWrapper resilientClientWrapper) : IScoreAPIClient
 {
     private readonly static JsonSerializerOptions _serializerOptions = new() { PropertyNameCaseInsensitive = true };
 
     public async Task<Tournament> GetTournament(TournamentDto dto)
     {
         var httpClient = httpClientFactory.CreateClient(Constants.HttpClientName);
-        var resilientClientWrapper = new ResilientClientWrapper(httpClient, dto.BaseAddresses, dto.FallbackAddress);
+        //var resilientClientWrapper = new resilientClientWrapper(httpClient, dto.BaseAddresses, dto.FallbackAddress);
 
         string? playerQueryValue = GetPlayerQueryValue(dto.PlayerIds);
 
         var uri = $"tournament?id={dto.TournamentId}{playerQueryValue}";
 
-        var response = await resilientClientWrapper.FetchResponse(uri, dto.TournamentId);
+        var response = await resilientClientWrapper.FetchResponse(httpClient, dto.BaseAddresses, dto.FallbackAddress, uri, dto.TournamentId);
 
         response!.EnsureSuccessStatusCode();
 
@@ -29,10 +29,9 @@ public class CueScoreAPIClient(IHttpClientFactory httpClientFactory) : IScoreAPI
     public async Task<List<Player>> GetPlayers(PlayersDto dto)
     {
         var httpClient = httpClientFactory.CreateClient(Constants.HttpClientName);
-        var resilientClientWrapper = new ResilientClientWrapper(httpClient, dto.BaseAddresses, dto.FallbackAddress);
 
         var uri = $"tournament/?id={dto.TournamentId}&participants=Participants+list";
-        var response = await resilientClientWrapper.FetchResponse(uri, dto.TournamentId);
+        var response = await resilientClientWrapper.FetchResponse(httpClient, dto.BaseAddresses, dto.FallbackAddress, uri, dto.TournamentId)  ;
 
         response!.EnsureSuccessStatusCode();
 

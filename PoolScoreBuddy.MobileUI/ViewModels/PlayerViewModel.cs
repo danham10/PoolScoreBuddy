@@ -107,9 +107,9 @@ public partial class PlayerViewModel(ITournamentService tournamentService,
         await Refresh();
     }
 
-    internal Command<Player> ToggleStartMonitor => new(async (player) =>
+    public Command<Player> ToggleStartMonitor => new(async (player) =>
     {
-        if (MaximumMonitorCountReached())
+        if (!player.IsMonitored && MaximumMonitorCountReached())
         {
             await alert.Show(AppResources.Alert,
                 AppResources.PlayersMaximumReached,

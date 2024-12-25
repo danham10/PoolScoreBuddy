@@ -133,10 +133,10 @@ public class PlayerNotificationServiceTests
     public async Task SendNotifications_ValidNotifications_SendsNotifications()
     {
         // Arrange
-        var notifications = new List<CuescoreNotification>
+        var notifications = new List<PlayerNotification>
         {
-            new CuescoreNotification(NotificationType.Start, 1, "Player A", "Player B", DateTime.Now, "Table 1"),
-            new CuescoreNotification(NotificationType.Result, 2, "Player A", "Player B", DateTime.Now, "1 - 2")
+            new PlayerNotification(NotificationType.Start, 1, "Player A", "Player B", DateTime.Now, "Table 1"),
+            new PlayerNotification(NotificationType.Result, 2, "Player A", "Player B", DateTime.Now, "1 - 2")
         };
 
         // Act
@@ -150,9 +150,9 @@ public class PlayerNotificationServiceTests
     public async Task SendNotifications_InvalidNotificationType_ThrowsException()
     {
         // Arrange
-        var notifications = new List<CuescoreNotification>
+        var notifications = new List<PlayerNotification>
         {
-            new CuescoreNotification((NotificationType)999, 1, "Player A", "Player B", DateTime.Now, "Invalid")
+            new PlayerNotification((NotificationType)999, 1, "Player A", "Player B", DateTime.Now, "Invalid")
         };
 
         // Act & Assert

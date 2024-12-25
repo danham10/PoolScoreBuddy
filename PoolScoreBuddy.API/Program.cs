@@ -34,6 +34,7 @@ builder.Services.AddAuthentication(config =>
 builder.Services.AddAuthorization();
 
 builder.Services.AddHttpClient();
+builder.Services.AddSingleton<IResilientClientWrapper, ResilientClientWrapper>();
 builder.Services.AddSingleton<IScoreAPIClient, CueScoreAPIClient>();
 builder.Services.AddSingleton<IScoreClient, ScoreClient>();
 builder.Services.AddMemoryCache();

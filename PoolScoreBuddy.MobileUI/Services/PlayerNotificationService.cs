@@ -13,9 +13,9 @@ public class PlayerNotificationService(ITournamentService tournamentService,
     ISettingsResolver settingsResolver,
     ILogger<PlayerNotificationService> logger) : IPlayerNotificationService
 {
-    public async Task<List<CuescoreNotification>> ProcessNotifications()
+    public async Task<List<PlayerNotification>> ProcessNotifications()
     {
-        List<CuescoreNotification> notifications = [];
+        List<PlayerNotification> notifications = [];
         var settings = settingsResolver.GetSettings();
 
         try
@@ -61,7 +61,7 @@ public class PlayerNotificationService(ITournamentService tournamentService,
         return notifications;
     }
 
-    public async Task SendNotifications(List<CuescoreNotification> notifications)
+    public async Task SendNotifications(List<PlayerNotification> notifications)
     {
         foreach (var notification in notifications)
         {
@@ -108,9 +108,9 @@ public class PlayerNotificationService(ITournamentService tournamentService,
         }
     }
 
-    private static void AddErrorNotification(List<CuescoreNotification> notifications)
+    private static void AddErrorNotification(List<PlayerNotification> notifications)
     {
-        notifications.Add(new CuescoreNotification(
+        notifications.Add(new PlayerNotification(
             NotificationType.Error,
             0,
             "",
@@ -119,7 +119,7 @@ public class PlayerNotificationService(ITournamentService tournamentService,
             AppResources.ErrorNotification));
     }
 
-    private static void AddResultsNotifications(List<CuescoreNotification> notifications, ITournamentDecorator t, MonitoredPlayer p)
+    private static void AddResultsNotifications(List<PlayerNotification> notifications, ITournamentDecorator t, MonitoredPlayer p)
     {
         var notifiedResultsMatchIds = p.ResultsMatchIds;
 
@@ -135,7 +135,7 @@ public class PlayerNotificationService(ITournamentService tournamentService,
 
         foreach (var match in unnotifiedResults)
         {
-            notifications.Add(new CuescoreNotification(
+            notifications.Add(new PlayerNotification(
                 NotificationType.Result,
                 match.MatchId,
                 match.PlayerA.Name,
@@ -154,7 +154,7 @@ public class PlayerNotificationService(ITournamentService tournamentService,
             DateTime.Parse(time.ToString()!, null, System.Globalization.DateTimeStyles.RoundtripKind);
     }
 
-    private static void AddMatchNotifications(List<CuescoreNotification> notifications, ITournamentDecorator t, MonitoredPlayer p)
+    private static void AddMatchNotifications(List<PlayerNotification> notifications, ITournamentDecorator t, MonitoredPlayer p)
     {
         var notifiedCalledMatchIds = p.CalledMatchIds;
 
@@ -169,7 +169,7 @@ public class PlayerNotificationService(ITournamentService tournamentService,
 
         foreach (var match in unnotifiedMatches)
         {
-            notifications.Add(new CuescoreNotification(
+            notifications.Add(new PlayerNotification(
                 NotificationType.Start,
                 match.MatchId,
                 match.PlayerA.Name,
