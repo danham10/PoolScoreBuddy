@@ -54,28 +54,42 @@ public partial class PlayerViewModel(ITournamentService tournamentService,
                 TournamentId = _tournament.Tournament.TournamentId,
             };
 
-            _tournament.Players = await cueScoreService.GetPlayers(dto);
-            refreshedPlayers = _tournament.GetPlayersWithMonitoring();
+            var players = await cueScoreService.GetPlayers(dto);
+
+            if (players.Error != null)
+            {
+                logger.LogError(players.Error);
+
+                await alert.Show(string.Format(AppResources.PlayersAPIServerExceptionTitle, _tournament!.Tournament.TournamentId),
+                    string.Format(AppResources.PlayersAPIServerExceptionMessage, players.Error),
+                    AppResources.PlayersAPIServerExceptionButton);
+
+                IsBusy = false;
+            }
+            else
+            {
+                _tournament.Players = await cueScoreService.GetPlayers(dto);
+                refreshedPlayers = _tournament.GetPlayersWithMonitoring();
+
+                Players.Clear();
+
+                foreach (var player in refreshedPlayers)
+                {
+                    Players.Add(player);
+                }
+            }
         }
         catch (HttpRequestException ex)
         {
-            logger.LogError(ex, "HttpRequestException");
+            logger.LogError(ex, "Error fetching players");
 
             await alert.Show(string.Format(AppResources.PlayersHttpExceptionTitle, _tournament!.Tournament.TournamentId),
                 AppResources.PlayersHttpExceptionMessage,
                 AppResources.PlayersHttpExceptionButton);
         }
-        catch (APIServerException ex)
-        {
-            logger.LogError(ex, "APIServerException");
-
-            await alert.Show(string.Format(AppResources.PlayersAPIServerExceptionTitle, _tournament!.Tournament.TournamentId),
-                string.Format(AppResources.PlayersAPIServerExceptionMessage, ex!.Message),
-                AppResources.PlayersAPIServerExceptionButton);
-        }
         catch (JsonException ex)
         {
-            logger.LogError(ex, "JsonException");
+            logger.LogError(ex, "Error fetching players");
 
             await alert.Show(string.Format(AppResources.PlayersJsonExceptionTitle, _tournament!.Tournament.TournamentId),
                 string.Format(AppResources.PlayersJsonExceptionMessage, _tournament!.Tournament.TournamentId, ex.Message),
@@ -83,22 +97,14 @@ public partial class PlayerViewModel(ITournamentService tournamentService,
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Exception");
+            logger.LogError(ex, "Error fetching players");
 
             await alert.Show(string.Format(AppResources.PlayersGeneralExceptionTitle, _tournament!.Tournament.TournamentId),
                 string.Format(AppResources.PlayersGeneralExceptionMessage, _tournament!.Tournament.TournamentId, ex.Message),
                 AppResources.PlayersGeneralExceptionButton);
         }
-        finally
-        {
-            IsBusy = false;
-        }
 
-        Players.Clear();
-        foreach (var player in refreshedPlayers)
-        {
-            Players.Add(player);
-        }
+        IsBusy = false;
     }
 
     [RelayCommand]

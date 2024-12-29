@@ -5,7 +5,7 @@ public interface ITournamentDecorator
 {
     bool IsBusy { get; }
     List<MonitoredPlayer> MonitoredPlayers { get; set; }
-    List<Player>? Players { get; set; }
+    Players? Players { get; set; }
     Tournament Tournament { get; set; }
 
     List<Match> ActivePlayerMatches(int playerId);

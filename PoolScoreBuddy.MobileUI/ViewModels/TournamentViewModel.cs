@@ -6,6 +6,7 @@ using PoolScoreBuddy.Domain.Models.API;
 using PoolScoreBuddy.Domain.Services;
 using PoolScoreBuddy.Resources;
 using System.Text.Json;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace PoolScoreBuddy.ViewModels;
 public partial class TournamentViewModel(IScoreAPIClient scoreAPIClient,
@@ -45,7 +46,18 @@ public partial class TournamentViewModel(IScoreAPIClient scoreAPIClient,
 
             Tournament tournament = await GetTournament();
 
-            if (tournament != null)
+            if (tournament.Error != null)
+            {
+                logger.LogError(tournament.Error);
+
+                await alert.Show(string.Format(AppResources.TournamentAPIServerExceptionTitle, TournamentId),
+                    string.Format(AppResources.TournamentAPIServerExceptionMessage, tournament.Error),
+                    AppResources.TournamentAPIServerExceptionButton);
+
+                    IsBusy = false;
+                    FocusView?.Invoke(this, EventArgs.Empty);
+            } 
+            else
             {
                 TournamentDecorator tournamentDecorator = new(tournament);
                 tournamentService.AddIfMissing(tournamentDecorator);
@@ -69,14 +81,6 @@ public partial class TournamentViewModel(IScoreAPIClient scoreAPIClient,
                        AppResources.TournamentHttpExceptionButton);
                     break;
             }
-        }
-        catch (APIServerException ex)
-        {
-            logger.LogError(ex, "APIServerException");
-
-            await alert.Show(string.Format(AppResources.TournamentAPIServerExceptionTitle, TournamentId), 
-                string.Format(AppResources.TournamentAPIServerExceptionMessage, ex!.Message),
-                AppResources.TournamentAPIServerExceptionButton);
         }
         catch (JsonException ex)
         {

@@ -3,7 +3,7 @@
 public class TournamentDecorator : ITournamentDecorator
 {
     public Tournament Tournament { get; set; }
-    public List<Player>? Players { get; set; }
+    public Players? Players { get; set; }
     public List<MonitoredPlayer> MonitoredPlayers { get; set; } = [];
     public bool IsBusy { get; private set; }
 

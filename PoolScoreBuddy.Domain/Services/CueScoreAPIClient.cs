@@ -26,7 +26,7 @@ public class CueScoreAPIClient(IHttpClientFactory httpClientFactory, IResilientC
     }
 
 
-    public async Task<List<Player>> GetPlayers(PlayersDto dto)
+    public async Task<Players> GetPlayers(PlayersDto dto)
     {
         var httpClient = httpClientFactory.CreateClient(Constants.HttpClientName);
 
@@ -36,10 +36,10 @@ public class CueScoreAPIClient(IHttpClientFactory httpClientFactory, IResilientC
         response!.EnsureSuccessStatusCode();
 
         string data = await response.Content.ReadAsStringAsync();
-        return Deserialize<List<Player>>(data);
+        return Deserialize<Players>(data);
     }
 
-    private static T Deserialize<T>(string json)
+    private static T Deserialize<T>(string json) where T : IErrorContainer, new()
     {
         const string expectedErrorPrefix = "{error: ";
 
@@ -47,7 +47,7 @@ public class CueScoreAPIClient(IHttpClientFactory httpClientFactory, IResilientC
         // error: 'Could not find tournament with given ID.'
         if (json.StartsWith(expectedErrorPrefix, StringComparison.CurrentCultureIgnoreCase))
         {
-            throw new APIServerException(json);
+            return new T() { Error = json };
         }
 
         return JsonSerializer.Deserialize<T>(json, _serializerOptions)!;

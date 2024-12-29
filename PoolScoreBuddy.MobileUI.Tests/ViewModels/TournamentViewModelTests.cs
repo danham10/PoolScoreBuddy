@@ -113,21 +113,6 @@ public class TournamentViewModelTests
     }
 
     [Fact]
-    public async Task TournamentLoad_APIServerException_ShowsAlert()
-    {
-        // Arrange
-        _viewModel.TournamentId = "123";
-        _mockEnsureConnectivity.Setup(x => x.IsConnectedWithAlert()).ReturnsAsync(true);
-        _mockScoreAPIClient.Setup(x => x.GetTournament(It.IsAny<TournamentDto>())).ThrowsAsync(new APIServerException("Server error"));
-
-        // Act
-        await _viewModel.TournamentLoad();
-
-        // Assert
-        _mockAlert.Verify(x => x.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
-    }
-
-    [Fact]
     public async Task TournamentLoad_JsonException_ShowsAlert()
     {
         // Arrange

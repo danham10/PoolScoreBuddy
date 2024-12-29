@@ -43,7 +43,7 @@ public class ScoreClient(IScoreAPIClient scoreAPIClient, IMemoryCache cache, IOp
     {
         string cacheKey = string.Format(playersCacheFormatter, tournamentId);
 
-        if (!cache.TryGetValue(cacheKey, out List<Player>? players))
+        if (!cache.TryGetValue(cacheKey, out Players? players))
         {
             PlayersDto dto = new()
             {
