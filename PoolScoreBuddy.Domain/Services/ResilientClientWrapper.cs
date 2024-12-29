@@ -28,14 +28,14 @@ public class ResilientClientWrapper() : IResilientClientWrapper
 
     private async Task<HttpResponseMessage?> PerformRequest(HttpClient client, string baseUrl, string uri)
     { 
+        const string cuescoreBaseUrl = "api.cuescore.com";
         const string playerIdsQueryKey = "&playerIds";
-        var baseUrlIsCuescore = baseUrl.Contains("api.cuescore.com", StringComparison.CurrentCultureIgnoreCase);
+        var baseUrlIsCuescore = baseUrl.Contains(cuescoreBaseUrl, StringComparison.CurrentCultureIgnoreCase);
         var uriContainsPlayerQuery = uri.Contains(playerIdsQueryKey, StringComparison.CurrentCultureIgnoreCase);
 
         if (baseUrlIsCuescore && uriContainsPlayerQuery)
         {
             // cuescore API does not support player Ids, we cannot filter these for a smaller payload
-            // Our own proxy API does.
             uri = uri[..uri.LastIndexOf(playerIdsQueryKey)];
         }
 

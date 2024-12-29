@@ -111,7 +111,7 @@ public partial class TournamentViewModel(IScoreAPIClient scoreAPIClient,
 
         TournamentDto dto = new()
         {
-            BaseAddresses = settings.APIWebAppProxies,
+            BaseAddresses = settings.APIProxies,
             FallbackAddress = settings.CueScoreBaseUrl,
             TournamentId = Convert.ToInt32(TournamentId),
             PlayerIds = [],

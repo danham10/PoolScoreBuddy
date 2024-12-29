@@ -50,7 +50,7 @@ public partial class PlayerViewModel(ITournamentService tournamentService,
             PlayersDto dto = new()
             {
                 FallbackAddress = settings.CueScoreBaseUrl,
-                BaseAddresses = settings.APIWebAppProxies,
+                BaseAddresses = settings.APIProxies,
                 TournamentId = _tournament.Tournament.TournamentId,
             };
 

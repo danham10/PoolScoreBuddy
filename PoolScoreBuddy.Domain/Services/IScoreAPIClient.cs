@@ -4,6 +4,6 @@ namespace PoolScoreBuddy.Domain.Services;
 
 public interface IScoreAPIClient
 {
-    public Task<Tournament> GetTournament(TournamentDto dto);
-    public Task<Players> GetPlayers(PlayersDto dto);
+    Task<Tournament> GetTournament(TournamentDto dto);
+    Task<Players> GetPlayers(PlayersDto dto);
 }
