@@ -2,6 +2,12 @@
 
 namespace PoolScoreBuddy.Domain.Models.API;
 
+public enum MatchStatusCode
+{
+    Active = 1,
+    Finished = 2
+}
+
 public class Match
 {
     public int MatchId { get; set; }
@@ -11,9 +17,9 @@ public class Match
     public int ScoreB { get; set; }
     public object Table { get; set; } = null!;
     public int TournamentId { get; set; }
-    public required object StartTime { get; set; }
-    public required object StopTime { get; set; }
-    public int MatchStatusCode { get; set; }
+    public object StartTime { get; set; } = null!;
+    public object StopTime { get; set; } = null!;
+    public MatchStatusCode MatchStatusCode { get; set; }
 
     /// <summary>
     /// Table returns inconsistent data. Either empty array or a Table object.

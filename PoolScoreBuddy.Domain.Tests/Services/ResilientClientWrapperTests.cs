@@ -14,7 +14,7 @@ namespace PoolScoreBuddy.Domain.Tests.Services
             _resilientClientWrapper = new ResilientClientWrapper();
             _mockHttpClient = new MockHttpMessageHandler();
         }
-
+         
         [Fact]
         public async Task FetchResponse_ValidProxyEndpoint_ReturnsSuccessResponse()
         {
@@ -100,7 +100,7 @@ namespace PoolScoreBuddy.Domain.Tests.Services
             var client = new HttpClient(_mockHttpClient);
 
             // Act
-            var response = await _resilientClientWrapper.FetchResponse(client, new List<string> { baseUrl }, baseUrl, uri, 1);
+            var response = await _resilientClientWrapper.FetchResponse(client, [baseUrl], baseUrl, uri, 1);
 
             // Assert
             Assert.Equal(successResponse, response);

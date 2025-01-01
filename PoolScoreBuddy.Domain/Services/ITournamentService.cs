@@ -5,12 +5,12 @@ namespace PoolScoreBuddy.Domain.Services
     public interface ITournamentService
     {
         List<ITournamentDecorator> Tournaments { get; set; }
-        bool ActiveTournaments();
+        bool AnyActiveTournaments();
         void AddIfMissing(ITournamentDecorator tournament);
         void RemoveFinished();
         bool AnyMonitoredPlayers();
         void CancelMonitoredPlayers();
-        ITournamentDecorator GetTournamentById(int tournamentId);
+        ITournamentDecorator? GetTournamentById(int tournamentId);
         bool ShouldMonitor();
     }
 }

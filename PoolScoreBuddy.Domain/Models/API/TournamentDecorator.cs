@@ -66,13 +66,11 @@ public class TournamentDecorator : ITournamentDecorator
 
     public List<Match> ActivePlayerMatches(int playerId)
     {
-        const int MatchActiveStatus = 1;
-        return PlayerMatches(playerId).Where(m => m.MatchStatusCode == MatchActiveStatus).ToList();
+        return PlayerMatches(playerId).Where(m => m.MatchStatusCode == MatchStatusCode.Active).ToList();
     }
 
     public List<Match> ResultsPlayerMatches(int playerId)
     {
-        const int MatchFinishedStatus = 2;
-        return PlayerMatches(playerId).Where(m => m.MatchStatusCode == MatchFinishedStatus).ToList();
+        return PlayerMatches(playerId).Where(m => m.MatchStatusCode == MatchStatusCode.Finished).ToList();
     }
 };

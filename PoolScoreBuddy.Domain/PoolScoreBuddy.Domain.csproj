@@ -12,4 +12,8 @@
     <PackageReference Include="Polly" Version="8.5.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="PoolScoreBuddy.Domain.Tests" />
+  </ItemGroup>
+  
 </Project>

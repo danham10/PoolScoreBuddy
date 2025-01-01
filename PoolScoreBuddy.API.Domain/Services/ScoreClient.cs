@@ -33,8 +33,7 @@ public class ScoreClient(IScoreAPIClient scoreAPIClient, IMemoryCache cache, IOp
 
         if (playerIds?.Length > 0)
         {
-            var removedMatchCount = tournament!.Matches?.RemoveAll(m => ShouldRemoveMatch(m, playerIds, notifiedMatchIds));
-            Console.WriteLine($"removed {removedMatchCount} matches");
+            tournament!.Matches?.RemoveAll(m => ShouldRemoveMatch(m, playerIds, notifiedMatchIds));
         }
 
         return tournament!;

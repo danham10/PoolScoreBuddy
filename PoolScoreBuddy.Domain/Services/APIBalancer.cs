@@ -7,7 +7,7 @@ internal static class APIBalancer
     /// We want requests from the same identifier to go to the same endpoint
     /// This balances the load, with an api instance chosen based on affinity (tournament) id
     /// </summary>
-    /// <param name="affinityIdentifier"></param>
+    /// <param name="affinityIdentifier">Seed to calculate endpoint deterministicly</param>
     /// <returns></returns>
     public static string? SelectEndpoint(IEnumerable<string> preferredEndpoints, IEnumerable<string> badEndpoints, int affinityIdentifier)
     {

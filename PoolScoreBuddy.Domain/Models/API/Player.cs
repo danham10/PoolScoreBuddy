@@ -6,7 +6,7 @@ public partial class Player
     public int PlayerId { get => playerId == 0 ? TeamId : playerId; set => playerId = value; }
 
     public int TeamId { get; set; }
-    public required string Name { get; set; }
+    public string Name { get; set; } = null!;
     public string? Firstname { get; set; }
     public string? Lastname { get; set; }
     public string? Url { get; set; }

@@ -17,7 +17,7 @@ public partial class TournamentSelectedViewModel(ITournamentService tournamentSe
 
     public void ApplyQueryAttributes(IDictionary<string, object> query)
     {
-        _tournament = tournamentService.GetTournamentById(Convert.ToInt32(query["TournamentId"]));
+        _tournament = tournamentService.GetTournamentById(Convert.ToInt32(query["TournamentId"]))!;
 
         TournamentName = _tournament.Tournament.Name ?? AppResources.TournamentNoName;
 

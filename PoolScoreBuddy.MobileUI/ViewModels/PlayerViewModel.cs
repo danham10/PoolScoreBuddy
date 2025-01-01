@@ -32,7 +32,7 @@ public partial class PlayerViewModel(ITournamentService tournamentService,
 
     public void ApplyQueryAttributes(IDictionary<string, object> query)
     {
-        _tournament = tournamentService.GetTournamentById(Convert.ToInt32(query["TournamentId"]));
+        _tournament = tournamentService.GetTournamentById(Convert.ToInt32(query["TournamentId"]))!;
     }
 
     [RelayCommand]
@@ -42,7 +42,7 @@ public partial class PlayerViewModel(ITournamentService tournamentService,
 
         IsBusy = true;
 
-        IEnumerable<Player> refreshedPlayers = [];
+        IEnumerable<Player> refreshedPlayers;
 
         try
         {

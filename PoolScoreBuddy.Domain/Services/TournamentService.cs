@@ -10,7 +10,8 @@ public class TournamentService : ITournamentService
     {
         var tournament = Tournaments.FirstOrDefault(t => t.Tournament.TournamentId == tournamentId);
 
-        tournament ??= new TournamentDecorator(tournamentId);
+        if (tournament == null)
+            throw new Exception($"Tournament with id {tournamentId} not found.");
 
         return tournament;
     }
@@ -28,11 +29,11 @@ public class TournamentService : ITournamentService
         }
     }
 
-    public void RemoveFinished() => Tournaments.ToList().RemoveAll(t => t.IsFinished());
+    public void RemoveFinished() => Tournaments.RemoveAll(t => t.IsFinished());
 
-    public bool ShouldMonitor() => ActiveTournaments() && AnyMonitoredPlayers();
+    public bool ShouldMonitor() => AnyActiveTournaments() && AnyMonitoredPlayers();
 
-    public bool ActiveTournaments()
+    public bool AnyActiveTournaments()
     {
         var x = Tournaments.All(t => t.Tournament != null && t.IsFinished()) == false;
         return x;
@@ -49,5 +50,5 @@ public class TournamentService : ITournamentService
         return x;
     }
 
-    public void CancelMonitoredPlayers() => Tournaments.ToList().ForEach(t => t.MonitoredPlayers = []);
+    public void CancelMonitoredPlayers() => Tournaments.ForEach(t => t.MonitoredPlayers = []);
 }
