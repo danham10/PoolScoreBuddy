@@ -15,14 +15,15 @@
     <ContentPage.Behaviors>
         <mct:EventToCommandBehavior Command="{Binding AppearingCommand}" EventName="Appearing" />
     </ContentPage.Behaviors>
-    <StackLayout>
-    <ActivityIndicator Grid.Row="1"
-                           IsVisible="{Binding IsBusy}"
-                           IsRunning="True"/>
     <Grid
         RowDefinitions="0,*">
+        <StackLayout Grid.Row="1">
+            <ActivityIndicator 
+                       IsVisible="{Binding IsBusy}"
+                       IsRunning="True"/>
+        </StackLayout>
         <CollectionView 
-                Grid.Row="1"
+                Grid.Row="2"
                 x:Name="collectionView" 
                 ItemsSource="{Binding Players}">
             <CollectionView.ItemTemplate>
@@ -73,5 +74,4 @@
             </CollectionView.EmptyView>
         </CollectionView>
     </Grid>
-    </StackLayout>
 </ContentPage>
