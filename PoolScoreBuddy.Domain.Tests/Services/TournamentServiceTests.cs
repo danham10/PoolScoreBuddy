@@ -164,6 +164,7 @@ namespace PoolScoreBuddy.Domain.Tests.Services
         {
             // Arrange
             var activeTournament = new Mock<ITournamentDecorator>();
+            activeTournament.Setup(t => t.Tournament).Returns(new Tournament());
             activeTournament.Setup(t => t.IsFinished()).Returns(true);
 
             _tournamentService.AddIfMissing(activeTournament.Object);
