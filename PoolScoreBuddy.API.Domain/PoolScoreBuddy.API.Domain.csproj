@@ -14,4 +14,8 @@
     <ProjectReference Include="..\PoolScoreBuddy.Domain\PoolScoreBuddy.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="PoolScoreBuddy.API.Domain.Tests" />
+  </ItemGroup>
+  
 </Project>

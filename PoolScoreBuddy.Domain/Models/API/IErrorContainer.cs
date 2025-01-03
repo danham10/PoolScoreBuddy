@@ -1,7 +1,6 @@
-﻿namespace PoolScoreBuddy.Domain.Models.API
+﻿namespace PoolScoreBuddy.Domain.Models.API;
+
+internal interface IErrorContainer
 {
-    internal interface IErrorContainer
-    {
-        public string? Error { get; set; }
-    }
+    public string? Error { get; set; }
 }

@@ -62,7 +62,7 @@ public class ScoreClient(IScoreAPIClient scoreAPIClient, IMemoryCache cache, IOp
     }
 
 
-    private static bool ShouldRemoveMatch(Match m, int[]? playerIds, int[]? notifiedMatchIds)
+    internal static bool ShouldRemoveMatch(Match m, int[]? playerIds, int[]? notifiedMatchIds)
     {
         bool monitoredMatches = playerIds != null && (playerIds.Contains(m.PlayerA.PlayerId) || playerIds.Contains(m.PlayerB.PlayerId));
         bool alreadyNotified = notifiedMatchIds != null && notifiedMatchIds.Contains(m.MatchId);

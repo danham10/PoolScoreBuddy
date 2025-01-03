@@ -2,12 +2,6 @@
 
 namespace PoolScoreBuddy.Domain.Models.API;
 
-public enum MatchStatusCode
-{
-    Active = 1,
-    Finished = 2
-}
-
 public class Match
 {
     public int MatchId { get; set; }
@@ -31,6 +25,7 @@ public class Match
 
         try
         {
+            var table = JsonSerializer.Serialize(Table, options);
             return JsonSerializer.Deserialize<Table>(Table.ToString() ?? "{}", options)!;
         }
         catch (Exception)
@@ -38,4 +33,9 @@ public class Match
             return new Table();
         }
     }
+}
+public enum MatchStatusCode
+{
+    Active = 1,
+    Finished = 2
 }

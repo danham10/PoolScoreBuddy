@@ -1,11 +1,10 @@
-﻿namespace PoolScoreBuddy.Domain.Models.API
+﻿namespace PoolScoreBuddy.Domain.Models.API;
+
+public class Players : List<Player>, IErrorContainer
 {
-    public class Players : List<Player>, IErrorContainer
-    {
-        public Players() : base() { }
+    public Players() : base() { }
 
-        public Players(IEnumerable<Player> players) : base(players) { }
+    public Players(IEnumerable<Player> players) : base(players) { }
 
-        public string? Error { get; set; }
-    }
+    public string? Error { get; set; }
 }
