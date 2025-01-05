@@ -11,7 +11,6 @@ public class CueScoreAPIClient(IHttpClientFactory httpClientFactory, IResilientC
     public async Task<Tournament> GetTournament(TournamentDto dto)
     {
         var httpClient = httpClientFactory.CreateClient(Constants.HttpClientName);
-        //var resilientClientWrapper = new resilientClientWrapper(httpClient, dto.BaseAddresses, dto.FallbackAddress);
 
         string? playerQueryValue = GetPlayerQueryValue(dto.PlayerIds);
 

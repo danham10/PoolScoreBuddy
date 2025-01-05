@@ -1,5 +1,5 @@
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Caching.Memory;
 using Moq;
 using PoolScoreBuddy.Domain.Models.API;
 using PoolScoreBuddy.Domain.Services;
@@ -15,19 +15,22 @@ namespace PoolScoreBuddy.API.Domain.Tests.Services
     public class ScoreClientTests
     {
         private readonly Mock<IScoreAPIClient> _mockScoreAPIClient;
-        private readonly Mock<IMemoryCache> _mockCache;
-        private readonly Mock<IOptions<Settings>> _mockOptions;
+        private readonly Mock<Microsoft.Extensions.Caching.Memory.IMemoryCache> _mockCache;
+        private readonly Mock<ISettings> _mockSettings;
         private readonly ScoreClient _scoreClient;
 
         public ScoreClientTests()
         {
             _mockScoreAPIClient = new Mock<IScoreAPIClient>();
-            _mockCache = new Mock<IMemoryCache>();
-            _mockOptions = new Mock<IOptions<Settings>>();
-            _mockOptions.Setup(o => o.Value).Returns(new Settings { CueScoreBaseUrl = "https://api.cuescore.com", APIPingIntervalSeconds = 60 });
+            _mockCache = new Mock<Microsoft.Extensions.Caching.Memory.IMemoryCache>();
+            _mockSettings = new Mock<ISettings>();
+            _mockSettings.Setup(o => o.GetSetting<string>("CueScoreBaseUrl")).Returns("https://api.cuescore.com");
+            _mockSettings.Setup(o => o.GetSetting<int>("APIPingIntervalSeconds")).Returns(60);
 
-            _scoreClient = new ScoreClient(_mockScoreAPIClient.Object, _mockCache.Object, _mockOptions.Object);
+            _scoreClient = new ScoreClient(_mockScoreAPIClient.Object, _mockCache.Object, _mockSettings.Object);
         }
+
+        delegate void OutDelegate<TIn, TOut>(TIn input, out TOut output);
 
         [Fact]
         public async Task GetTournament_CacheMiss_FetchesFromAPI()
@@ -37,7 +40,15 @@ namespace PoolScoreBuddy.API.Domain.Tests.Services
             var tournament = new Tournament { TournamentId = tournamentId };
             var cacheKey = $"t:{tournamentId}";
 
-            _mockCache.Setup(c => c.TryGetValue(cacheKey, out It.Ref<Tournament?>.IsAny)).Returns(false);
+            object dummy;
+            _mockCache
+                .Setup(c => c.TryGetValue(cacheKey, out dummy!))
+                .Returns(false);
+
+            _mockCache
+                .Setup(c => c.CreateEntry(It.IsAny<object>()))
+                .Returns(Mock.Of<ICacheEntry>);
+
             _mockScoreAPIClient.Setup(api => api.GetTournament(It.IsAny<TournamentDto>())).ReturnsAsync(tournament);
 
             // Act
@@ -46,7 +57,7 @@ namespace PoolScoreBuddy.API.Domain.Tests.Services
             // Assert
             Assert.Equal(tournamentId, result.TournamentId);
             _mockScoreAPIClient.Verify(api => api.GetTournament(It.IsAny<TournamentDto>()), Times.Once);
-            _mockCache.Verify(c => c.Set(cacheKey, tournament, It.IsAny<MemoryCacheEntryOptions>()), Times.Once);
+            _mockCache.Verify(c => c.CreateEntry(cacheKey), Times.Once);
         }
 
         [Fact]
@@ -57,7 +68,10 @@ namespace PoolScoreBuddy.API.Domain.Tests.Services
             var tournament = new Tournament { TournamentId = tournamentId };
             var cacheKey = $"t:{tournamentId}";
 
-            _mockCache.Setup(c => c.TryGetValue(cacheKey, out tournament)).Returns(true);
+            object dummy = tournament;
+            _mockCache
+                .Setup(c => c.TryGetValue(cacheKey, out dummy))
+                .Returns(true);
 
             // Act
             var result = await _scoreClient.GetTournament(tournamentId, null, null);
@@ -75,7 +89,15 @@ namespace PoolScoreBuddy.API.Domain.Tests.Services
             var players = new Players { new Player { PlayerId = 1, Name = "Player 1" } };
             var cacheKey = $"p:{tournamentId}";
 
-            _mockCache.Setup(c => c.TryGetValue(cacheKey, out It.Ref<Players?>.IsAny)).Returns(false);
+            object dummy;
+            _mockCache
+                .Setup(c => c.TryGetValue(cacheKey, out dummy!))
+                .Returns(false);
+
+            _mockCache
+                .Setup(c => c.CreateEntry(It.IsAny<object>()))
+                .Returns(Mock.Of<ICacheEntry>);
+
             _mockScoreAPIClient.Setup(api => api.GetPlayers(It.IsAny<PlayersDto>())).ReturnsAsync(players);
 
             // Act
@@ -85,7 +107,7 @@ namespace PoolScoreBuddy.API.Domain.Tests.Services
             Assert.Single(result);
             Assert.Equal(1, result.First().PlayerId);
             _mockScoreAPIClient.Verify(api => api.GetPlayers(It.IsAny<PlayersDto>()), Times.Once);
-            _mockCache.Verify(c => c.Set(cacheKey, players, It.IsAny<MemoryCacheEntryOptions>()), Times.Once);
+            _mockCache.Verify(c => c.CreateEntry(cacheKey), Times.Once);
         }
 
         [Fact]
@@ -96,7 +118,10 @@ namespace PoolScoreBuddy.API.Domain.Tests.Services
             var players = new Players { new Player { PlayerId = 1, Name = "Player 1" } };
             var cacheKey = $"p:{tournamentId}";
 
-            _mockCache.Setup(c => c.TryGetValue(cacheKey, out players)).Returns(true);
+            object dummy = players;
+            _mockCache
+                .Setup(c => c.TryGetValue(cacheKey, out dummy))
+                .Returns(true);
 
             // Act
             var result = await _scoreClient.GetPlayers(tournamentId);

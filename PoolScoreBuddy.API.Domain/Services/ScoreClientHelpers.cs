@@ -1,5 +1,6 @@
-﻿using PoolScoreBuddy.API.Domain.Services;
-using System.Text.Json;
+﻿using System.Text.Json;
+
+namespace PoolScoreBuddy.API.Domain.Services;
 
 public static class ScoreClientHelpers
 {

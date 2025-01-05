@@ -8,7 +8,7 @@ public static class TournamentEndpoints
     {
         var users = routes.MapGroup("/api/v1/tournament");
 
-        users.MapGet("/", async (int id, string? participants, string? playerIds, int[]? calledMatchIds, IScoreClient cacheClient) =>
+        users.MapGet("/", async (int id, string? participants, string? playerIds, int[]? calledMatchIds, IScoreClient cacheClient) => //TODO implement calledMatchIds
         {
 
             return ScoreClientHelpers.GetService(participants) switch

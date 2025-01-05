@@ -4,15 +4,13 @@ using PoolScoreBuddy.API.Endpoints;
 using PoolScoreBuddy.API.Domain.Services;
 using PoolScoreBuddy.Domain.Services;
 using System.Text;
-using PoolScoreBuddy.API.Domain;
+using PoolScoreBuddy.API.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.Configure<Settings>(
-    builder.Configuration.GetSection("Settings"));
 
-var settings = builder.Configuration.GetSection("Settings").Get<Settings>();
-var secretKey = Encoding.ASCII.GetBytes(settings!.JWTToken);
+var jWTTokenSetting = builder.Configuration["JWTToken"]!;
+var secretKey = Encoding.ASCII.GetBytes(jWTTokenSetting);
 
 builder.Services.AddAuthentication(config =>
 {
@@ -37,6 +35,7 @@ builder.Services.AddHttpClient();
 builder.Services.AddSingleton<IResilientClientWrapper, ResilientClientWrapper>();
 builder.Services.AddSingleton<IScoreAPIClient, CueScoreAPIClient>();
 builder.Services.AddSingleton<IScoreClient, ScoreClient>();
+builder.Services.AddSingleton<ISettings, AppSettings>();
 builder.Services.AddMemoryCache();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

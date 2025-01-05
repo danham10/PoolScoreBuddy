@@ -24,6 +24,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PoolScoreBuddy.Domain.Tests
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PoolScoreBuddy.API.Domain.Tests", "PoolScoreBuddy.API.Domain.Tests\PoolScoreBuddy.API.Domain.Tests.csproj", "{C3A2AC95-C498-4BEE-9DE4-2BF1F80CF293}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{F26B741E-7D35-4391-8B74-5465BC0D1E14}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -67,6 +69,11 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{571C9A63-8FB8-48FA-B88D-7B6C558FC8D4} = {F26B741E-7D35-4391-8B74-5465BC0D1E14}
+		{1BB689FD-06FB-4A4E-B7A5-C6F7202CC91D} = {F26B741E-7D35-4391-8B74-5465BC0D1E14}
+		{C3A2AC95-C498-4BEE-9DE4-2BF1F80CF293} = {F26B741E-7D35-4391-8B74-5465BC0D1E14}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {91D9338A-EDAB-46CD-B176-9C10BBC6AB12}

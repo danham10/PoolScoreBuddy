@@ -5,7 +5,7 @@ using PoolScoreBuddy.Domain.Services;
 
 namespace PoolScoreBuddy.API.Domain.Services;
 
-public class ScoreClient(IScoreAPIClient scoreAPIClient, IMemoryCache cache, IOptions<Settings> options) : IScoreClient
+public class ScoreClient(IScoreAPIClient scoreAPIClient, IMemoryCache cache, ISettings settings) : IScoreClient
 {
     const string tournamentCacheFormatter = "t:{0}";
     const string playersCacheFormatter = "p:{0}";
@@ -18,7 +18,7 @@ public class ScoreClient(IScoreAPIClient scoreAPIClient, IMemoryCache cache, IOp
         {
             TournamentDto dto = new()
             {
-                FallbackAddress = options.Value.CueScoreBaseUrl,
+                FallbackAddress = settings.GetSetting<string>("CueScoreBaseUrl"),
                 TournamentId = tournamentId,
                 PlayerIds = playerIds
             };
@@ -26,7 +26,7 @@ public class ScoreClient(IScoreAPIClient scoreAPIClient, IMemoryCache cache, IOp
             tournament = await scoreAPIClient.GetTournament(dto);
 
             var cacheEntryOptions = new MemoryCacheEntryOptions()
-                .SetAbsoluteExpiration(TimeSpan.FromSeconds(options.Value.APIPingIntervalSeconds));
+                .SetAbsoluteExpiration(TimeSpan.FromSeconds(settings.GetSetting<int>("APIPingIntervalSeconds")));
 
             cache.Set(cacheKey, tournament, cacheEntryOptions);
         }
@@ -46,14 +46,14 @@ public class ScoreClient(IScoreAPIClient scoreAPIClient, IMemoryCache cache, IOp
         {
             PlayersDto dto = new()
             {
-                FallbackAddress = options.Value.CueScoreBaseUrl,
+                FallbackAddress = settings.GetSetting<string>("CueScoreBaseUrl"),
                 TournamentId = tournamentId,
             };
 
             players = await scoreAPIClient.GetPlayers(dto);
 
             var cacheEntryOptions = new MemoryCacheEntryOptions()
-                .SetSlidingExpiration(TimeSpan.FromSeconds(options.Value.APIPingIntervalSeconds));
+                .SetAbsoluteExpiration(TimeSpan.FromSeconds(settings.GetSetting<int>("APIPingIntervalSeconds")));
 
             cache.Set(cacheKey, players, cacheEntryOptions);
         }

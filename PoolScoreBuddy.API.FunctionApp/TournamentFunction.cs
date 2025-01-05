@@ -6,18 +6,12 @@ using PoolScoreBuddy.API.Domain.Services;
 
 namespace PoolScoreBuddy.API.FunctionApp;
 
-public class TournamentFunction
+public class TournamentFunction(ILogger<TournamentFunction> logger, IScoreClient cacheClient)
 {
-    private readonly ILogger<TournamentFunction> _logger;
-    private readonly IScoreClient _cacheClient;
+    private readonly ILogger<TournamentFunction> _logger = logger;
+    private readonly IScoreClient _cacheClient = cacheClient;
 
-    public TournamentFunction(ILogger<TournamentFunction> logger, IScoreClient cacheClient)
-    {
-        _logger = logger;
-        _cacheClient = cacheClient;
-    }
-
-    [Function("TournamentFunction")]
+    [Function(nameof(TournamentFunction))]
     public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = "v1/tournament")] HttpRequest req)
     {
         int tournamentId = 0;
@@ -46,7 +40,7 @@ public class TournamentFunction
         }
         catch (Exception ex)
         {
-            _logger.LogError($"Error processing tournament {ex.ToString()}", [tournamentId, participants, playerIds]);
+            _logger.LogError($"Error processing tournament {ex}", [tournamentId, participants, playerIds]);
             return new StatusCodeResult(500);
         }
     }
