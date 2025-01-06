@@ -1,14 +1,8 @@
 ﻿using Moq;
-using PoolScoreBuddy.Domain.Models;
 using PoolScoreBuddy.Domain.Models.API;
 using PoolScoreBuddy.Domain.Services;
-using System;
-using System.Collections.Generic;
 using System.Net;
-using System.Net.Http;
 using System.Text.Json;
-using System.Threading.Tasks;
-using Xunit;
 
 namespace PoolScoreBuddy.Domain.Tests.Services;
 

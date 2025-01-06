@@ -1,9 +1,6 @@
 ﻿using Moq;
-using PoolScoreBuddy.Domain.Models;
 using PoolScoreBuddy.Domain.Models.API;
 using PoolScoreBuddy.Domain.Services;
-using System.Collections.Generic;
-using Xunit;
 
 namespace PoolScoreBuddy.Domain.Tests.Services
 {

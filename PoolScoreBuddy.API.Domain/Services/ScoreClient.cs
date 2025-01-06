@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Options;
 using PoolScoreBuddy.Domain.Models.API;
 using PoolScoreBuddy.Domain.Services;
 

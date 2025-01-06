@@ -1,5 +1,4 @@
 ﻿using System.Text.Json;
-using PoolScoreBuddy.Domain.Models;
 using PoolScoreBuddy.Domain.Models.API;
 
 namespace PoolScoreBuddy.Domain.Services;

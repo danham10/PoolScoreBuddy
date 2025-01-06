@@ -1,13 +1,8 @@
-using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Caching.Memory;
 using Moq;
 using PoolScoreBuddy.Domain.Models.API;
 using PoolScoreBuddy.Domain.Services;
 using PoolScoreBuddy.API.Domain.Services;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Xunit;
 using Match = PoolScoreBuddy.Domain.Models.API.Match;
 
 namespace PoolScoreBuddy.API.Domain.Tests.Services
@@ -15,22 +10,20 @@ namespace PoolScoreBuddy.API.Domain.Tests.Services
     public class ScoreClientTests
     {
         private readonly Mock<IScoreAPIClient> _mockScoreAPIClient;
-        private readonly Mock<Microsoft.Extensions.Caching.Memory.IMemoryCache> _mockCache;
+        private readonly Mock<IMemoryCache> _mockCache;
         private readonly Mock<ISettings> _mockSettings;
         private readonly ScoreClient _scoreClient;
 
         public ScoreClientTests()
         {
             _mockScoreAPIClient = new Mock<IScoreAPIClient>();
-            _mockCache = new Mock<Microsoft.Extensions.Caching.Memory.IMemoryCache>();
+            _mockCache = new Mock<IMemoryCache>();
             _mockSettings = new Mock<ISettings>();
             _mockSettings.Setup(o => o.GetSetting<string>("CueScoreBaseUrl")).Returns("https://api.cuescore.com");
             _mockSettings.Setup(o => o.GetSetting<int>("APIPingIntervalSeconds")).Returns(60);
 
             _scoreClient = new ScoreClient(_mockScoreAPIClient.Object, _mockCache.Object, _mockSettings.Object);
         }
-
-        delegate void OutDelegate<TIn, TOut>(TIn input, out TOut output);
 
         [Fact]
         public async Task GetTournament_CacheMiss_FetchesFromAPI()

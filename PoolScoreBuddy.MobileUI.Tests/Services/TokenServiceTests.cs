@@ -1,9 +1,7 @@
 using Microsoft.IdentityModel.Tokens;
 using PoolScoreBuddy.Services;
-using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
-using Xunit;
 
 namespace PoolScoreBuddy.MobileUI.Test.Services
 {

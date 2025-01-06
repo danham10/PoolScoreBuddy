@@ -1,5 +1,4 @@
 using Moq;
-using PoolScoreBuddy.Domain.Models;
 using PoolScoreBuddy.Domain.Models.API;
 using PoolScoreBuddy.Domain.Services;
 using PoolScoreBuddy.ViewModels;

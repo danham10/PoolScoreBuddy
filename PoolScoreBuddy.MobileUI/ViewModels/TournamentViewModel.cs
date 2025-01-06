@@ -1,12 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
-using PoolScoreBuddy.Domain.Models;
 using PoolScoreBuddy.Domain.Models.API;
 using PoolScoreBuddy.Domain.Services;
 using PoolScoreBuddy.Resources;
 using System.Text.Json;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace PoolScoreBuddy.ViewModels;
 public partial class TournamentViewModel(IScoreAPIClient scoreAPIClient,
