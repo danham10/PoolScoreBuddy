@@ -62,7 +62,7 @@ public class PlayerNotificationServiceTests
         tournament.Setup(t => t.ResultsPlayerMatches(It.IsAny<int>())).Returns(new List<Domain.Models.API.Match>());
         
         _mockTournamentService.Setup(s => s.Tournaments).Returns(new List<ITournamentDecorator> { tournament.Object });
-        _mockCueScoreService.Setup(x => x.GetTournament(It.IsAny<TournamentDto>())).ReturnsAsync(new Tournament { TournamentId = 123, Matches = new List<Domain.Models.API.Match> { new Domain.Models.API.Match { MatchId = 1, PlayerA = new Player { Name = "Player A" }, PlayerB = new Player { Name = "Player B" }, StartTime = DateTime.Now, StopTime = DateTime.Now, ScoreA = 1, ScoreB = 2 } } });
+        _mockCueScoreService.Setup(x => x.GetTournament(It.IsAny<ApiDto>())).ReturnsAsync(new Tournament { TournamentId = 123, Matches = new List<Domain.Models.API.Match> { new Domain.Models.API.Match { MatchId = 1, PlayerA = new Player { Name = "Player A" }, PlayerB = new Player { Name = "Player B" }, StartTime = DateTime.Now, StopTime = DateTime.Now, ScoreA = 1, ScoreB = 2 } } });
         _mockSettingsResolver.Setup(x => x.GetSettings()).Returns(new Settings());
 
         // Act
@@ -102,7 +102,7 @@ public class PlayerNotificationServiceTests
         tournament.Setup(t => t.ResultsPlayerMatches(It.IsAny<int>())).Returns(new List<Domain.Models.API.Match> { match });
 
         _mockTournamentService.Setup(s => s.Tournaments).Returns(new List<ITournamentDecorator> { tournament.Object });
-        _mockCueScoreService.Setup(x => x.GetTournament(It.IsAny<TournamentDto>())).ReturnsAsync(new Tournament { TournamentId = 123, Matches = new List<Domain.Models.API.Match> { new Domain.Models.API.Match { MatchId = 1, PlayerA = new Player { Name = "Player A" }, PlayerB = new Player { Name = "Player B" }, StartTime = DateTime.Now, StopTime = DateTime.Now, ScoreA = 1, ScoreB = 2 } } });
+        _mockCueScoreService.Setup(x => x.GetTournament(It.IsAny<ApiDto>())).ReturnsAsync(new Tournament { TournamentId = 123, Matches = new List<Domain.Models.API.Match> { new Domain.Models.API.Match { MatchId = 1, PlayerA = new Player { Name = "Player A" }, PlayerB = new Player { Name = "Player B" }, StartTime = DateTime.Now, StopTime = DateTime.Now, ScoreA = 1, ScoreB = 2 } } });
         _mockSettingsResolver.Setup(x => x.GetSettings()).Returns(new Settings());
 
         // Act

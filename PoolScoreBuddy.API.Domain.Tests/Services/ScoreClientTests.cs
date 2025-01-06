@@ -42,14 +42,14 @@ namespace PoolScoreBuddy.API.Domain.Tests.Services
                 .Setup(c => c.CreateEntry(It.IsAny<object>()))
                 .Returns(Mock.Of<ICacheEntry>);
 
-            _mockScoreAPIClient.Setup(api => api.GetTournament(It.IsAny<TournamentDto>())).ReturnsAsync(tournament);
+            _mockScoreAPIClient.Setup(api => api.GetTournament(It.IsAny<ApiDto>())).ReturnsAsync(tournament);
 
             // Act
             var result = await _scoreClient.GetTournament(tournamentId, null, null);
 
             // Assert
             Assert.Equal(tournamentId, result.TournamentId);
-            _mockScoreAPIClient.Verify(api => api.GetTournament(It.IsAny<TournamentDto>()), Times.Once);
+            _mockScoreAPIClient.Verify(api => api.GetTournament(It.IsAny<ApiDto>()), Times.Once);
             _mockCache.Verify(c => c.CreateEntry(cacheKey), Times.Once);
         }
 
@@ -63,7 +63,7 @@ namespace PoolScoreBuddy.API.Domain.Tests.Services
 
             object dummy = tournament;
             _mockCache
-                .Setup(c => c.TryGetValue(cacheKey, out dummy))
+                .Setup(c => c.TryGetValue(cacheKey, out dummy!))
                 .Returns(true);
 
             // Act
@@ -71,7 +71,7 @@ namespace PoolScoreBuddy.API.Domain.Tests.Services
 
             // Assert
             Assert.Equal(tournamentId, result.TournamentId);
-            _mockScoreAPIClient.Verify(api => api.GetTournament(It.IsAny<TournamentDto>()), Times.Never);
+            _mockScoreAPIClient.Verify(api => api.GetTournament(It.IsAny<ApiDto>()), Times.Never);
         }
 
         [Fact]
@@ -91,7 +91,7 @@ namespace PoolScoreBuddy.API.Domain.Tests.Services
                 .Setup(c => c.CreateEntry(It.IsAny<object>()))
                 .Returns(Mock.Of<ICacheEntry>);
 
-            _mockScoreAPIClient.Setup(api => api.GetPlayers(It.IsAny<PlayersDto>())).ReturnsAsync(players);
+            _mockScoreAPIClient.Setup(api => api.GetPlayers(It.IsAny<ApiDto>())).ReturnsAsync(players);
 
             // Act
             var result = await _scoreClient.GetPlayers(tournamentId);
@@ -99,7 +99,7 @@ namespace PoolScoreBuddy.API.Domain.Tests.Services
             // Assert
             Assert.Single(result);
             Assert.Equal(1, result.First().PlayerId);
-            _mockScoreAPIClient.Verify(api => api.GetPlayers(It.IsAny<PlayersDto>()), Times.Once);
+            _mockScoreAPIClient.Verify(api => api.GetPlayers(It.IsAny<ApiDto>()), Times.Once);
             _mockCache.Verify(c => c.CreateEntry(cacheKey), Times.Once);
         }
 
@@ -113,7 +113,7 @@ namespace PoolScoreBuddy.API.Domain.Tests.Services
 
             object dummy = players;
             _mockCache
-                .Setup(c => c.TryGetValue(cacheKey, out dummy))
+                .Setup(c => c.TryGetValue(cacheKey, out dummy!))
                 .Returns(true);
 
             // Act
@@ -122,7 +122,7 @@ namespace PoolScoreBuddy.API.Domain.Tests.Services
             // Assert
             Assert.Single(result);
             Assert.Equal(1, result.First().PlayerId);
-            _mockScoreAPIClient.Verify(api => api.GetPlayers(It.IsAny<PlayersDto>()), Times.Never);
+            _mockScoreAPIClient.Verify(api => api.GetPlayers(It.IsAny<ApiDto>()), Times.Never);
         }
 
         [Fact]

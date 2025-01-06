@@ -1,5 +1,6 @@
 ﻿
 using Polly;
+using PoolScoreBuddy.Domain.Models.API;
 
 namespace PoolScoreBuddy.Domain.Services;
 
@@ -7,12 +8,7 @@ public class ResilientClientWrapper() : IResilientClientWrapper
 {
     private readonly static IList<string> _knownBadEndpoints = [];
 
-    public async Task<HttpResponseMessage?> FetchResponse(HttpClient client, 
-        IEnumerable<string> candidateEndpoints, 
-        string fallbackEndpoint, 
-        string relativeUrl, 
-        int apiAffinityId,
-        string functionKey)
+    public async Task<HttpResponseMessage?> FetchResponse(HttpClient client, ApiDto dto)
     {
         var retryPolicyForNotSuccessAnd401 = Policy
             .HandleResult<HttpResponseMessage?>(response => response != null && !response.IsSuccessStatusCode)
@@ -22,13 +18,13 @@ public class ResilientClientWrapper() : IResilientClientWrapper
         // Attempt a proxy API
         await retryPolicyForNotSuccessAnd401.ExecuteAsync(async () =>
         {
-            string? proxyEndpoint = APIBalancer.SelectEndpoint(candidateEndpoints, _knownBadEndpoints, apiAffinityId);
+            string? proxyEndpoint = APIBalancer.SelectEndpoint(dto.BaseAddresses, _knownBadEndpoints, dto.TournamentId);
 
-            return (proxyEndpoint != null) ? await PerformRequest(client, proxyEndpoint, relativeUrl) : null;
+            return (proxyEndpoint != null) ? await PerformRequest(client, proxyEndpoint, dto.Uri) : null;
         });
 
         // Fallback to root API (cuescore)
-        return await PerformRequest(client, fallbackEndpoint, relativeUrl);
+        return await PerformRequest(client, dto.FallbackAddress, dto.Uri);
     }
 
     private async Task<HttpResponseMessage?> PerformRequest(HttpClient client, string baseUrl, string uri, string? functionKey = null)

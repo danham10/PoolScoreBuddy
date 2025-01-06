@@ -76,7 +76,7 @@ public class PlayerViewModelTests
 
         _mockTournamentService.Setup(s => s.GetTournamentById(123)).Returns(tournament.Object);
         _mockEnsureConnectivity.Setup(x => x.IsConnectedWithAlert()).ReturnsAsync(true);
-        _mockCueScoreService.Setup(x => x.GetPlayers(It.IsAny<PlayersDto>())).ReturnsAsync(new Players { new Player { PlayerId = 1, Name = "Player 1" } });
+        _mockCueScoreService.Setup(x => x.GetPlayers(It.IsAny<ApiDto>())).ReturnsAsync(new Players { new Player { PlayerId = 1, Name = "Player 1" } });
         _mockSettingsResolver.Setup(x => x.GetSettings()).Returns(new Settings());
 
         _viewModel.ApplyQueryAttributes(new Dictionary<string, object> { { "TournamentId", 123 } });
@@ -98,7 +98,7 @@ public class PlayerViewModelTests
 
         _mockTournamentService.Setup(s => s.GetTournamentById(123)).Returns(tournament.Object);
         _mockEnsureConnectivity.Setup(x => x.IsConnectedWithAlert()).ReturnsAsync(true);
-        _mockCueScoreService.Setup(x => x.GetPlayers(It.IsAny<PlayersDto>())).ThrowsAsync(new HttpRequestException());
+        _mockCueScoreService.Setup(x => x.GetPlayers(It.IsAny<ApiDto>())).ThrowsAsync(new HttpRequestException());
 
         _viewModel.ApplyQueryAttributes(new Dictionary<string, object> { { "TournamentId", 123 } });
 
@@ -118,7 +118,7 @@ public class PlayerViewModelTests
 
         _mockTournamentService.Setup(s => s.GetTournamentById(123)).Returns(tournament.Object);
         _mockEnsureConnectivity.Setup(x => x.IsConnectedWithAlert()).ReturnsAsync(true);
-        _mockCueScoreService.Setup(x => x.GetPlayers(It.IsAny<PlayersDto>())).ThrowsAsync(new JsonException());
+        _mockCueScoreService.Setup(x => x.GetPlayers(It.IsAny<ApiDto>())).ThrowsAsync(new JsonException());
 
         _viewModel.ApplyQueryAttributes(new Dictionary<string, object> { { "TournamentId", 123 } });
 
@@ -139,7 +139,7 @@ public class PlayerViewModelTests
 
         _mockTournamentService.Setup(s => s.GetTournamentById(123)).Returns(tournament.Object);
         _mockEnsureConnectivity.Setup(x => x.IsConnectedWithAlert()).ReturnsAsync(true);
-        _mockCueScoreService.Setup(x => x.GetPlayers(It.IsAny<PlayersDto>())).ReturnsAsync(new Players { new Player { PlayerId = 1, Name = "Player 1" } });
+        _mockCueScoreService.Setup(x => x.GetPlayers(It.IsAny<ApiDto>())).ReturnsAsync(new Players { new Player { PlayerId = 1, Name = "Player 1" } });
         _mockSettingsResolver.Setup(x => x.GetSettings()).Returns(new Settings());
 
         _viewModel.ApplyQueryAttributes(new Dictionary<string, object> { { "TournamentId", 123 } });

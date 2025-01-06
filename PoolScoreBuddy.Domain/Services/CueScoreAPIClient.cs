@@ -7,15 +7,15 @@ public class CueScoreAPIClient(IHttpClientFactory httpClientFactory, IResilientC
 {
     private readonly static JsonSerializerOptions _serializerOptions = new() { PropertyNameCaseInsensitive = true };
 
-    public async Task<Tournament> GetTournament(TournamentDto dto)
+    public async Task<Tournament> GetTournament(ApiDto dto)
     {
         var httpClient = httpClientFactory.CreateClient(Constants.HttpClientName);
 
         string? playerQueryValue = GetPlayerQueryValue(dto.PlayerIds);
 
-        var uri = $"tournament?id={dto.TournamentId}{playerQueryValue}";
+        dto.Uri = $"tournament?id={dto.TournamentId}{playerQueryValue}";
 
-        var response = await resilientClientWrapper.FetchResponse(httpClient, dto.BaseAddresses, dto.FallbackAddress, uri, dto.TournamentId, dto.FunctionKey);
+        var response = await resilientClientWrapper.FetchResponse(httpClient, dto);
 
         response!.EnsureSuccessStatusCode();
 
@@ -24,12 +24,12 @@ public class CueScoreAPIClient(IHttpClientFactory httpClientFactory, IResilientC
     }
 
 
-    public async Task<Players> GetPlayers(PlayersDto dto)
+    public async Task<Players> GetPlayers(ApiDto dto)
     {
         var httpClient = httpClientFactory.CreateClient(Constants.HttpClientName);
 
-        var uri = $"tournament/?id={dto.TournamentId}&participants=Participants+list";
-        var response = await resilientClientWrapper.FetchResponse(httpClient, dto.BaseAddresses, dto.FallbackAddress, uri, dto.TournamentId, dto.FunctionKey)  ;
+        dto.Uri = $"tournament/?id={dto.TournamentId}&participants=Participants+list";
+        var response = await resilientClientWrapper.FetchResponse(httpClient, dto)  ;
 
         response!.EnsureSuccessStatusCode();
 

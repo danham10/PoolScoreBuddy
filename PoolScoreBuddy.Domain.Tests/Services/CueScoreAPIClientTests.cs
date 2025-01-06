@@ -23,7 +23,7 @@ public class CueScoreAPIClientTests
     public async Task GetTournament_ValidResponse_ReturnsTournament()
     {
         // Arrange
-        var dto = new TournamentDto
+        var dto = new ApiDto
         {
             TournamentId = 123,
             BaseAddresses = new List<string> { "https://api.cuescore.com" },
@@ -38,7 +38,7 @@ public class CueScoreAPIClientTests
             Content = new StringContent(JsonSerializer.Serialize(new Tournament { TournamentId = 123 }))
         };
 
-        _mockResilientClientWrapper.Setup(wrapper => wrapper.FetchResponse(It.IsAny<HttpClient>(), It.IsAny<IEnumerable<string>>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<string>()))
+        _mockResilientClientWrapper.Setup(wrapper => wrapper.FetchResponse(It.IsAny<HttpClient>(), It.IsAny<ApiDto>()))
             .ReturnsAsync(responseMessage);
 
         // Act
@@ -53,7 +53,7 @@ public class CueScoreAPIClientTests
     public async Task GetTournament_InvalidResponse_ThrowsException()
     {
         // Arrange
-        var dto = new TournamentDto
+        var dto = new ApiDto
         {
             TournamentId = 123,
             BaseAddresses = new List<string> { "https://api.cuescore.com" },
@@ -65,7 +65,7 @@ public class CueScoreAPIClientTests
 
         var responseMessage = new HttpResponseMessage(HttpStatusCode.BadRequest);
 
-        _mockResilientClientWrapper.Setup(wrapper => wrapper.FetchResponse(It.IsAny<HttpClient>(), It.IsAny<IEnumerable<string>>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<string>()))
+        _mockResilientClientWrapper.Setup(wrapper => wrapper.FetchResponse(It.IsAny<HttpClient>(), It.IsAny<ApiDto>()))
             .ReturnsAsync(responseMessage);
 
         // Act & Assert
@@ -76,7 +76,7 @@ public class CueScoreAPIClientTests
     public async Task GetPlayers_ValidResponse_ReturnsPlayers()
     {
         // Arrange
-        var dto = new PlayersDto
+        var dto = new ApiDto
         {
             TournamentId = 123,
             BaseAddresses = new List<string> { "https://api.cuescore.com" },
@@ -91,7 +91,7 @@ public class CueScoreAPIClientTests
             Content = new StringContent(JsonSerializer.Serialize(new Players { new Player { PlayerId = 1, Name = "Player 1" } }))
         };
 
-        _mockResilientClientWrapper.Setup(wrapper => wrapper.FetchResponse(It.IsAny<HttpClient>(), It.IsAny<IEnumerable<string>>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<string>()))
+        _mockResilientClientWrapper.Setup(wrapper => wrapper.FetchResponse(It.IsAny<HttpClient>(), It.IsAny<ApiDto>()))
             .ReturnsAsync(responseMessage);
 
         // Act
@@ -107,7 +107,7 @@ public class CueScoreAPIClientTests
     public async Task GetPlayers_InvalidResponse_ThrowsException()
     {
         // Arrange
-        var dto = new PlayersDto
+        var dto = new ApiDto
         {
             TournamentId = 123,
             BaseAddresses = new List<string> { "https://api.cuescore.com" },
@@ -119,7 +119,7 @@ public class CueScoreAPIClientTests
 
         var responseMessage = new HttpResponseMessage(HttpStatusCode.BadRequest);
 
-        _mockResilientClientWrapper.Setup(wrapper => wrapper.FetchResponse(It.IsAny<HttpClient>(), It.IsAny<IEnumerable<string>>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<string>()))
+        _mockResilientClientWrapper.Setup(wrapper => wrapper.FetchResponse(It.IsAny<HttpClient>(), It.IsAny<ApiDto>()))
             .ReturnsAsync(responseMessage);
 
         // Act & Assert

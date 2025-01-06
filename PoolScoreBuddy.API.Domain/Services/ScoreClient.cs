@@ -15,7 +15,7 @@ public class ScoreClient(IScoreAPIClient scoreAPIClient, IMemoryCache cache, ISe
 
         if (!cache.TryGetValue(cacheKey, out Tournament? tournament))
         {
-            TournamentDto dto = new()
+            ApiDto dto = new()
             {
                 FallbackAddress = settings.GetSetting<string>("CueScoreBaseUrl"),
                 TournamentId = tournamentId,
@@ -43,7 +43,7 @@ public class ScoreClient(IScoreAPIClient scoreAPIClient, IMemoryCache cache, ISe
 
         if (!cache.TryGetValue(cacheKey, out Players? players))
         {
-            PlayersDto dto = new()
+            ApiDto dto = new()
             {
                 FallbackAddress = settings.GetSetting<string>("CueScoreBaseUrl"),
                 TournamentId = tournamentId,

@@ -26,7 +26,7 @@ public class PlayerNotificationService(ITournamentService tournamentService,
                 IEnumerable<int> monitoredPlayerIds = from player in tournament.MonitoredPlayers
                                            select player.PlayerId;
 
-                TournamentDto dto = new()
+                ApiDto dto = new()
                 {
                     FunctionKey = settings.FunctionKey,
                     BaseAddresses = settings.APIProxies,

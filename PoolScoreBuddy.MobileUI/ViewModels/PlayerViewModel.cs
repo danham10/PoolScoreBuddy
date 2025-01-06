@@ -47,7 +47,7 @@ public partial class PlayerViewModel(ITournamentService tournamentService,
         try
         {
             var settings = settingsResolver.GetSettings();
-            PlayersDto dto = new()
+            ApiDto dto = new()
             {
                 FallbackAddress = settings.CueScoreBaseUrl,
                 BaseAddresses = settings.APIProxies,

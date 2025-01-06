@@ -72,14 +72,14 @@ public class TournamentViewModelTests
         // Arrange
         _viewModel.TournamentId = "123";
         _mockEnsureConnectivity.Setup(x => x.IsConnectedWithAlert()).ReturnsAsync(true);
-        _mockScoreAPIClient.Setup(x => x.GetTournament(It.IsAny<TournamentDto>())).ReturnsAsync(new Tournament());
+        _mockScoreAPIClient.Setup(x => x.GetTournament(It.IsAny<ApiDto>())).ReturnsAsync(new Tournament());
         _mockSettingsResolver.Setup(x => x.GetSettings()).Returns(new Settings());
 
         // Act
         await _viewModel.TournamentLoad();
 
         // Assert
-        _mockScoreAPIClient.Verify(x => x.GetTournament(It.IsAny<TournamentDto>()), Times.Once);
+        _mockScoreAPIClient.Verify(x => x.GetTournament(It.IsAny<ApiDto>()), Times.Once);
     }
 
     [Fact]
@@ -93,7 +93,7 @@ public class TournamentViewModelTests
         await _viewModel.TournamentLoad();
 
         // Assert
-        _mockScoreAPIClient.Verify(x => x.GetTournament(It.IsAny<TournamentDto>()), Times.Never);
+        _mockScoreAPIClient.Verify(x => x.GetTournament(It.IsAny<ApiDto>()), Times.Never);
     }
 
     [Fact]
@@ -102,7 +102,7 @@ public class TournamentViewModelTests
         // Arrange
         _viewModel.TournamentId = "123";
         _mockEnsureConnectivity.Setup(x => x.IsConnectedWithAlert()).ReturnsAsync(true);
-        _mockScoreAPIClient.Setup(x => x.GetTournament(It.IsAny<TournamentDto>())).ThrowsAsync(new HttpRequestException());
+        _mockScoreAPIClient.Setup(x => x.GetTournament(It.IsAny<ApiDto>())).ThrowsAsync(new HttpRequestException());
 
         // Act
         await _viewModel.TournamentLoad();
@@ -117,7 +117,7 @@ public class TournamentViewModelTests
         // Arrange
         _viewModel.TournamentId = "123";
         _mockEnsureConnectivity.Setup(x => x.IsConnectedWithAlert()).ReturnsAsync(true);
-        _mockScoreAPIClient.Setup(x => x.GetTournament(It.IsAny<TournamentDto>())).ThrowsAsync(new JsonException());
+        _mockScoreAPIClient.Setup(x => x.GetTournament(It.IsAny<ApiDto>())).ThrowsAsync(new JsonException());
 
         // Act
         await _viewModel.TournamentLoad();
@@ -132,7 +132,7 @@ public class TournamentViewModelTests
         // Arrange
         _viewModel.TournamentId = "123";
         var tournament = new Tournament();
-        _mockScoreAPIClient.Setup(x => x.GetTournament(It.IsAny<TournamentDto>())).ReturnsAsync(tournament);
+        _mockScoreAPIClient.Setup(x => x.GetTournament(It.IsAny<ApiDto>())).ReturnsAsync(tournament);
         _mockSettingsResolver.Setup(x => x.GetSettings()).Returns(new Settings());
 
         // Act

@@ -1,6 +1,8 @@
-﻿namespace PoolScoreBuddy.Domain.Services;
+﻿using PoolScoreBuddy.Domain.Models.API;
+
+namespace PoolScoreBuddy.Domain.Services;
 
 public interface IResilientClientWrapper
 {
-    Task<HttpResponseMessage?> FetchResponse(HttpClient client, IEnumerable<string> candidateEndpoints, string fallbackEndpoint, string relativeUrl, int apiAffinityId, string functionKey);
+    Task<HttpResponseMessage?> FetchResponse(HttpClient client, ApiDto dto);
 }

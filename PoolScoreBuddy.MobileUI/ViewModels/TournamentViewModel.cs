@@ -107,7 +107,7 @@ public partial class TournamentViewModel(IScoreAPIClient scoreAPIClient,
     {
         var settings = settingsResolver.GetSettings();
 
-        TournamentDto dto = new()
+        ApiDto dto = new()
         {
             FunctionKey = settings.FunctionKey,
             BaseAddresses = settings.APIProxies,
