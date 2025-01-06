@@ -15,7 +15,7 @@ public class CueScoreAPIClient(IHttpClientFactory httpClientFactory, IResilientC
 
         var uri = $"tournament?id={dto.TournamentId}{playerQueryValue}";
 
-        var response = await resilientClientWrapper.FetchResponse(httpClient, dto.BaseAddresses, dto.FallbackAddress, uri, dto.TournamentId);
+        var response = await resilientClientWrapper.FetchResponse(httpClient, dto.BaseAddresses, dto.FallbackAddress, uri, dto.TournamentId, dto.FunctionKey);
 
         response!.EnsureSuccessStatusCode();
 
@@ -29,7 +29,7 @@ public class CueScoreAPIClient(IHttpClientFactory httpClientFactory, IResilientC
         var httpClient = httpClientFactory.CreateClient(Constants.HttpClientName);
 
         var uri = $"tournament/?id={dto.TournamentId}&participants=Participants+list";
-        var response = await resilientClientWrapper.FetchResponse(httpClient, dto.BaseAddresses, dto.FallbackAddress, uri, dto.TournamentId)  ;
+        var response = await resilientClientWrapper.FetchResponse(httpClient, dto.BaseAddresses, dto.FallbackAddress, uri, dto.TournamentId, dto.FunctionKey)  ;
 
         response!.EnsureSuccessStatusCode();
 

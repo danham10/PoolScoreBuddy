@@ -11,7 +11,7 @@ public class ScoreClient(IScoreAPIClient scoreAPIClient, IMemoryCache cache, ISe
 
     public async Task<Tournament> GetTournament(int tournamentId, int[]? playerIds, int[]? notifiedMatchIds)
     {
-        string cacheKey = string.Format(tournamentCacheFormatter, tournamentId);
+            string cacheKey = string.Format(tournamentCacheFormatter, tournamentId);
 
         if (!cache.TryGetValue(cacheKey, out Tournament? tournament))
         {

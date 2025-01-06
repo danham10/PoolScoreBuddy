@@ -7,7 +7,12 @@ public class ResilientClientWrapper() : IResilientClientWrapper
 {
     private readonly static IList<string> _knownBadEndpoints = [];
 
-    public async Task<HttpResponseMessage?> FetchResponse(HttpClient client, IEnumerable<string> candidateEndpoints, string fallbackEndpoint, string relativeUrl, int apiAffinityId)
+    public async Task<HttpResponseMessage?> FetchResponse(HttpClient client, 
+        IEnumerable<string> candidateEndpoints, 
+        string fallbackEndpoint, 
+        string relativeUrl, 
+        int apiAffinityId,
+        string functionKey)
     {
         var retryPolicyForNotSuccessAnd401 = Policy
             .HandleResult<HttpResponseMessage?>(response => response != null && !response.IsSuccessStatusCode)
@@ -26,7 +31,7 @@ public class ResilientClientWrapper() : IResilientClientWrapper
         return await PerformRequest(client, fallbackEndpoint, relativeUrl);
     }
 
-    private async Task<HttpResponseMessage?> PerformRequest(HttpClient client, string baseUrl, string uri)
+    private async Task<HttpResponseMessage?> PerformRequest(HttpClient client, string baseUrl, string uri, string? functionKey = null)
     { 
         const string cuescoreBaseUrl = "api.cuescore.com";
         const string playerIdsQueryKey = "&playerIds";
@@ -37,6 +42,11 @@ public class ResilientClientWrapper() : IResilientClientWrapper
         {
             // cuescore API does not support player Ids, we cannot filter these for a smaller payload
             uri = uri[..uri.LastIndexOf(playerIdsQueryKey)];
+        }
+
+        if (!string.IsNullOrEmpty(functionKey))
+        {
+            uri = uri + $"&code={functionKey}";
         }
 
         var response = await client.GetAsync($"{baseUrl}{uri}");

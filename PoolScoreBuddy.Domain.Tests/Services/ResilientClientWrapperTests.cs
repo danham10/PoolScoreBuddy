@@ -23,13 +23,14 @@ namespace PoolScoreBuddy.Domain.Tests.Services
             var fallbackEndpoint = "https://fallback.com";
             var relativeUrl = "/api/test";
             var apiAffinityId = 1;
+            var functionKey = "test";
 
             var successResponse = new HttpResponseMessage(HttpStatusCode.OK);
             _mockHttpClient.When("*").Respond(req => successResponse);
             var client = new HttpClient(_mockHttpClient);
 
             // Act
-            var response = await _resilientClientWrapper.FetchResponse(client, candidateEndpoints, fallbackEndpoint, relativeUrl, apiAffinityId);
+            var response = await _resilientClientWrapper.FetchResponse(client, candidateEndpoints, fallbackEndpoint, relativeUrl, apiAffinityId, functionKey);
 
             // Assert
             Assert.Equal(successResponse, response);
@@ -43,6 +44,7 @@ namespace PoolScoreBuddy.Domain.Tests.Services
             var fallbackEndpoint = "https://fallback.com";
             var relativeUrl = "/api/test";
             var apiAffinityId = 1;
+            var functionKey = "test";
 
             var failureResponse = new HttpResponseMessage(HttpStatusCode.BadRequest);
             var successResponse = new HttpResponseMessage(HttpStatusCode.OK);
@@ -54,7 +56,7 @@ namespace PoolScoreBuddy.Domain.Tests.Services
             var client = new HttpClient(_mockHttpClient);
 
             // Act
-            var response = await _resilientClientWrapper.FetchResponse(client, candidateEndpoints, fallbackEndpoint, relativeUrl, apiAffinityId);
+            var response = await _resilientClientWrapper.FetchResponse(client, candidateEndpoints, fallbackEndpoint, relativeUrl, apiAffinityId, functionKey);
 
             // Assert
             Assert.Equal(successResponse, response);
@@ -68,6 +70,7 @@ namespace PoolScoreBuddy.Domain.Tests.Services
             var fallbackEndpoint = "https://fallback.com";
             var relativeUrl = "/api/test";
             var apiAffinityId = 1;
+            var functionKey = "test";
 
             var failureResponse = new HttpResponseMessage(HttpStatusCode.InternalServerError);
 
@@ -79,7 +82,7 @@ namespace PoolScoreBuddy.Domain.Tests.Services
             var client = new HttpClient(_mockHttpClient);
 
             // Act
-            var response = await _resilientClientWrapper.FetchResponse(client, candidateEndpoints, fallbackEndpoint, relativeUrl, apiAffinityId);
+            var response = await _resilientClientWrapper.FetchResponse(client, candidateEndpoints, fallbackEndpoint, relativeUrl, apiAffinityId, functionKey);
 
             // Assert
             Assert.Equal(failureResponse, response);
@@ -92,6 +95,7 @@ namespace PoolScoreBuddy.Domain.Tests.Services
             var baseUrl = "https://api.cuescore.com";
             var uri = "/api/test?playerIds=1,2,3";
             var expectedUri = "/api/test";
+            var functionKey = "test";
 
             var successResponse = new HttpResponseMessage(HttpStatusCode.OK);
             _mockHttpClient.When($"{baseUrl}{expectedUri}")
@@ -100,7 +104,7 @@ namespace PoolScoreBuddy.Domain.Tests.Services
             var client = new HttpClient(_mockHttpClient);
 
             // Act
-            var response = await _resilientClientWrapper.FetchResponse(client, [baseUrl], baseUrl, uri, 1);
+            var response = await _resilientClientWrapper.FetchResponse(client, [baseUrl], baseUrl, uri, 1, functionKey);
 
             // Assert
             Assert.Equal(successResponse, response);

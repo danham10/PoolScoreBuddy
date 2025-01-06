@@ -28,6 +28,7 @@ public class PlayerNotificationService(ITournamentService tournamentService,
 
                 TournamentDto dto = new()
                 {
+                    FunctionKey = settings.FunctionKey,
                     BaseAddresses = settings.APIProxies,
                     FallbackAddress = settings.CueScoreBaseUrl,
                     TournamentId = tournament.Tournament.TournamentId,

@@ -38,7 +38,7 @@ public class CueScoreAPIClientTests
             Content = new StringContent(JsonSerializer.Serialize(new Tournament { TournamentId = 123 }))
         };
 
-        _mockResilientClientWrapper.Setup(wrapper => wrapper.FetchResponse(It.IsAny<HttpClient>(), It.IsAny<IEnumerable<string>>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>()))
+        _mockResilientClientWrapper.Setup(wrapper => wrapper.FetchResponse(It.IsAny<HttpClient>(), It.IsAny<IEnumerable<string>>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<string>()))
             .ReturnsAsync(responseMessage);
 
         // Act
@@ -65,7 +65,7 @@ public class CueScoreAPIClientTests
 
         var responseMessage = new HttpResponseMessage(HttpStatusCode.BadRequest);
 
-        _mockResilientClientWrapper.Setup(wrapper => wrapper.FetchResponse(It.IsAny<HttpClient>(), It.IsAny<IEnumerable<string>>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>()))
+        _mockResilientClientWrapper.Setup(wrapper => wrapper.FetchResponse(It.IsAny<HttpClient>(), It.IsAny<IEnumerable<string>>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<string>()))
             .ReturnsAsync(responseMessage);
 
         // Act & Assert
@@ -91,7 +91,7 @@ public class CueScoreAPIClientTests
             Content = new StringContent(JsonSerializer.Serialize(new Players { new Player { PlayerId = 1, Name = "Player 1" } }))
         };
 
-        _mockResilientClientWrapper.Setup(wrapper => wrapper.FetchResponse(It.IsAny<HttpClient>(), It.IsAny<IEnumerable<string>>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>()))
+        _mockResilientClientWrapper.Setup(wrapper => wrapper.FetchResponse(It.IsAny<HttpClient>(), It.IsAny<IEnumerable<string>>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<string>()))
             .ReturnsAsync(responseMessage);
 
         // Act
@@ -119,7 +119,7 @@ public class CueScoreAPIClientTests
 
         var responseMessage = new HttpResponseMessage(HttpStatusCode.BadRequest);
 
-        _mockResilientClientWrapper.Setup(wrapper => wrapper.FetchResponse(It.IsAny<HttpClient>(), It.IsAny<IEnumerable<string>>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>()))
+        _mockResilientClientWrapper.Setup(wrapper => wrapper.FetchResponse(It.IsAny<HttpClient>(), It.IsAny<IEnumerable<string>>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<string>()))
             .ReturnsAsync(responseMessage);
 
         // Act & Assert
